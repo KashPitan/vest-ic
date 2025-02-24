@@ -14,7 +14,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "prepare": "husky",
-    "payload": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload"
+    "payload": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload",
+    "ci": "payload migrate && npm build"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "^3.24.0",
