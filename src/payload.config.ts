@@ -11,6 +11,7 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URL,
     },
+    migrationDir: "./src/migrations",
   }),
   sharp,
 });
