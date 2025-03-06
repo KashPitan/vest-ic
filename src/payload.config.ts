@@ -15,4 +15,9 @@ export default buildConfig({
     migrationDir: "./src/migrations",
   }),
   sharp,
+  upload: {
+    limits: {
+      fileSize: 5000000, // 5MB, written in bytes
+    }
+  }
 });
