@@ -136,8 +136,6 @@ export interface Post {
     [k: string]: unknown;
   } | null;
   excerpt?: string | null;
-  created_at?: string | null;
-  updated_at?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -224,8 +222,6 @@ export interface PostsSelect<T extends boolean = true> {
   slug?: T;
   content?: T;
   excerpt?: T;
-  created_at?: T;
-  updated_at?: T;
   updatedAt?: T;
   createdAt?: T;
 }
