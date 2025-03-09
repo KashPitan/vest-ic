@@ -67,6 +67,7 @@ export interface Config {
   blocks: {};
   collections: {
     posts: Post;
+    tags: Tag;
     users: User;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -75,6 +76,7 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     posts: PostsSelect<false> | PostsSelect<true>;
+    tags: TagsSelect<false> | TagsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -118,9 +120,9 @@ export interface UserAuthOperations {
  */
 export interface Post {
   id: number;
-  title?: string | null;
-  slug?: string | null;
-  content?: {
+  title: string;
+  slug: string;
+  content: {
     root: {
       type: string;
       children: {
@@ -134,8 +136,18 @@ export interface Post {
       version: number;
     };
     [k: string]: unknown;
-  } | null;
-  excerpt?: string | null;
+  };
+  excerpt: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags".
+ */
+export interface Tag {
+  id: number;
+  tag_name: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -166,6 +178,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'posts';
         value: number | Post;
+      } | null)
+    | ({
+        relationTo: 'tags';
+        value: number | Tag;
       } | null)
     | ({
         relationTo: 'users';
@@ -222,6 +238,15 @@ export interface PostsSelect<T extends boolean = true> {
   slug?: T;
   content?: T;
   excerpt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags_select".
+ */
+export interface TagsSelect<T extends boolean = true> {
+  tag_name?: T;
   updatedAt?: T;
   createdAt?: T;
 }
