@@ -19,13 +19,5 @@ export const Posts: CollectionConfig = {
       name: "excerpt",
       type: "text",
     },
-    {
-      name: "created_at",
-      type: "date",
-    },
-    {
-      name: "updated_at",
-      type: "date",
-    },
   ],
 };
