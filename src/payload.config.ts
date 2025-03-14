@@ -3,10 +3,11 @@ import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { buildConfig } from "payload";
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import { Posts, Tags } from "./collections";
+import { PostTags } from "./collections/postTags";
 
 export default buildConfig({
   editor: lexicalEditor(),
-  collections: [Posts, Tags],
+  collections: [Posts, Tags, PostTags],
   secret: process.env.PAYLOAD_SECRET || "",
   db: postgresAdapter({
     pool: {
