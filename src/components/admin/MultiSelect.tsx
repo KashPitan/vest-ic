@@ -53,7 +53,6 @@ const MultiSelect = ({
   const selectables = options.filter(
     (option) => !selected.some((s) => s.value === option.value)
   );
-  console.log(selectables);
 
   return (
     <Command

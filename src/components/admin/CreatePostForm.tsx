@@ -18,8 +18,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import RichTextEditor from "./RichTextEditor";
 import MultiSelect from "./MultiSelect";
+import { MinimalTiptapEditor } from "../minimal-tiptap";
+// import { Content } from "@tiptap/react";
 // import { TagsSchema } from "@/schemas/tags";
 
 // TODO: this?: https://oleksii-s.dev/blog/how-to-build-inline-rich-text-field-in-payload-cms
@@ -68,6 +69,7 @@ type FormValues = z.infer<typeof CreatePostFormSchema>;
 const CreatePostForm = () => {
   const [tags, setTags] = useState<{ value: string; label: string }[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  // const [value, setValue] = useState<Content>("");
 
   // Initialize form with react-hook-form
   const form = useForm<FormValues>({
@@ -106,12 +108,27 @@ const CreatePostForm = () => {
     fetchTags();
   }, []);
 
+  useEffect(() => {
+    console.log(form.getValues("content"));
+  }, [form.getValues("content")]);
+
+  useEffect(() => {
+    console.log(form.getValues("tags"));
+  }, [form.getValues("tags")]);
+
   // Handle form submission
   const onSubmit = async (values: FormValues) => {
     setIsLoading(true);
 
     try {
       // Create post in PayloadCMS
+      console.log({
+        title: values.title,
+        slug: values.slug,
+        content: values.content,
+        excerpt: values.excerpt,
+        tags: values.tags.map((tag) => tag.value),
+      });
       const response = await fetch("/api/posts", {
         method: "POST",
         headers: {
@@ -184,15 +201,16 @@ const CreatePostForm = () => {
             <FormItem>
               <FormLabel>Content</FormLabel>
               <FormControl>
-                <RichTextEditor
-                  path="content"
-                  schemaPath="posts.content"
-                  field={{
-                    name: "content",
-                    type: "richText",
-                    required: true,
-                  }}
-                  {...field}
+                <MinimalTiptapEditor
+                  value={field.value}
+                  onChange={field.onChange}
+                  className="w-full"
+                  editorContentClassName="p-5"
+                  output="json"
+                  placeholder="Enter your description..."
+                  autofocus={true}
+                  editable={true}
+                  editorClassName="focus:outline-none"
                 />
               </FormControl>
               <FormMessage />
@@ -253,3 +271,19 @@ const CreatePostForm = () => {
 };
 
 export default CreatePostForm;
+
+// type RichTextValue = {
+//   root: {
+//     type: string;
+//     children: {
+//       type: string;
+//       version: number;
+//       [k: string]: unknown;
+//     }[];
+//     direction: ("ltr" | "rtl") | null;
+//     format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+//     indent: number;
+//     version: number;
+//   };
+//   [k: string]: unknown;
+// };
