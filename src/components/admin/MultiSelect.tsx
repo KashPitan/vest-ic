@@ -8,7 +8,7 @@ import { Command, CommandGroup, CommandItem } from "@/components/ui/command";
 import { CommandList, Command as CommandPrimitive } from "cmdk";
 
 type Option = {
-  value: string;
+  value: number;
   label: string;
 };
 
@@ -106,6 +106,7 @@ const MultiSelect = ({
                     }}
                     onSelect={() => {
                       setInputValue("");
+                      // console.log(selected);
                       onChange([...selected, option]);
                     }}
                     className={"cursor-pointer"}

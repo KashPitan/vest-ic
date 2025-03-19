@@ -20,55 +20,25 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import MultiSelect from "./MultiSelect";
 import { MinimalTiptapEditor } from "../minimal-tiptap";
-// import { Content } from "@tiptap/react";
-// import { TagsSchema } from "@/schemas/tags";
+import { JSONContentSchema } from "@/schemas/JSONContentSchema";
+import { TagsSchema } from "@/schemas/tagsSchema";
 
-type JSONContentSchema = z.infer<typeof JSONContentSchema>;
-
-const JSONContentSchema = z
-  .object({
-    type: z.string().optional(),
-    attrs: z.record(z.string(), z.any()).optional(),
-    content: z
-      .array(
-        z.lazy((): z.ZodTypeAny => {
-          return JSONContentSchema;
-        })
-      )
-      .optional(),
-    marks: z
-      .array(
-        z
-          .object({
-            type: z.string(),
-            attrs: z.record(z.string(), z.any()).optional(),
-          })
-          .catchall(z.any())
-      )
-      .optional(),
-    text: z.string().optional(),
-  })
-  .catchall(z.any());
-
-// Define the form schema with validation
 export const CreatePostFormSchema = z.object({
   title: z.string().min(1, "Title is required"),
   slug: z.string().min(1, "Slug is required"),
   content: JSONContentSchema,
   excerpt: z.string().min(1, "Excerpt is required"),
   tags: z
-    .array(z.object({ value: z.string(), label: z.string() }))
+    .array(z.object({ value: z.number(), label: z.string() }))
     .min(1, "At least one tag is required"),
 });
 
 type FormValues = z.infer<typeof CreatePostFormSchema>;
 
 const CreatePostForm = () => {
-  const [tags, setTags] = useState<{ value: string; label: string }[]>([]);
+  const [tags, setTags] = useState<{ value: number; label: string }[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  // const [value, setValue] = useState<Content>("");
 
-  // Initialize form with react-hook-form
   const form = useForm<FormValues>({
     resolver: zodResolver(CreatePostFormSchema),
     defaultValues: {
@@ -80,20 +50,18 @@ const CreatePostForm = () => {
     },
   });
 
-  // Fetch tags from PayloadCMS
   useEffect(() => {
     const fetchTags = async () => {
       try {
         const response = await fetch("/api/tags");
         const data = await response.json();
-        // TODO: parse tags
-        // const tagsData = TagsSchema.parse(data.docs);
+        const tagsData = TagsSchema.parse(data.docs);
 
         if (data.docs) {
           setTags(
-            data.docs.map((tag: { id: number; tag_name: string }) => ({
-              value: tag.id,
-              label: tag.tag_name,
+            tagsData.map(({ tag_name, id }) => ({
+              value: id,
+              label: tag_name,
             }))
           );
         }
@@ -105,28 +73,10 @@ const CreatePostForm = () => {
     fetchTags();
   }, []);
 
-  useEffect(() => {
-    console.log(form.getValues("content"));
-  }, [form.getValues("content")]);
-
-  useEffect(() => {
-    console.log(form.getValues("tags"));
-  }, [form.getValues("tags")]);
-
-  // Handle form submission
   const onSubmit = async (values: FormValues) => {
     setIsLoading(true);
-
     try {
-      // Create post in PayloadCMS
-      console.log({
-        title: values.title,
-        slug: values.slug,
-        content: values.content,
-        excerpt: values.excerpt,
-        tags: values.tags.map((tag) => tag.value),
-      });
-      const response = await fetch("/api/posts", {
+      const response = await fetch("/api/admin/posts", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -143,7 +93,6 @@ const CreatePostForm = () => {
       const data = await response.json();
 
       if (response.ok) {
-        // Reset form on success
         form.reset();
         alert("Post created successfully!");
       } else {
@@ -268,19 +217,3 @@ const CreatePostForm = () => {
 };
 
 export default CreatePostForm;
-
-// type RichTextValue = {
-//   root: {
-//     type: string;
-//     children: {
-//       type: string;
-//       version: number;
-//       [k: string]: unknown;
-//     }[];
-//     direction: ("ltr" | "rtl") | null;
-//     format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
-//     indent: number;
-//     version: number;
-//   };
-//   [k: string]: unknown;
-// };

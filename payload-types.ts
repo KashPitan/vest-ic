@@ -124,21 +124,15 @@ export interface Post {
   id: number;
   title: string;
   slug: string;
-  content: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
+  content:
+    | {
         [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   excerpt: string;
   updatedAt: string;
   createdAt: string;
