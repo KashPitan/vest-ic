@@ -11,7 +11,7 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   {
-    ignores: ["**/migrations/**"],
+    ignores: ["**/migrations/**", "**/minimal-tiptap"],
   },
   ...compat.extends("next/core-web-vitals", "next/typescript"),
 ];
