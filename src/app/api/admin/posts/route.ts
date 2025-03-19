@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getPayload } from "payload";
 import config from "@payload-config";
 import { z } from "zod";
-import { JSONContentSchema } from "@/schemas/JSONContentSchedma";
+import { JSONContentSchema } from "@/schemas/JSONContentSchema";
 
 const payload = await getPayload({ config });
 
