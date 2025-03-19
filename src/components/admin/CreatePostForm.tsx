@@ -20,7 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import MultiSelect from "./MultiSelect";
 import { MinimalTiptapEditor } from "../minimal-tiptap";
-import { JSONContentSchema } from "@/schemas/JSONContentSchema";
+import { JSONContentSchema } from "@/schemas/JSONContentSchedma";
 import { TagsSchema } from "@/schemas/tagsSchema";
 
 export const CreatePostFormSchema = z.object({

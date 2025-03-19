@@ -2,8 +2,7 @@ import sharp from "sharp";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { buildConfig } from "payload";
 import { postgresAdapter } from "@payloadcms/db-postgres";
-import { Posts, Tags } from "./collections";
-import { PostTags } from "./collections/postTags";
+import { Posts, Tags, PostTags } from "./collections";
 
 export default buildConfig({
   editor: lexicalEditor(),
