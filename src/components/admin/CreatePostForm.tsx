@@ -23,41 +23,38 @@ import { MinimalTiptapEditor } from "../minimal-tiptap";
 // import { Content } from "@tiptap/react";
 // import { TagsSchema } from "@/schemas/tags";
 
-// TODO: this?: https://oleksii-s.dev/blog/how-to-build-inline-rich-text-field-in-payload-cms
+type JSONContentSchema = z.infer<typeof JSONContentSchema>;
+
+const JSONContentSchema = z
+  .object({
+    type: z.string().optional(),
+    attrs: z.record(z.string(), z.any()).optional(),
+    content: z
+      .array(
+        z.lazy((): z.ZodTypeAny => {
+          return JSONContentSchema;
+        })
+      )
+      .optional(),
+    marks: z
+      .array(
+        z
+          .object({
+            type: z.string(),
+            attrs: z.record(z.string(), z.any()).optional(),
+          })
+          .catchall(z.any())
+      )
+      .optional(),
+    text: z.string().optional(),
+  })
+  .catchall(z.any());
 
 // Define the form schema with validation
 export const CreatePostFormSchema = z.object({
   title: z.string().min(1, "Title is required"),
   slug: z.string().min(1, "Slug is required"),
-  content: z
-    .object({
-      root: z
-        .object({
-          type: z.string(),
-          children: z.array(
-            z
-              .object({
-                type: z.string(),
-                version: z.number(),
-              })
-              .passthrough()
-          ),
-          direction: z.union([z.literal("ltr"), z.literal("rtl"), z.null()]),
-          format: z.union([
-            z.literal("left"),
-            z.literal("start"),
-            z.literal("center"),
-            z.literal("right"),
-            z.literal("end"),
-            z.literal("justify"),
-            z.literal(""),
-          ]),
-          indent: z.number(),
-          version: z.number(),
-        })
-        .passthrough(),
-    })
-    .passthrough(),
+  content: JSONContentSchema,
   excerpt: z.string().min(1, "Excerpt is required"),
   tags: z
     .array(z.object({ value: z.string(), label: z.string() }))
