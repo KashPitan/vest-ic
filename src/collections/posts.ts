@@ -7,12 +7,12 @@ export const Posts: CollectionConfig = {
       name: "title",
       type: "text",
       required: true,
-      unique: true,
     },
     {
       name: "slug",
       type: "text",
       required: true,
+      unique: true,
     },
     {
       name: "content",
