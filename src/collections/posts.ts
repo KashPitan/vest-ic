@@ -6,18 +6,23 @@ export const Posts: CollectionConfig = {
     {
       name: "title",
       type: "text",
+      required: true,
     },
     {
       name: "slug",
       type: "text",
+      required: true,
+      unique: true,
     },
     {
       name: "content",
-      type: "richText",
+      type: "json",
+      required: true,
     },
     {
       name: "excerpt",
       type: "text",
+      required: true,
     },
   ],
 };
