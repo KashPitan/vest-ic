@@ -11,7 +11,6 @@ const getPostFormData = async (id: string, payload: BasePayload) => {
     collection: 'posts',
     id,
   });
-  if (!postData) throw new Error('Post not found!');
   const postTagsData = await payload.find({
     collection: 'postTags',
     where: {

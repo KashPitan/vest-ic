@@ -12,7 +12,7 @@ export default async function Insights() {
             <ul>
                 {posts.docs.map((post) => {
                     if (post.content) return (<li key={post.id}><h1>{post.title || 'UNKNOWN TITLE'}</h1>
-                        <h3>This post was created on {post.createdAt}</h3>
+                        <h3>This insight was created on {post.createdAt}</h3>
                         </li>
                     )
                 }

@@ -27,7 +27,7 @@ export default async function Insight({
     const [post] = result.docs;
     return (
         <div className="w-full"><h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">{post.title || 'UNKNOWN TITLE'}</h1>
-            <Label>This post was created on: {post.createdAt}</Label>
+            <Label>This insight was created on: {post.createdAt}</Label>
             <Separator/>
             {stringToHtml(post.content)}
         </div>
