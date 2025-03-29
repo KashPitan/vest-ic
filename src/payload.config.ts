@@ -25,6 +25,10 @@ export default buildConfig({
           Component: "/components/admin/CreatePost",
           path: "/create-post",
         },
+        "edit-post": {
+          Component: "/components/admin/CreatePost",
+          path: "/create-post/:path",
+        },
       },
     },
   },

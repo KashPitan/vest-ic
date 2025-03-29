@@ -1,15 +1,47 @@
-import type { AdminViewProps } from "payload";
+import type { AdminViewProps, BasePayload } from "payload";
 
 import { DefaultTemplate } from "@payloadcms/next/templates";
 import { Gutter } from "@payloadcms/ui";
 import React from "react";
 import CreatePostForm from "./CreatePostForm";
+import { Tag } from "../../../payload-types";
 
-export const CreatePost: React.FC<AdminViewProps> = ({
+const getPostFormData = async (id: string, payload: BasePayload) => {
+  const postData = await payload.findByID({
+    collection: 'posts',
+    id,
+  });
+  if (!postData) throw new Error('Post not found!');
+  const postTagsData = await payload.find({
+    collection: 'postTags',
+    where: {
+      post_id: { equals: id }
+    },
+    select: {
+      tag_id: true
+    },
+    depth: 1
+  });
+  const tags = postTagsData.docs.map((pT) => {
+    const tag = pT.tag_id as Tag;
+    return {
+      value: tag.id,
+      label: tag.tag_name
+    }
+  });
+  return {
+    ...postData,
+    tags
+  }
+}
+
+export const CreatePost: React.FC<AdminViewProps> = async ({
   initPageResult,
   params,
   searchParams,
 }) => {
+  const id = params?.segments?.[1];
+  const postFormData = id ? await getPostFormData(id, initPageResult.req.payload) : null;
   return (
     <DefaultTemplate
       i18n={initPageResult.req.i18n}
@@ -22,7 +54,7 @@ export const CreatePost: React.FC<AdminViewProps> = ({
       visibleEntities={initPageResult.visibleEntities}
     >
       <Gutter>
-        <CreatePostForm />
+        <CreatePostForm post={postFormData} />
       </Gutter>
     </DefaultTemplate>
   );

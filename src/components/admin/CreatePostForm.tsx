@@ -20,13 +20,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import MultiSelect from "./MultiSelect";
 import { MinimalTiptapEditor } from "../minimal-tiptap";
-import { JSONContentSchema } from "@/schemas/JSONContentSchema";
 import { TagsSchema } from "@/schemas/tagsSchema";
 
 export const CreatePostFormSchema = z.object({
   title: z.string().min(1, "Title is required"),
   slug: z.string().min(1, "Slug is required"),
-  content: JSONContentSchema,
+  content: z.string().min(1, 'Content is required'),
   excerpt: z.string().min(1, "Excerpt is required"),
   tags: z
     .array(z.object({ value: z.number(), label: z.string() }))
@@ -35,16 +34,16 @@ export const CreatePostFormSchema = z.object({
 
 type FormValues = z.infer<typeof CreatePostFormSchema>;
 
-const CreatePostForm = () => {
+const CreatePostForm = ({ post }: { post: FormValues | null }) => {
   const [tags, setTags] = useState<{ value: number; label: string }[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(CreatePostFormSchema),
-    defaultValues: {
+    defaultValues: post ?? {
       title: "",
       slug: "",
-      content: undefined,
+      content: "",
       excerpt: "",
       tags: [],
     },
@@ -152,11 +151,12 @@ const CreatePostForm = () => {
                   onChange={field.onChange}
                   className="w-full"
                   editorContentClassName="p-5"
-                  output="json"
+                  output="html"
                   placeholder="Enter your description..."
                   autofocus={true}
                   editable={true}
                   editorClassName="focus:outline-none"
+                  immediatelyRender={false}
                 />
               </FormControl>
               <FormMessage />
