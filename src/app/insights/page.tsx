@@ -1,7 +1,7 @@
 import { getPayload } from "payload";
 import config from '@payload-config';
 
-export default async function Insights() {
+const Insights = async () => {
     const payload = await getPayload({ config });
     const posts = await payload.find({
         collection: 'posts',
@@ -21,3 +21,5 @@ export default async function Insights() {
         </div>
     )
 }
+
+export default Insights;

@@ -3,7 +3,7 @@ import type { AdminViewProps, BasePayload } from "payload";
 import { DefaultTemplate } from "@payloadcms/next/templates";
 import { Gutter } from "@payloadcms/ui";
 import React from "react";
-import CreatePostForm from "./CreatePostForm";
+import PostForm from "./PostForm";
 import { Tag } from "../../../payload-types";
 
 const getPostFormData = async (id: string, payload: BasePayload) => {
@@ -34,7 +34,7 @@ const getPostFormData = async (id: string, payload: BasePayload) => {
   }
 }
 
-export const CreatePost: React.FC<AdminViewProps> = async ({
+export const PostFormContainer: React.FC<AdminViewProps> = async ({
   initPageResult,
   params,
   searchParams,
@@ -53,10 +53,10 @@ export const CreatePost: React.FC<AdminViewProps> = async ({
       visibleEntities={initPageResult.visibleEntities}
     >
       <Gutter>
-        <CreatePostForm post={postFormData} />
+        <PostForm post={postFormData} />
       </Gutter>
     </DefaultTemplate>
   );
 };
 
-export default CreatePost;
+export default PostFormContainer;

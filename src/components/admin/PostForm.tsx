@@ -22,7 +22,7 @@ import MultiSelect from "./MultiSelect";
 import { MinimalTiptapEditor } from "../minimal-tiptap";
 import { TagsSchema } from "@/schemas/tagsSchema";
 
-export const CreatePostFormSchema = z.object({
+const PostFormSchema = z.object({
   title: z.string().min(1, "Title is required"),
   slug: z.string().min(1, "Slug is required"),
   content: z.string().min(1, 'Content is required'),
@@ -32,14 +32,14 @@ export const CreatePostFormSchema = z.object({
     .min(1, "At least one tag is required"),
 });
 
-type FormValues = z.infer<typeof CreatePostFormSchema>;
+type FormValues = z.infer<typeof PostFormSchema>;
 
-const CreatePostForm = ({ post }: { post: FormValues | null }) => {
+const PostForm = ({ post }: { post: FormValues | null }) => {
   const [tags, setTags] = useState<{ value: number; label: string }[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<FormValues>({
-    resolver: zodResolver(CreatePostFormSchema),
+    resolver: zodResolver(PostFormSchema),
     defaultValues: post ?? {
       title: "",
       slug: "",
@@ -216,4 +216,4 @@ const CreatePostForm = ({ post }: { post: FormValues | null }) => {
   );
 };
 
-export default CreatePostForm;
+export default PostForm;
