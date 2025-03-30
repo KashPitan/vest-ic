@@ -9,6 +9,10 @@ const config: Config = {
   clearMocks: true,
   coverageProvider: "v8",
   testEnvironment: "jsdom",
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/*',
+    "^@payload-config$": '<rootDir>/src/payload.config.ts'
+  }
 };
 
 export default createJestConfig(config)
