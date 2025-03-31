@@ -16,7 +16,7 @@ export const Posts: CollectionConfig = {
     },
     {
       name: "content",
-      type: "json",
+      type: "text",
       required: true,
     },
     {

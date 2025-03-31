@@ -124,15 +124,7 @@ export interface Post {
   id: number;
   title: string;
   slug: string;
-  content:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
+  content: string;
   excerpt: string;
   updatedAt: string;
   createdAt: string;

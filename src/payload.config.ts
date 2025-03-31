@@ -22,8 +22,12 @@ export default buildConfig({
     components: {
       views: {
         "create-post": {
-          Component: "/components/admin/CreatePost",
+          Component: "/components/admin/PostFormContainer",
           path: "/create-post",
+        },
+        "edit-post": {
+          Component: "/components/admin/PostFormContainer",
+          path: "/edit-post/:path",
         },
       },
     },

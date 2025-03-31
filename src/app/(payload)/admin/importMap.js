@@ -1,5 +1,5 @@
-import { default as default_5981e39a2bb85baa2481a4cd06d3d17c } from '../../../../src/components/admin/CreatePost'
+import { default as default_033ad3c91f9f057493ce14f48f8ec519 } from '../../../../src/components/admin/PostFormContainer'
 
 export const importMap = {
-  "/components/admin/CreatePost#default": default_5981e39a2bb85baa2481a4cd06d3d17c
+  "/components/admin/PostFormContainer#default": default_033ad3c91f9f057493ce14f48f8ec519
 }

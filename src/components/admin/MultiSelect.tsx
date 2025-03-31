@@ -106,7 +106,6 @@ const MultiSelect = ({
                     }}
                     onSelect={() => {
                       setInputValue("");
-                      // console.log(selected);
                       onChange([...selected, option]);
                     }}
                     className={"cursor-pointer"}
