@@ -2,14 +2,14 @@ import { NextResponse } from "next/server";
 import { getPayload } from "payload";
 import config from "@payload-config";
 import { z } from "zod";
-import { JSONContentSchema } from "@/schemas/JSONContentSchema";
+import sanitizeHtml from 'sanitize-html';
 
 const payload = await getPayload({ config });
 
 const CreatePostRequestSchema = z.object({
   title: z.string().min(1, "Title is required"),
   slug: z.string().min(1, "Slug is required"),
-  content: z.object({ ...JSONContentSchema.shape }),
+  content: z.string().min(1, 'Content is required'),
   excerpt: z.string().min(1, "Excerpt is required"),
   tags: z.array(z.number()).min(1, "At least one tag is required"),
 });
@@ -21,13 +21,13 @@ export async function POST(request: Request) {
     const data = await request.json();
     const { title, slug, content, excerpt, tags } =
       CreatePostRequestSchema.parse(data);
-
+    const cleanContent = sanitizeHtml(content);
     const post = await payload.create({
       collection: "posts",
       data: {
         title,
         slug,
-        content,
+        content: cleanContent,
         excerpt,
       },
       req: { transactionID },
