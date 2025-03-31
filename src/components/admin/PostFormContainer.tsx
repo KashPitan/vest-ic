@@ -8,31 +8,31 @@ import { Tag } from "../../../payload-types";
 
 const getPostFormData = async (id: string, payload: BasePayload) => {
   const postData = await payload.findByID({
-    collection: 'posts',
+    collection: "posts",
     id,
   });
   const postTagsData = await payload.find({
-    collection: 'postTags',
+    collection: "postTags",
     where: {
-      post_id: { equals: id }
+      post_id: { equals: id },
     },
     select: {
-      tag_id: true
+      tag_id: true,
     },
-    depth: 1
+    depth: 1,
   });
   const tags = postTagsData.docs.map((pT) => {
     const tag = pT.tag_id as Tag;
     return {
       value: tag.id,
-      label: tag.tag_name
-    }
+      label: tag.tag_name,
+    };
   });
   return {
     ...postData,
-    tags
-  }
-}
+    tags,
+  };
+};
 
 export const PostFormContainer: React.FC<AdminViewProps> = async ({
   initPageResult,
@@ -40,7 +40,9 @@ export const PostFormContainer: React.FC<AdminViewProps> = async ({
   searchParams,
 }) => {
   const id = params?.segments?.[1];
-  const postFormData = id ? await getPostFormData(id, initPageResult.req.payload) : null;
+  const postFormData = id
+    ? await getPostFormData(id, initPageResult.req.payload)
+    : null;
   return (
     <DefaultTemplate
       i18n={initPageResult.req.i18n}

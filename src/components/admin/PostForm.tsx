@@ -45,7 +45,8 @@ const PostFormSchema = z.object({
 
 type FormValues = z.infer<typeof PostFormSchema>;
 
-const PostForm = ({ post }: { post: FormValues | null }) => {
+// omitting images from the props for now, we can handle editing images in a post later
+const PostForm = ({ post }: { post: Omit<FormValues, "images"> | null }) => {
   const [tags, setTags] = useState<{ value: number; label: string }[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
