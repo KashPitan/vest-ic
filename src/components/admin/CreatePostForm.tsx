@@ -20,8 +20,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import MultiSelect from "./MultiSelect";
 import { MinimalTiptapEditor } from "../minimal-tiptap";
+import { Image, ImageProps } from "../minimal-tiptap/extensions/image";
 import { JSONContentSchema } from "@/schemas/JSONContentSchema";
 import { TagsSchema } from "@/schemas/tagsSchema";
+import { fileToBase64 } from "../minimal-tiptap/utils";
 
 export const CreatePostFormSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -31,6 +33,15 @@ export const CreatePostFormSchema = z.object({
   tags: z
     .array(z.object({ value: z.number(), label: z.string() }))
     .min(1, "At least one tag is required"),
+  images: z
+    .array(
+      z.object({
+        fileName: z.string(),
+        content: z.string(),
+        src: z.string(),
+      })
+    )
+    .default([]),
 });
 
 type FormValues = z.infer<typeof CreatePostFormSchema>;
@@ -47,7 +58,40 @@ const CreatePostForm = () => {
       content: undefined,
       excerpt: "",
       tags: [],
+      images: [],
     },
+  });
+
+  // tipTap doesn't support async handlers so passing this off to another
+  const imageAddedHandler = (props: ImageProps) => {
+    updateImageState(props);
+  };
+
+  const updateImageState = (props: ImageProps) => {
+    (async () => {
+      const base64Content = await fileToBase64(props.imageSrc);
+      const currentImages = form.getValues("images");
+      console.log(currentImages);
+      form.setValue("images", [
+        ...currentImages,
+        {
+          fileName: props.fileName,
+          content: base64Content,
+          src: props.src,
+        },
+      ]);
+    })();
+  };
+
+  const imageRemovedHandler = (src: string) => {
+    const currentImages = form.getValues("images");
+    const filteredImages = currentImages.filter((image) => image.src !== src);
+    form.setValue("images", filteredImages);
+  };
+
+  Image.configure({
+    onImageAdded: imageAddedHandler,
+    onImageRemoved: imageRemovedHandler,
   });
 
   useEffect(() => {
@@ -87,6 +131,7 @@ const CreatePostForm = () => {
           content: values.content,
           excerpt: values.excerpt,
           tags: values.tags.map((tag) => tag.value),
+          images: values.images,
         }),
       });
 

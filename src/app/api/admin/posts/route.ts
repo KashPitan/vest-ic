@@ -3,6 +3,7 @@ import { getPayload } from "payload";
 import config from "@payload-config";
 import { z } from "zod";
 import { JSONContentSchema } from "@/schemas/JSONContentSchema";
+import { put } from "@vercel/blob";
 
 const payload = await getPayload({ config });
 
@@ -12,6 +13,15 @@ const CreatePostRequestSchema = z.object({
   content: z.object({ ...JSONContentSchema.shape }),
   excerpt: z.string().min(1, "Excerpt is required"),
   tags: z.array(z.number()).min(1, "At least one tag is required"),
+  images: z
+    .array(
+      z.object({
+        fileName: z.string(),
+        content: z.string(),
+        src: z.string(),
+      })
+    )
+    .default([]),
 });
 
 export async function POST(request: Request) {
@@ -19,7 +29,7 @@ export async function POST(request: Request) {
 
   try {
     const data = await request.json();
-    const { title, slug, content, excerpt, tags } =
+    const { title, slug, content, excerpt, tags, images } =
       CreatePostRequestSchema.parse(data);
 
     const post = await payload.create({
@@ -45,6 +55,14 @@ export async function POST(request: Request) {
           req: { transactionID },
         })
       )
+    );
+
+    await Promise.all(
+      images.map(({ fileName, content }) => {
+        const base64Data = content.split(",")[1] || content;
+        const blobData = Buffer.from(base64Data, "base64");
+        return put(`${slug}/${fileName}`, blobData, { access: "public" });
+      })
     );
 
     await payload.db.commitTransaction(transactionID);
