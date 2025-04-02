@@ -25,11 +25,14 @@ const Insight = async ({
     });
     const [post] = result.docs;
     return (
-        <div className="w-full"><h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">{post.title || 'UNKNOWN TITLE'}</h1>
-            <Label>This insight was created on: {post.createdAt}</Label>
+        <>
             <Separator />
-            {stringToHtml(post.content)}
-        </div>
+            <div className="w-full"><h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">{post.title || 'UNKNOWN TITLE'}</h1>
+                <Label>This insight was created on: {post.createdAt}</Label>
+                <Separator />
+                {stringToHtml(post.content)}
+            </div>
+        </>
     )
 }
 
