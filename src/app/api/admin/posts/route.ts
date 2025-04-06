@@ -3,7 +3,7 @@ import { getPayload } from "payload";
 import config from "@payload-config";
 import { z } from "zod";
 import { put } from "@vercel/blob";
-import sanitizeHtml from "sanitize-html";
+// import sanitizeHtml from "sanitize-html";
 
 const payload = await getPayload({ config });
 
@@ -31,13 +31,23 @@ export async function POST(request: Request) {
     const data = await request.json();
     const { title, slug, content, excerpt, tags, images } =
       CreatePostRequestSchema.parse(data);
-    const cleanContent = sanitizeHtml(content);
+
+    // TODO: stop this stripping out source
+    // const cleanContent = sanitizeHtml(content, {
+    //   allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
+    // allowedAttributes: {
+    //   ...sanitizeHtml.defaults.allowedAttributes,
+    //   img: ["src", "srcset", "alt", "title", "width", "height", "loading"],
+    // },
+    // allowedAttributes: false,
+    // });
+
     const post = await payload.create({
       collection: "posts",
       data: {
         title,
         slug,
-        content: cleanContent,
+        content, //clean content
         excerpt,
       },
       req: { transactionID },
