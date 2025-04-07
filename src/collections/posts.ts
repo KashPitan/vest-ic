@@ -24,5 +24,10 @@ export const Posts: CollectionConfig = {
       type: "text",
       required: true,
     },
+    {
+      name: "releaseDate",
+      type: "date",
+      required: false,
+    },
   ],
 };

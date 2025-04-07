@@ -25,8 +25,9 @@ import { TagsSchema } from "@/schemas/tagsSchema";
 const PostFormSchema = z.object({
   title: z.string().min(1, "Title is required"),
   slug: z.string().min(1, "Slug is required"),
-  content: z.string().min(1, 'Content is required'),
+  content: z.string().min(1, "Content is required"),
   excerpt: z.string().min(1, "Excerpt is required"),
+  releaseDate: z.string().optional(),
   tags: z
     .array(z.object({ value: z.number(), label: z.string() }))
     .min(1, "At least one tag is required"),
@@ -45,6 +46,7 @@ const PostForm = ({ post }: { post: FormValues | null }) => {
       slug: "",
       content: "",
       excerpt: "",
+      releaseDate: "",
       tags: [],
     },
   });
@@ -85,6 +87,7 @@ const PostForm = ({ post }: { post: FormValues | null }) => {
           slug: values.slug,
           content: values.content,
           excerpt: values.excerpt,
+          releaseDate: values.releaseDate,
           tags: values.tags.map((tag) => tag.value),
         }),
       });
@@ -177,6 +180,23 @@ const PostForm = ({ post }: { post: FormValues | null }) => {
                   {...field}
                 />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="releaseDate"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Release Date</FormLabel>
+              <FormControl>
+                <Input type="datetime-local" {...field} />
+              </FormControl>
+              <FormDescription>
+                Optional date when the post should be published
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
