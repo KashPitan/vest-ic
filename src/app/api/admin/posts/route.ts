@@ -27,9 +27,11 @@ export async function POST(request: Request) {
     let displayImageUrl: string | undefined;
 
     if (displayImage) {
+      const environment = process.env.ENVIRONMENT;
+      const environmentString = environment ? environment + "/" : "";
       displayImageUrl = await uploadToBlob(
         displayImage,
-        `posts/${slug}/display-image-${Date.now()}.jpg`
+        `posts/${slug}/${environmentString}display-image-${Date.now()}.jpg`
       );
     }
 
