@@ -27,7 +27,7 @@ const Insight = async ({ params }: { params: Promise<{ slug: string }> }) => {
   return (
     <div className="w-full">
       <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-        {post.title}
+        {post.title || "UNKNOWN TITLE"}
       </h1>
       <Label>This insight was created on: {post.createdAt}</Label>
       <Separator />
