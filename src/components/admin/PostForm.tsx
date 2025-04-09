@@ -27,6 +27,7 @@ const PostFormSchema = z.object({
   slug: z.string().min(1, "Slug is required"),
   content: z.string().min(1, "Content is required"),
   excerpt: z.string().min(1, "Excerpt is required"),
+  releaseDate: z.string().optional(),
   displayImage: z.string().optional(),
   tags: z
     .array(z.object({ value: z.number(), label: z.string() }))
@@ -46,6 +47,7 @@ const PostForm = ({ post }: { post: FormValues | null }) => {
       slug: "",
       content: "",
       excerpt: "",
+      releaseDate: "",
       displayImage: "",
       tags: [],
     },
@@ -87,6 +89,7 @@ const PostForm = ({ post }: { post: FormValues | null }) => {
           slug: values.slug,
           content: values.content,
           excerpt: values.excerpt,
+          releaseDate: values.releaseDate,
           displayImage: values.displayImage,
           tags: values.tags.map((tag) => tag.value),
         }),
@@ -200,6 +203,22 @@ const PostForm = ({ post }: { post: FormValues | null }) => {
           )}
         />
 
+        <FormField
+          control={form.control}
+          name="releaseDate"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Release Date</FormLabel>
+              <FormControl>
+                <Input type="datetime-local" {...field} />
+              </FormControl>
+              <FormDescription>
+                Optional date when the post should be published
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="displayImage"

@@ -12,6 +12,7 @@ const CreatePostRequestSchema = z.object({
   slug: z.string().min(1, "Slug is required"),
   content: z.string().min(1, "Content is required"),
   excerpt: z.string().min(1, "Excerpt is required"),
+  releaseDate: z.string().optional(),
   displayImage: z.string().optional(),
   tags: z.array(z.number()).min(1, "At least one tag is required"),
 });
@@ -21,7 +22,8 @@ export async function POST(request: Request) {
 
   try {
     const data = await request.json();
-    const { title, slug, content, excerpt, tags, displayImage } =
+
+    const { title, slug, content, excerpt, tags, displayImage, releaseDate } =
       CreatePostRequestSchema.parse(data);
 
     let displayImageUrl: string | undefined;
@@ -36,6 +38,7 @@ export async function POST(request: Request) {
     }
 
     const cleanContent = sanitizeHtml(content);
+
     const post = await payload.create({
       collection: "posts",
       data: {
@@ -43,6 +46,7 @@ export async function POST(request: Request) {
         slug,
         content: cleanContent,
         excerpt,
+        releaseDate: releaseDate ?? undefined,
         displayImageUrl,
       },
       req: { transactionID },
