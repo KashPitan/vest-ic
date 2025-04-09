@@ -25,5 +25,10 @@ export const Posts: CollectionConfig = {
       type: "text",
       required: true,
     },
+    {
+      name: "displayImageUrl",
+      type: "text",
+      required: false,
+    },
   ],
 };
