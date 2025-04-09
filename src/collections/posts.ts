@@ -13,6 +13,7 @@ export const Posts: CollectionConfig = {
       type: "text",
       required: true,
       unique: true,
+      index: true
     },
     {
       name: "content",
