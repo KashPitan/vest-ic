@@ -127,6 +127,7 @@ export interface Post {
   content: string;
   excerpt: string;
   releaseDate?: string | null;
+  displayImageUrl?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -243,6 +244,7 @@ export interface PostsSelect<T extends boolean = true> {
   content?: T;
   excerpt?: T;
   releaseDate?: T;
+  displayImageUrl?: T;
   updatedAt?: T;
   createdAt?: T;
 }

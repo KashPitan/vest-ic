@@ -27,6 +27,10 @@ export const Posts: CollectionConfig = {
     {
       name: "releaseDate",
       type: "date",
+    },
+    {
+      name: "displayImageUrl",
+      type: "text",
       required: false,
     },
   ],

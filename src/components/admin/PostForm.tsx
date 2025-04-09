@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -28,6 +28,7 @@ const PostFormSchema = z.object({
   content: z.string().min(1, "Content is required"),
   excerpt: z.string().min(1, "Excerpt is required"),
   releaseDate: z.string().optional(),
+  displayImage: z.string().optional(),
   tags: z
     .array(z.object({ value: z.number(), label: z.string() }))
     .min(1, "At least one tag is required"),
@@ -47,6 +48,7 @@ const PostForm = ({ post }: { post: FormValues | null }) => {
       content: "",
       excerpt: "",
       releaseDate: "",
+      displayImage: "",
       tags: [],
     },
   });
@@ -88,6 +90,7 @@ const PostForm = ({ post }: { post: FormValues | null }) => {
           content: values.content,
           excerpt: values.excerpt,
           releaseDate: values.releaseDate,
+          displayImage: values.displayImage,
           tags: values.tags.map((tag) => tag.value),
         }),
       });
@@ -107,6 +110,21 @@ const PostForm = ({ post }: { post: FormValues | null }) => {
       setIsLoading(false);
     }
   };
+
+  const handleImageChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64String = reader.result as string;
+          form.setValue("displayImage", base64String);
+        };
+        reader.readAsDataURL(file);
+      }
+    },
+    [form]
+  );
 
   return (
     <Form {...form}>
@@ -196,6 +214,36 @@ const PostForm = ({ post }: { post: FormValues | null }) => {
               </FormControl>
               <FormDescription>
                 Optional date when the post should be published
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="displayImage"
+          render={({ field: { value, ...field } }) => (
+            <FormItem>
+              <FormLabel>Display Image</FormLabel>
+              <FormControl>
+                <div className="flex flex-col gap-4">
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    {...field}
+                    onChange={handleImageChange}
+                  />
+                  {value && (
+                    <img
+                      src={value}
+                      alt="Preview"
+                      className="w-48 h-48 object-cover rounded-md"
+                    />
+                  )}
+                </div>
+              </FormControl>
+              <FormDescription>
+                Select an image to display with your post
               </FormDescription>
               <FormMessage />
             </FormItem>
