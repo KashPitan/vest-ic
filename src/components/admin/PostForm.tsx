@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Loader2 } from "lucide-react";
-
+import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -234,7 +234,7 @@ const PostForm = ({ post }: { post: FormValues | null }) => {
                     onChange={handleImageChange}
                   />
                   {value && (
-                    <img
+                    <Image
                       src={value}
                       alt="Preview"
                       className="w-48 h-48 object-cover rounded-md"
