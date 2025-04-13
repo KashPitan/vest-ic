@@ -3,17 +3,21 @@ import MultiSelect, { Option } from "@/components/admin/MultiSelect";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Pagination } from "@/components/public/Pagination";
-import { SearchParams } from '@/lib/SearchParameter';
+import { SearchParams } from '@/lib/SearchParams';
 import Link from "next/link";
 import { useState } from "react";
 import { Post, Tag } from "../../../payload-types";
 import { ReadonlyURLSearchParams, redirect, useSearchParams } from "next/navigation";
 
+const TAGS_QUERY_PARAMETER = 'tags';
+const PAGE_QUERY_PARAMETER = 'page';
+
 const getDefaultSelectedTags = (currentSearchParams: ReadonlyURLSearchParams, tags: Tag[]) => {
     const defaultSelectedTags: Option[] = [];
     const searchParams = new SearchParams(currentSearchParams);
-    const tagIds = searchParams.getTagIds();
-    if (tagIds) {
+    const tagValues = searchParams.getQueryValue(TAGS_QUERY_PARAMETER);
+    if (tagValues) {
+        const tagIds = tagValues.map(id => Number.parseInt(id));
         tagIds.forEach((id) => {
            const tag = tags.find((t) => t.id === id);
            if(tag) defaultSelectedTags.push({ value: tag.id, label: tag.tag_name });
@@ -31,11 +35,11 @@ export const InsightsListView = ({ posts, tags, hasNext, hasPrevious }: { posts:
         const urlSearchParams = new SearchParams(currentSearchParams.toString());
         if (selectedTags.length) {
             const tagIds = selectedTags.map((t) => t.value);
-            urlSearchParams.setTagIds(tagIds);
+            urlSearchParams.setQueryValue(TAGS_QUERY_PARAMETER, tagIds);
         } else {
-            urlSearchParams.removeTags();
+            urlSearchParams.removeParam(TAGS_QUERY_PARAMETER);
         }
-        urlSearchParams.resetPage();
+        urlSearchParams.removeParam(PAGE_QUERY_PARAMETER);
         const searchParams = urlSearchParams.getSearchParams();
         const url = searchParams ? `/insights?${searchParams}` : '/insights';
         redirect(url);
