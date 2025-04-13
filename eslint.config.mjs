@@ -13,7 +13,7 @@ const eslintConfig = [
   {
     ignores: ["**/migrations/**", "**/minimal-tiptap"],
   },
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+  ...compat.extends("next/core-web-vitals", "next/typescript", "prettier"),
 ];
 
 export default eslintConfig;

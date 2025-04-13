@@ -1,0 +1,6 @@
+# Ignore artifacts:
+build
+coverage
+.next
+src/components/minimal-tiptap
+src/components/ui
