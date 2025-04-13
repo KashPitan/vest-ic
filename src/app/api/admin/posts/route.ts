@@ -46,7 +46,7 @@ export async function POST(request: Request) {
         slug,
         content: cleanContent,
         excerpt,
-        releaseDate: releaseDate ?? undefined,
+        releaseDate: releaseDate || undefined,
         displayImageUrl,
       },
       req: { transactionID },

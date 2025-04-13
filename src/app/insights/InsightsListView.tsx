@@ -1,32 +1,49 @@
 "use client";
-import MultiSelect from "@/components/admin/MultiSelect";
+import MultiSelect, { Option } from "@/components/admin/MultiSelect";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Pagination } from "@/components/public/Pagination";
+import { SearchParams } from '@/lib/SearchParameter';
 import Link from "next/link";
 import { useState } from "react";
 import { Post, Tag } from "../../../payload-types";
-import { redirect, useSearchParams } from "next/navigation";
+import { ReadonlyURLSearchParams, redirect, useSearchParams } from "next/navigation";
 
-export const InsightsListView = ({ posts, tags, hasNext, hasPrevious }: { posts: Post[], tags: Tag[], hasNext: boolean, hasPrevious: boolean}) => {
-    const [selectedTags, setSelectedTags] = useState<{ value: number,label: string}[]>([]);
-    const currentSearchParams = useSearchParams()
+const getDefaultSelectedTags = (currentSearchParams: ReadonlyURLSearchParams, tags: Tag[]) => {
+    const defaultSelectedTags: Option[] = [];
+    const searchParams = new SearchParams(currentSearchParams);
+    const tagIds = searchParams.getTagIds();
+    if (tagIds) {
+        tagIds.forEach((id) => {
+           const tag = tags.find((t) => t.id === id);
+           if(tag) defaultSelectedTags.push({ value: tag.id, label: tag.tag_name });
+        })
+    };
+    return defaultSelectedTags;
+}
+
+export const InsightsListView = ({ posts, tags, hasNext, hasPrevious }: { posts: Post[], tags: Tag[], hasNext: boolean, hasPrevious: boolean }) => {
+    const currentSearchParams = useSearchParams();
+    const defaultSelectedTags: Option[] = getDefaultSelectedTags(currentSearchParams, tags)
+    const [selectedTags, setSelectedTags] = useState<Option[]>(defaultSelectedTags);
+    
     const searchByTags = () => {
-        const urlSearchParams = new URLSearchParams(currentSearchParams.toString());
+        const urlSearchParams = new SearchParams(currentSearchParams.toString());
         if (selectedTags.length) {
-            const tagsSearchParamValue = selectedTags.map((t) => t.value).join(',');
-            urlSearchParams.set('tags', tagsSearchParamValue);
+            const tagIds = selectedTags.map((t) => t.value);
+            urlSearchParams.setTagIds(tagIds);
         } else {
-            urlSearchParams.delete('tags');
+            urlSearchParams.removeTags();
         }
-        const searchParams = urlSearchParams.toString();
+        urlSearchParams.resetPage();
+        const searchParams = urlSearchParams.getSearchParams();
         const url = searchParams ? `/insights?${searchParams}` : '/insights';
         redirect(url);
     }
     return (
         <>
-            <MultiSelect selected={selectedTags} onChange={setSelectedTags} options={tags.map((t) => ({ value: t.id, label: t.tag_name}))} placeholder="Search by tags" />
-            <Button onClick={searchByTags}>Search by Tag</Button>
+            <MultiSelect selected={selectedTags} onChange={setSelectedTags} options={tags.map((t) => ({ value: t.id, label: t.tag_name }))} placeholder="Search by tags" />
+            <Button className="mb-8" onClick={searchByTags}>Search by Tag</Button>
             <ul>
                 {posts.map(({ id, title, slug, createdAt }) => (
                     <li key={id}>

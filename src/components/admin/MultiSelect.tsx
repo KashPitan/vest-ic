@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Command, CommandGroup, CommandItem } from "@/components/ui/command";
 import { CommandList, Command as CommandPrimitive } from "cmdk";
 
-type Option = {
+export type Option = {
   value: number;
   label: string;
 };

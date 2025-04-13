@@ -19,16 +19,16 @@ export const Pagination = ({ hasNext, hasPrevious }: { hasNext: boolean, hasPrev
     const pageParamNumber = searchParams.get('page') || '1';
     const currentPageNumber = Number.parseInt(pageParamNumber);
     const previousPageNumber = `${currentPageNumber - 1}`;
-    const nextPageNumber = `${currentPageNumber -1}`;
+    const nextPageNumber = `${currentPageNumber + 1}`;
     const createQueryString = useCallback(
         (value: string) => {
-          const params = new URLSearchParams(searchParams.toString())
-          params.set(PAGE_QUERY_NAME, value);
-          const href = `${pathname}?${params.toString()}`;
-          return href;
+            const params = new URLSearchParams(searchParams.toString())
+            params.set(PAGE_QUERY_NAME, value);
+            const href = `${pathname}?${params.toString()}`;
+            return href;
         },
         [pathname, searchParams]
-      )
+    )
     return (
         <ShadCnPagination>
             <PaginationContent>
