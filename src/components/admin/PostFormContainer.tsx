@@ -1,46 +1,52 @@
-import type { AdminViewProps, BasePayload } from "payload";
+import type {
+  AdminViewProps,
+  // BasePayload
+} from "payload";
 
 import { DefaultTemplate } from "@payloadcms/next/templates";
 import { Gutter } from "@payloadcms/ui";
 import React from "react";
 import PostForm from "./PostForm";
-import { Tag } from "../../../payload-types";
+// import { Tag } from "../../../payload-types";
 
-const getPostFormData = async (id: string, payload: BasePayload) => {
-  const postData = await payload.findByID({
-    collection: 'posts',
-    id,
-  });
-  const postTagsData = await payload.find({
-    collection: 'postTags',
-    where: {
-      post_id: { equals: id }
-    },
-    select: {
-      tag_id: true
-    },
-    depth: 1
-  });
-  const tags = postTagsData.docs.map((pT) => {
-    const tag = pT.tag_id as Tag;
-    return {
-      value: tag.id,
-      label: tag.tag_name
-    }
-  });
-  return {
-    ...postData,
-    tags
-  }
-}
+// const getPostFormData = async (id: string, payload: BasePayload) => {
+//   const postData = await payload.findByID({
+//     collection: "posts",
+//     id,
+//   });
+//   const postTagsData = await payload.find({
+//     collection: "postTags",
+//     where: {
+//       post_id: { equals: id },
+//     },
+//     select: {
+//       tag_id: true,
+//     },
+//     depth: 1,
+//   });
+//   const tags = postTagsData.docs.map((pT) => {
+//     const tag = pT.tag_id as Tag;
+//     return {
+//       value: tag.id,
+//       label: tag.tag_name,
+//     };
+//   });
+//   return {
+//     ...postData,
+//     tags,
+//   };
+// };
 
 export const PostFormContainer: React.FC<AdminViewProps> = async ({
   initPageResult,
   params,
   searchParams,
 }) => {
-  const id = params?.segments?.[1];
-  const postFormData = id ? await getPostFormData(id, initPageResult.req.payload) : null;
+  // const id = params?.segments?.[1];
+  // const postFormData = id
+  //   ? await getPostFormData(id, initPageResult.req.payload)
+  //   : null;
+
   return (
     <DefaultTemplate
       i18n={initPageResult.req.i18n}
@@ -53,7 +59,7 @@ export const PostFormContainer: React.FC<AdminViewProps> = async ({
       visibleEntities={initPageResult.visibleEntities}
     >
       <Gutter>
-        <PostForm post={postFormData} />
+        <PostForm post={null} />
       </Gutter>
     </DefaultTemplate>
   );

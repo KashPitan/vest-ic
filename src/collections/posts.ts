@@ -13,6 +13,7 @@ export const Posts: CollectionConfig = {
       type: "text",
       required: true,
       unique: true,
+      index: true
     },
     {
       name: "content",
@@ -23,6 +24,10 @@ export const Posts: CollectionConfig = {
       name: "excerpt",
       type: "text",
       required: true,
+    },
+    {
+      name: "releaseDate",
+      type: "date",
     },
     {
       name: "displayImageUrl",

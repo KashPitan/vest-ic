@@ -30,6 +30,10 @@ const Insight = async ({ params }: { params: Promise<{ slug: string }> }) => {
         {post.title || "UNKNOWN TITLE"}
       </h1>
       <Label>This insight was created on: {post.createdAt}</Label>
+      {post.releaseDate && (
+        <Label>This insight was released on: {post.releaseDate}</Label>
+      )}
+
       <Separator />
       {post.displayImageUrl && <img src={`${post.displayImageUrl}`} />}
       {stringToHtml(post.content)}
