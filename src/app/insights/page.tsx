@@ -1,33 +1,19 @@
-import { getPayload } from "payload";
-import config from '@payload-config';
-import Link from 'next/link'
-import { Separator } from "@/components/ui/separator";
+import { Tag } from "../../../payload-types";
+import { getPosts } from '@/data-access-layer/posts';
+import { getTags } from '@/data-access-layer/tags';
+import { InsightsListView } from './InsightsListView';
 
-const Insights = async () => {
-    const payload = await getPayload({ config });
-    const posts = await payload.find({
-        collection: 'posts',
-        limit: 5,
-        sort: '-createdAt', // are these automatically indexed?
-        select: {
-            id: true,
-            title: true,
-            slug: true,
-            createdAt: true
-        }
-    });
+const Insights = async ({
+    searchParams,
+}: {
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) => {
+    const query = await searchParams;
+    const { data: posts, hasNextPage, hasPrevPage } = await getPosts(query);
+    const { data: tags }: { data: Tag[] } = await getTags();
     return (
         <div>
-            <ul>
-                {posts.docs.map(({ id, title, slug, createdAt }) => (
-                    <li key={id}>
-                        <Link href={`/insights/${slug}`} className="text-orange-500 hover:text-orange-700">{title}</Link>
-                        <h3>This insight was created on {createdAt}</h3>
-                        <Separator />
-                    </li>
-                )
-                )}
-            </ul>
+            <InsightsListView posts={posts} tags={tags} hasNext={hasNextPage} hasPrevious={hasPrevPage} />
         </div>
     )
 }
