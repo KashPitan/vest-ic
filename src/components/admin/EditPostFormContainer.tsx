@@ -21,15 +21,7 @@ const getPostFormData = async (id: string, payload: BasePayload) => {
         },
       },
       joins: {
-        // postTags: {
-        //   limit: 5,
-        //   where: {
-        //     title: {
-        //       equals: "My Post",
-        //     },
-        //   },
-        //   sort: "title",
-        // },
+        tags: {},
       },
     });
 
