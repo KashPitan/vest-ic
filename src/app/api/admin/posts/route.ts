@@ -33,7 +33,7 @@ export async function POST(request: Request) {
       const environmentString = environment ? environment + "/" : "";
       displayImageUrl = await uploadToBlob(
         displayImage,
-        `posts/${slug}/${environmentString}display-image-${Date.now()}.jpg`
+        `posts/${slug}/${environmentString}display-image-${Date.now()}.jpg`,
       );
     }
 
@@ -62,8 +62,8 @@ export async function POST(request: Request) {
             tag_id: value,
           },
           req: { transactionID },
-        })
-      )
+        }),
+      ),
     );
 
     await payload.db.commitTransaction(transactionID);
@@ -75,7 +75,7 @@ export async function POST(request: Request) {
     console.error("Error creating post:", error);
     return NextResponse.json(
       { error: "Failed to create post" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

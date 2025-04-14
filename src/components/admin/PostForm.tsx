@@ -65,7 +65,7 @@ const PostForm = ({ post }: { post: FormValues | null }) => {
             tagsData.map(({ tag_name, id }) => ({
               value: id,
               label: tag_name,
-            }))
+            })),
           );
         }
       } catch (error) {
@@ -123,7 +123,7 @@ const PostForm = ({ post }: { post: FormValues | null }) => {
         reader.readAsDataURL(file);
       }
     },
-    [form]
+    [form],
   );
 
   return (

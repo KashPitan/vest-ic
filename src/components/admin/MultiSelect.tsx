@@ -51,7 +51,7 @@ const MultiSelect = ({
   };
 
   const selectables = options.filter(
-    (option) => !selected.some((s) => s.value === option.value)
+    (option) => !selected.some((s) => s.value === option.value),
   );
 
   return (
