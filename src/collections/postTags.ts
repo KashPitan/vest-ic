@@ -12,7 +12,7 @@ export const PostTags: CollectionConfig = {
       name: "tag_id",
       type: "relationship",
       relationTo: "tags",
-      index: true
+      index: true,
     },
   ],
 };

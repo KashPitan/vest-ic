@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import Image from "next/image";
 import { getPayload } from "payload";
 import config from "@payload-config";
 import { Separator } from "@/components/ui/separator";
@@ -36,7 +36,9 @@ const Insight = async ({ params }: { params: Promise<{ slug: string }> }) => {
       )}
 
       <Separator />
-      {post.displayImageUrl && <Image src={`${post.displayImageUrl}`} alt="Post display image" />}
+      {post.displayImageUrl && (
+        <Image src={`${post.displayImageUrl}`} alt="Post display image" />
+      )}
       {stringToHtml(post.content)}
     </div>
   );

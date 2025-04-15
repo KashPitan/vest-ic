@@ -2,7 +2,7 @@ import { put } from "@vercel/blob";
 
 export async function uploadToBlob(
   base64Image: string,
-  filename: string
+  filename: string,
 ): Promise<string> {
   // Remove the data:image/xyz;base64, prefix
   const base64Data = base64Image.replace(/^data:image\/\w+;base64,/, "");
