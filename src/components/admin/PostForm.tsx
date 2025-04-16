@@ -232,7 +232,9 @@ export const CreatePostForm = () => {
                     <Image
                       src={value}
                       alt="Preview"
-                      className="w-48 h-48 object-cover rounded-md"
+                      width={100}
+                      height={100}
+                      className="w-60 h-60 object-cover rounded-md"
                     />
                   )}
                 </div>

@@ -20,6 +20,7 @@ import MultiSelect from "./MultiSelect";
 import { MinimalTiptapEditor } from "../minimal-tiptap";
 import { TagsSchema } from "@/schemas/tagsSchema";
 import { format } from "date-fns";
+import Image from "next/image";
 
 const PostFormSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -70,7 +71,7 @@ export const EditPostForm = ({ post }: { post: PostFormData }) => {
         const data = await response.json();
         const tagsData = TagsSchema.parse(data.docs);
         setTags(
-          tagsData.map(({ tag_name, id }) => ({ value: id, label: tag_name }))
+          tagsData.map(({ tag_name, id }) => ({ value: id, label: tag_name })),
         );
       } catch (error) {
         console.error("Error fetching tags:", error);
@@ -123,7 +124,7 @@ export const EditPostForm = ({ post }: { post: PostFormData }) => {
         reader.readAsDataURL(file);
       }
     },
-    [form]
+    [form],
   );
 
   return (
@@ -236,10 +237,12 @@ export const EditPostForm = ({ post }: { post: PostFormData }) => {
                     onChange={handleImageChange}
                   />
                   {value && (
-                    <img
+                    <Image
                       src={value}
                       alt="Preview"
-                      className="w-48 h-48 object-cover rounded-md"
+                      width={100}
+                      height={100}
+                      className="w-60 h-60 object-cover rounded-md"
                     />
                   )}
                 </div>
