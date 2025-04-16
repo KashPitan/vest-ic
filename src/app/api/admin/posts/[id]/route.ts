@@ -3,7 +3,7 @@ import { getPayload } from "payload";
 import config from "@payload-config";
 import { z } from "zod";
 import sanitizeHtml from "sanitize-html";
-import { uploadToBlob } from "@/lib/upload";
+import { deleteFromBlob, uploadToBlob } from "@/lib/blob";
 
 const payload = await getPayload({ config });
 
@@ -13,6 +13,7 @@ const UpdatePostRequestSchema = z.object({
   content: z.string().min(1, "Content is required"),
   excerpt: z.string().min(1, "Excerpt is required"),
   displayImage: z.string().optional(),
+  oldDisplayImageUrl: z.string().optional(),
   tags: z.array(z.number()).min(1, "At least one tag is required"),
 });
 
@@ -24,8 +25,15 @@ export async function PUT(
 
   try {
     const data = await request.json();
-    const { title, slug, content, excerpt, tags, displayImage } =
-      UpdatePostRequestSchema.parse(data);
+    const {
+      title,
+      slug,
+      content,
+      excerpt,
+      tags,
+      displayImage,
+      oldDisplayImageUrl,
+    } = UpdatePostRequestSchema.parse(data);
 
     let displayImageUrl: string | undefined;
 
@@ -36,6 +44,10 @@ export async function PUT(
         displayImage,
         `posts/${slug}/${environmentString}display-image-${Date.now()}.jpg`
       );
+    }
+
+    if (oldDisplayImageUrl) {
+      await deleteFromBlob(oldDisplayImageUrl);
     }
 
     const cleanContent = sanitizeHtml(content);

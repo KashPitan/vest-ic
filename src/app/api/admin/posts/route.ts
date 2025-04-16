@@ -3,7 +3,7 @@ import { getPayload } from "payload";
 import config from "@payload-config";
 import { z } from "zod";
 import sanitizeHtml from "sanitize-html";
-import { uploadToBlob } from "@/lib/upload";
+import { uploadToBlob } from "@/lib/blob";
 
 const payload = await getPayload({ config });
 

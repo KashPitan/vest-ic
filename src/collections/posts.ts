@@ -13,7 +13,7 @@ export const Posts: CollectionConfig = {
       type: "text",
       required: true,
       unique: true,
-      index: true
+      index: true,
     },
     {
       name: "content",
@@ -36,7 +36,7 @@ export const Posts: CollectionConfig = {
     },
     {
       type: "join",
-      on: "tag_id",
+      on: "post_id",
       collection: "postTags",
       name: "tags",
     },

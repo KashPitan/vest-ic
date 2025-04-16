@@ -3,49 +3,44 @@ import type { AdminViewProps, BasePayload } from "payload";
 import { DefaultTemplate } from "@payloadcms/next/templates";
 import { Gutter } from "@payloadcms/ui";
 import React from "react";
-import PostForm from "./PostForm";
-import { Tag } from "../../../payload-types";
+import { EditPostForm } from "./EditPostForm";
+import { downloadFromBlob } from "@/lib/blob";
 
 const getPostFormData = async (id: string, payload: BasePayload) => {
   try {
-    const postData = await payload.findByID({
+    const result = await payload.findByID({
       collection: "posts",
       id,
-    });
-
-    const result = await payload.find({
-      collection: "posts",
-      where: {
-        id: {
-          equals: id,
-        },
-      },
       joins: {
         tags: {},
       },
     });
 
-    console.log(result);
+    const tagIds = result.tags;
 
-    const postTagsData = await payload.find({
-      collection: "postTags",
-      where: {
-        post_id: { equals: id },
-      },
-      select: {
-        tag_id: true,
-      },
-      depth: 1,
+    const tagResults = await payload.find({
+      collection: "tags",
+      where: { id: { in: tagIds } },
+      limit: 0,
     });
-    const tags = postTagsData.docs.map((pT) => {
-      const tag = pT.tag_id as Tag;
-      return {
-        value: tag.id,
-        label: tag.tag_name,
-      };
-    });
+
+    const tags = tagResults
+      ? tagResults.docs.map((tag) => {
+          return {
+            value: tag.id,
+            label: tag.tag_name,
+          };
+        })
+      : undefined;
+
+    const displayImage = result.displayImageUrl
+      ? await downloadFromBlob(result.displayImageUrl)
+      : undefined;
+
     return {
-      ...postData,
+      ...result,
+      releaseDate: result.releaseDate ?? undefined,
+      displayImage,
       tags,
     };
   } catch (error) {
@@ -62,7 +57,9 @@ export const EditPostFormContainer: React.FC<AdminViewProps> = async ({
   if (!id) {
     throw new Error("Post ID is required");
   }
+
   const postFormData = await getPostFormData(id, initPageResult.req.payload);
+
   return (
     <DefaultTemplate
       i18n={initPageResult.req.i18n}
@@ -75,7 +72,11 @@ export const EditPostFormContainer: React.FC<AdminViewProps> = async ({
       visibleEntities={initPageResult.visibleEntities}
     >
       <Gutter>
-        <PostForm post={postFormData} isEdit={true} />
+        {postFormData ? (
+          <EditPostForm post={{ ...postFormData, id }} />
+        ) : (
+          <p>No Post Found :(</p>
+        )}
       </Gutter>
     </DefaultTemplate>
   );
