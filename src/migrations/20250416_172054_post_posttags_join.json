@@ -1,5 +1,5 @@
 {
-  "id": "ad138f0d-b7ee-4294-8651-165917548e80",
+  "id": "88530b49-e679-4f44-8342-4b6c4cfe8bea",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -37,6 +37,12 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": true
+        },
+        "release_date": {
+          "name": "release_date",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": false
         },
         "display_image_url": {
           "name": "display_image_url",

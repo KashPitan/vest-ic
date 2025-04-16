@@ -6,9 +6,7 @@ import * as migration_20250324_000459_posts_slug_unique_not_title from './202503
 import * as migration_20250329_220708 from './20250329_220708';
 import * as migration_20250406_234106_add_display_image_url from './20250406_234106_add_display_image_url';
 import * as migration_20250407_181635_add_release_date from './20250407_181635_add_release_date';
-import * as migration_20250412_234623_post_tags_relation from './20250412_234623_post_tags_relation';
-import * as migration_20250414_181902_join_tags from './20250414_181902_join_tags';
-import * as migration_20250414_190950_join_tags_2 from './20250414_190950_join_tags_2';
+import * as migration_20250416_172054_post_posttags_join from './20250416_172054_post_posttags_join';
 
 export const migrations = [
   {
@@ -52,18 +50,8 @@ export const migrations = [
     name: '20250407_181635_add_release_date',
   },
   {
-    up: migration_20250412_234623_post_tags_relation.up,
-    down: migration_20250412_234623_post_tags_relation.down,
-    name: '20250412_234623_post_tags_relation',
-  },
-  {
-    up: migration_20250414_181902_join_tags.up,
-    down: migration_20250414_181902_join_tags.down,
-    name: '20250414_181902_join_tags',
-  },
-  {
-    up: migration_20250414_190950_join_tags_2.up,
-    down: migration_20250414_190950_join_tags_2.down,
-    name: '20250414_190950_join_tags_2'
+    up: migration_20250416_172054_post_posttags_join.up,
+    down: migration_20250416_172054_post_posttags_join.down,
+    name: '20250416_172054_post_posttags_join'
   },
 ];
