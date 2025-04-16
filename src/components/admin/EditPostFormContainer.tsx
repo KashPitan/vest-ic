@@ -40,6 +40,7 @@ const getPostFormData = async (id: string, payload: BasePayload) => {
     return {
       ...result,
       releaseDate: result.releaseDate ?? undefined,
+      displayImageUrl: result.displayImageUrl ?? undefined,
       displayImage,
       tags,
     };

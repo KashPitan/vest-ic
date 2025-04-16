@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,6 +19,7 @@ import { Textarea } from "@/components/ui/textarea";
 import MultiSelect from "./MultiSelect";
 import { MinimalTiptapEditor } from "../minimal-tiptap";
 import { TagsSchema } from "@/schemas/tagsSchema";
+import { format } from "date-fns";
 
 const PostFormSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -42,6 +42,7 @@ type PostFormData = {
   excerpt: string;
   releaseDate?: string;
   displayImage?: string;
+  displayImageUrl?: string;
   tags?: { value: number; label: string }[];
   id: string;
 };
@@ -50,11 +51,16 @@ export const EditPostForm = ({ post }: { post: PostFormData }) => {
   const [tags, setTags] = useState<{ value: number; label: string }[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const oldDisplayImageUrl = post.displayImage;
+  const oldDisplayImageUrl = post.displayImageUrl;
 
   const form = useForm<FormValues>({
     resolver: zodResolver(PostFormSchema),
-    defaultValues: post,
+    defaultValues: {
+      ...post,
+      releaseDate: post.releaseDate
+        ? format(new Date(post.releaseDate), "yyyy-MM-dd'T'HH:mm")
+        : undefined,
+    },
   });
 
   useEffect(() => {
@@ -76,6 +82,7 @@ export const EditPostForm = ({ post }: { post: PostFormData }) => {
   const onSubmit = async (values: FormValues) => {
     setIsLoading(true);
     try {
+      console.log("submitting", values.releaseDate);
       const response = await fetch(`/api/admin/posts/${post.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
