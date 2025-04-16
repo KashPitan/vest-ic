@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Command, CommandGroup, CommandItem } from "@/components/ui/command";
 import { CommandList, Command as CommandPrimitive } from "cmdk";
 
-type Option = {
+export type Option = {
   value: number;
   label: string;
 };
@@ -51,7 +51,7 @@ const MultiSelect = ({
   };
 
   const selectables = options.filter(
-    (option) => !selected.some((s) => s.value === option.value)
+    (option) => !selected.some((s) => s.value === option.value),
   );
 
   return (

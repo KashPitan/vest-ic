@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Loader2 } from "lucide-react";
-
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -59,9 +59,15 @@ export const CreatePostForm = () => {
         const response = await fetch("/api/tags");
         const data = await response.json();
         const tagsData = TagsSchema.parse(data.docs);
-        setTags(
-          tagsData.map(({ tag_name, id }) => ({ value: id, label: tag_name }))
-        );
+
+        if (data.docs) {
+          setTags(
+            tagsData.map(({ tag_name, id }) => ({
+              value: id,
+              label: tag_name,
+            })),
+          );
+        }
       } catch (error) {
         console.error("Error fetching tags:", error);
       }
@@ -112,7 +118,7 @@ export const CreatePostForm = () => {
         reader.readAsDataURL(file);
       }
     },
-    [form]
+    [form],
   );
 
   return (
@@ -223,7 +229,7 @@ export const CreatePostForm = () => {
                     onChange={handleImageChange}
                   />
                   {value && (
-                    <img
+                    <Image
                       src={value}
                       alt="Preview"
                       className="w-48 h-48 object-cover rounded-md"
