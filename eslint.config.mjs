@@ -11,9 +11,9 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   {
-    ignores: ["**/migrations/**", "**/minimal-tiptap"],
+    ignores: ["**/migrations/**", "**/minimal-tiptap", "tailwind.config.ts"],
   },
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+  ...compat.extends("next/core-web-vitals", "next/typescript", "prettier"),
 ];
 
 export default eslintConfig;
