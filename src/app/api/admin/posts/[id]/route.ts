@@ -19,9 +19,10 @@ const UpdatePostRequestSchema = z.object({
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const transactionID = (await payload.db.beginTransaction()) as string;
+  const { id } = await params;
 
   try {
     const data = await request.json();
@@ -42,7 +43,7 @@ export async function PUT(
       const environmentString = environment ? environment + "/" : "";
       displayImageUrl = await uploadToBlob(
         displayImage,
-        `posts/${slug}/${environmentString}display-image-${Date.now()}.jpg`
+        `posts/${slug}/${environmentString}display-image-${Date.now()}.jpg`,
       );
     }
 
@@ -53,7 +54,7 @@ export async function PUT(
     const cleanContent = sanitizeHtml(content);
     const post = await payload.update({
       collection: "posts",
-      id: params.id,
+      id,
       data: {
         title,
         slug,
@@ -68,7 +69,7 @@ export async function PUT(
     await payload.delete({
       collection: "postTags",
       where: {
-        post_id: { equals: params.id },
+        post_id: { equals: id },
       },
       req: { transactionID },
     });
@@ -83,8 +84,8 @@ export async function PUT(
             tag_id: value,
           },
           req: { transactionID },
-        })
-      )
+        }),
+      ),
     );
 
     await payload.db.commitTransaction(transactionID);
@@ -96,7 +97,7 @@ export async function PUT(
     console.error("Error updating post:", error);
     return NextResponse.json(
       { error: "Failed to update post" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
