@@ -34,5 +34,11 @@ export const Posts: CollectionConfig = {
       type: "text",
       required: false,
     },
+    {
+      type: "join",
+      on: "post_id",
+      collection: "postTags",
+      name: "tags",
+    },
   ],
 };

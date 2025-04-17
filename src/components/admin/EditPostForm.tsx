@@ -1,11 +1,9 @@
 "use client";
-
 import { useState, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Loader2 } from "lucide-react";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -21,6 +19,8 @@ import { Textarea } from "@/components/ui/textarea";
 import MultiSelect from "./MultiSelect";
 import { MinimalTiptapEditor } from "../minimal-tiptap";
 import { TagDropdownOption } from "@/schemas/tagsSchema";
+import { format } from "date-fns";
+import Image from "next/image";
 
 const PostFormSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -36,31 +36,44 @@ const PostFormSchema = z.object({
 
 type FormValues = z.infer<typeof PostFormSchema>;
 
-export const CreatePostForm = ({
+type PostFormData = {
+  title: string;
+  slug: string;
+  content: string;
+  excerpt: string;
+  releaseDate?: string;
+  displayImage?: string;
+  displayImageUrl?: string;
+  tags?: { value: number; label: string }[];
+  id: string;
+};
+
+export const EditPostForm = ({
+  post,
   tagOptions,
 }: {
+  post: PostFormData;
   tagOptions: TagDropdownOption[];
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
+  const oldDisplayImageUrl = post.displayImageUrl;
+
   const form = useForm<FormValues>({
     resolver: zodResolver(PostFormSchema),
     defaultValues: {
-      title: "",
-      slug: "",
-      content: "",
-      excerpt: "",
-      releaseDate: "",
-      displayImage: "",
-      tags: [],
+      ...post,
+      releaseDate: post.releaseDate
+        ? format(new Date(post.releaseDate), "yyyy-MM-dd'T'HH:mm")
+        : undefined,
     },
   });
 
   const onSubmit = async (values: FormValues) => {
     setIsLoading(true);
     try {
-      const response = await fetch("/api/admin/posts", {
-        method: "POST",
+      const response = await fetch(`/api/admin/posts/${post.id}`, {
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title: values.title,
@@ -69,19 +82,19 @@ export const CreatePostForm = ({
           excerpt: values.excerpt,
           releaseDate: values.releaseDate,
           displayImage: values.displayImage,
+          oldDisplayImageUrl,
           tags: values.tags.map((tag) => tag.value),
         }),
       });
       const data = await response.json();
       if (response.ok) {
-        form.reset();
-        alert("Post created successfully!");
+        alert("Post updated successfully!");
       } else {
-        throw new Error(data.message || "Failed to create post");
+        throw new Error(data.message || "Failed to update post");
       }
     } catch (error) {
-      console.error("Error creating post:", error);
-      alert("Failed to create post. Please try again.");
+      console.error("Error updating post:", error);
+      alert("Failed to update post. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -105,6 +118,7 @@ export const CreatePostForm = ({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        {/* Title */}
         <FormField
           control={form.control}
           name="title"
@@ -118,7 +132,7 @@ export const CreatePostForm = ({
             </FormItem>
           )}
         />
-
+        {/* Slug */}
         <FormField
           control={form.control}
           name="slug"
@@ -135,7 +149,7 @@ export const CreatePostForm = ({
             </FormItem>
           )}
         />
-
+        {/* Content */}
         <FormField
           control={form.control}
           name="content"
@@ -160,7 +174,7 @@ export const CreatePostForm = ({
             </FormItem>
           )}
         />
-
+        {/* Excerpt */}
         <FormField
           control={form.control}
           name="excerpt"
@@ -178,7 +192,7 @@ export const CreatePostForm = ({
             </FormItem>
           )}
         />
-
+        {/* Release Date */}
         <FormField
           control={form.control}
           name="releaseDate"
@@ -195,6 +209,7 @@ export const CreatePostForm = ({
             </FormItem>
           )}
         />
+        {/* Display Image */}
         <FormField
           control={form.control}
           name="displayImage"
@@ -227,7 +242,7 @@ export const CreatePostForm = ({
             </FormItem>
           )}
         />
-
+        {/* Tags */}
         <FormField
           control={form.control}
           name="tags"
@@ -246,15 +261,14 @@ export const CreatePostForm = ({
             </FormItem>
           )}
         />
-
         <Button type="submit" disabled={isLoading}>
           {isLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Creating Post...
+              Updating Post...
             </>
           ) : (
-            "Create Post"
+            "Update Post"
           )}
         </Button>
       </form>
