@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import MultiSelect from "./MultiSelect";
 import { MinimalTiptapEditor } from "../minimal-tiptap";
-import { TagsSchema } from "@/schemas/tagsSchema";
+import { TagDropdownOption } from "@/schemas/tagsSchema";
 import { format } from "date-fns";
 import Image from "next/image";
 
@@ -48,8 +48,13 @@ type PostFormData = {
   id: string;
 };
 
-export const EditPostForm = ({ post }: { post: PostFormData }) => {
-  const [tags, setTags] = useState<{ value: number; label: string }[]>([]);
+export const EditPostForm = ({
+  post,
+  tagOptions,
+}: {
+  post: PostFormData;
+  tagOptions: TagDropdownOption[];
+}) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const oldDisplayImageUrl = post.displayImageUrl;
@@ -64,26 +69,9 @@ export const EditPostForm = ({ post }: { post: PostFormData }) => {
     },
   });
 
-  useEffect(() => {
-    const fetchTags = async () => {
-      try {
-        const response = await fetch("/api/tags");
-        const data = await response.json();
-        const tagsData = TagsSchema.parse(data.docs);
-        setTags(
-          tagsData.map(({ tag_name, id }) => ({ value: id, label: tag_name })),
-        );
-      } catch (error) {
-        console.error("Error fetching tags:", error);
-      }
-    };
-    fetchTags();
-  }, []);
-
   const onSubmit = async (values: FormValues) => {
     setIsLoading(true);
     try {
-      console.log("submitting", values.releaseDate);
       const response = await fetch(`/api/admin/posts/${post.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -264,7 +252,7 @@ export const EditPostForm = ({ post }: { post: PostFormData }) => {
               <FormControl>
                 <MultiSelect
                   selected={field.value}
-                  options={tags}
+                  options={tagOptions}
                   onChange={field.onChange}
                   placeholder="Select tags"
                 />

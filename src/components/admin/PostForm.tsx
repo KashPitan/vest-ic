@@ -20,7 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import MultiSelect from "./MultiSelect";
 import { MinimalTiptapEditor } from "../minimal-tiptap";
-import { TagsSchema } from "@/schemas/tagsSchema";
+import { TagDropdownOption, TagsSchema } from "@/schemas/tagsSchema";
 
 const PostFormSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -36,7 +36,11 @@ const PostFormSchema = z.object({
 
 type FormValues = z.infer<typeof PostFormSchema>;
 
-export const CreatePostForm = () => {
+export const CreatePostForm = ({
+  tagOptions,
+}: {
+  tagOptions: TagDropdownOption[];
+}) => {
   const [tags, setTags] = useState<{ value: number; label: string }[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -256,7 +260,7 @@ export const CreatePostForm = () => {
               <FormControl>
                 <MultiSelect
                   selected={field.value}
-                  options={tags}
+                  options={tagOptions}
                   onChange={field.onChange}
                   placeholder="Select tags"
                 />

@@ -2,7 +2,7 @@ import { del, put } from "@vercel/blob";
 
 export async function uploadToBlob(
   base64Image: string,
-  filename: string
+  filename: string,
 ): Promise<string> {
   // Remove the data:image/xyz;base64, prefix
   const base64Data = base64Image.replace(/^data:image\/\w+;base64,/, "");
@@ -52,14 +52,7 @@ export async function downloadFromBlob(url: string): Promise<string> {
 
 export async function deleteFromBlob(url: string): Promise<void> {
   try {
-    // Extract the filename from the URL
-    const urlObj = new URL(url);
-    const pathname = urlObj.pathname;
-    // Remove leading slash
-    const filename = pathname.substring(1);
-
-    // Delete from Vercel Blob
-    await del(filename);
+    await del(url);
   } catch (error) {
     console.error("Error deleting blob:", error);
     throw error;

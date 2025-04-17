@@ -4,12 +4,15 @@ import { DefaultTemplate } from "@payloadcms/next/templates";
 import { Gutter } from "@payloadcms/ui";
 import React from "react";
 import { CreatePostForm } from "./PostForm";
+import { getTagDropdownOptions } from "@/data-access-layer/tags";
 
 export const PostFormContainer: React.FC<AdminViewProps> = async ({
   initPageResult,
   params,
   searchParams,
 }) => {
+  const tagOptions = await getTagDropdownOptions();
+  console.log(tagOptions);
   return (
     <DefaultTemplate
       i18n={initPageResult.req.i18n}
@@ -22,7 +25,7 @@ export const PostFormContainer: React.FC<AdminViewProps> = async ({
       visibleEntities={initPageResult.visibleEntities}
     >
       <Gutter>
-        <CreatePostForm />
+        <CreatePostForm tagOptions={tagOptions} />
       </Gutter>
     </DefaultTemplate>
   );
