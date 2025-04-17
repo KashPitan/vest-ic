@@ -37,7 +37,13 @@ const Insight = async ({ params }: { params: Promise<{ slug: string }> }) => {
 
       <Separator />
       {post.displayImageUrl && (
-        <Image src={`${post.displayImageUrl}`} alt="Post display image" />
+        <Image
+          className="h-60 w-60"
+          src={`${post.displayImageUrl}`}
+          alt="Post display image"
+          width={100}
+          height={100}
+        />
       )}
       {stringToHtml(post.content)}
     </div>
