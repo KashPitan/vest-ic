@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -20,7 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import MultiSelect from "./MultiSelect";
 import { MinimalTiptapEditor } from "../minimal-tiptap";
-import { TagDropdownOption, TagsSchema } from "@/schemas/tagsSchema";
+import { TagDropdownOption } from "@/schemas/tagsSchema";
 
 const PostFormSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -41,7 +41,6 @@ export const CreatePostForm = ({
 }: {
   tagOptions: TagDropdownOption[];
 }) => {
-  const [tags, setTags] = useState<{ value: number; label: string }[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<FormValues>({
@@ -56,28 +55,6 @@ export const CreatePostForm = ({
       tags: [],
     },
   });
-
-  useEffect(() => {
-    const fetchTags = async () => {
-      try {
-        const response = await fetch("/api/tags");
-        const data = await response.json();
-        const tagsData = TagsSchema.parse(data.docs);
-
-        if (data.docs) {
-          setTags(
-            tagsData.map(({ tag_name, id }) => ({
-              value: id,
-              label: tag_name,
-            })),
-          );
-        }
-      } catch (error) {
-        console.error("Error fetching tags:", error);
-      }
-    };
-    fetchTags();
-  }, []);
 
   const onSubmit = async (values: FormValues) => {
     setIsLoading(true);
