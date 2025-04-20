@@ -12,7 +12,6 @@ export const PostFormContainer: React.FC<AdminViewProps> = async ({
   searchParams,
 }) => {
   const tagOptions = await getTagDropdownOptions();
-  console.log(tagOptions);
   return (
     <DefaultTemplate
       i18n={initPageResult.req.i18n}
