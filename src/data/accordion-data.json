@@ -1,0 +1,28 @@
+{
+  "items": [
+    {
+      "value": "item-1",
+      "title": "Further About Us",
+      "content": "The copy of the about us at this point should acknowledge our early state and look to push people into registering interest. We are a pioneering company at the forefront of protein engineering, leveraging cutting-edge AI technology to solve some of the world's most pressing challenges. Our team combines expertise in molecular biology, computational chemistry, and machine learning to design novel proteins with specific properties and functions.",
+      "imageSrc": "/landscape-placeholder.svg"
+    },
+    {
+      "value": "item-2",
+      "title": "The Protein Revolution",
+      "content": "The most productive use case of AI yet. Learn more about how we're revolutionizing the protein industry with cutting-edge AI technology. Our proprietary algorithms can predict protein structures with unprecedented accuracy, enabling us to design proteins for applications in medicine, agriculture, and environmental remediation. This breakthrough has the potential to transform multiple industries and address some of humanity's greatest challenges.",
+      "imageSrc": "/landscape-placeholder.svg"
+    },
+    {
+      "value": "item-3",
+      "title": "Our Technology",
+      "content": "Our technology platform combines advanced machine learning algorithms with deep biological expertise to predict and design protein structures with unprecedented accuracy. By leveraging the power of AI, we can explore the vast space of possible protein sequences and structures, identifying candidates with desired properties much faster than traditional methods. This enables us to develop novel solutions for healthcare, agriculture, and environmental challenges.",
+      "imageSrc": "/landscape-placeholder.svg"
+    },
+    {
+      "value": "item-4",
+      "title": "Join Our Mission",
+      "content": "We're looking for passionate individuals to join our mission of harnessing the power of proteins to solve global challenges. Whether you're a scientist, engineer, or business professional, there's a place for you in our growing team. We offer a collaborative and innovative work environment where you can make a meaningful impact on the world. Join us in shaping the future of protein engineering and contributing to solutions for some of humanity's most pressing problems.",
+      "imageSrc": "/landscape-placeholder.svg"
+    }
+  ]
+}
