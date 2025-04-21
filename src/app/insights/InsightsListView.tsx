@@ -72,6 +72,7 @@ export const InsightsListView = ({
         onChange={setSelectedTags}
         options={tags.map((t) => ({ value: t.id, label: t.tag_name }))}
         placeholder="Search by tags"
+        className="text-pure-white"
       />
       <Button className="mb-8" onClick={searchByTags}>
         Search by Tag
@@ -85,7 +86,9 @@ export const InsightsListView = ({
             >
               {title}
             </Link>
-            <h3>This insight was created on {createdAt}</h3>
+            <h3 className="text-pure-white">
+              This insight was created on {createdAt}
+            </h3>
             <Separator />
           </li>
         ))}

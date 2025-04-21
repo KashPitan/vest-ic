@@ -1,8 +1,5 @@
-import Image from "next/image";
-import Header from "@/components/public/home-page/header";
 import LeftColumn from "@/components/public/home-page/left-column";
 import AccordionSection from "@/components/public/home-page/accordion-section";
-import Footer from "@/components/public/home-page/footer";
 import accordionData from "@/data/accordion-data.json";
 
 export default function Home() {
