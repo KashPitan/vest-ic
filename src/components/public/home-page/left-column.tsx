@@ -20,9 +20,10 @@ export default function LeftColumn() {
         <div className="prose max-w-none text-pure-white/90">
           <p>
             The field of protein folding has seen remarkable advancements in
-            recent years. With the help of AI, we're now able to predict protein
-            structures with unprecedented accuracy, opening up new possibilities
-            for drug discovery, materials science, and biotechnology.
+            recent years. With the help of AI, we&apos;re now able to predict
+            protein structures with unprecedented accuracy, opening up new
+            possibilities for drug discovery, materials science, and
+            biotechnology.
           </p>
           <p>
             Our team at Vest IC is at the forefront of this revolution,
@@ -65,8 +66,8 @@ export default function LeftColumn() {
         <div className="prose max-w-none text-pure-white/90">
           <p>
             The applications of our technology are vast and diverse, spanning
-            multiple industries and addressing some of the world's most pressing
-            challenges.
+            multiple industries and addressing some of the world&apos;s most
+            pressing challenges.
           </p>
           <p>
             In healthcare, our designed proteins could lead to new therapeutics
@@ -74,9 +75,9 @@ export default function LeftColumn() {
             and vaccines.
           </p>
           <p>
-            For environmental sustainability, we're developing proteins that can
-            break down pollutants, capture carbon dioxide, and produce renewable
-            energy more efficiently.
+            For environmental sustainability, we&apos;re developing proteins
+            that can break down pollutants, capture carbon dioxide, and produce
+            renewable energy more efficiently.
           </p>
           <p>
             In agriculture, our proteins could enhance crop yields, reduce the
