@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 const stringToHtml = (value: string) => {
   return (
     <div
+      className="text-pure-white"
       dangerouslySetInnerHTML={{
         __html: value,
       }}
@@ -27,12 +28,16 @@ const Insight = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const [post] = result.docs;
   return (
     <div className="w-full">
-      <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+      <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-pure-white">
         {post.title || "UNKNOWN TITLE"}
       </h1>
-      <Label>This insight was created on: {post.createdAt}</Label>
+      <Label className="text-pure-white">
+        This insight was created on: {post.createdAt}
+      </Label>
       {post.releaseDate && (
-        <Label>This insight was released on: {post.releaseDate}</Label>
+        <Label className="text-pure-white">
+          This insight was released on: {post.releaseDate}
+        </Label>
       )}
 
       <Separator />
