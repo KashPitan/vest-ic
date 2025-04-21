@@ -5,11 +5,12 @@ import RegisterSection from "./register-section";
 
 export default function LeftColumn() {
   return (
-    <div className="space-y-12 pb-8 flex flex-col items-center text-center">
+    <div className="space-y-12 pb-60 flex flex-col items-center text-center">
       <Hero />
+      <RegisterSection />
+
       <ProteinRevolution />
       <StatsSection />
-      <RegisterSection />
 
       {/* Additional content to demonstrate scrolling */}
       <div className="space-y-6 pt-8 border-t border-pure-white/20 w-full">

@@ -3,6 +3,9 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/public/home-page/theme-provider";
+import Header from "@/components/public/home-page/header";
+import Footer from "@/components/public/home-page/footer";
+import Image from "next/image";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,14 +22,34 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body
+        className={`${inter.className} bg-black min-h-screen flex flex-col`}
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <div className="relative flex flex-col min-h-screen">
+            {/* Background graphic */}
+            <div className="absolute inset-0 -z-10 opacity-10">
+              <Image
+                src="/placeholder.svg?height=1200&width=1200"
+                alt="Background graphic"
+                fill
+                className="object-cover"
+              />
+            </div>
+
+            <Header />
+
+            <main className="flex-1 flex items-center justify-center py-8">
+              {children}
+            </main>
+
+            <Footer />
+          </div>
         </ThemeProvider>
       </body>
     </html>

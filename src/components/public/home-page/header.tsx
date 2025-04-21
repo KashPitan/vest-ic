@@ -1,4 +1,4 @@
-import NavLink from "./nav-link"
+import NavLink from "./nav-link";
 
 export default function Header() {
   return (
@@ -12,5 +12,5 @@ export default function Header() {
         </div>
       </nav>
     </header>
-  )
+  );
 }
