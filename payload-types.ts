@@ -74,7 +74,11 @@ export interface Config {
     "payload-preferences": PayloadPreference;
     "payload-migrations": PayloadMigration;
   };
-  collectionsJoins: {};
+  collectionsJoins: {
+    posts: {
+      tags: "postTags";
+    };
+  };
   collectionsSelect: {
     posts: PostsSelect<false> | PostsSelect<true>;
     tags: TagsSelect<false> | TagsSelect<true>;
@@ -134,16 +138,10 @@ export interface Post {
   excerpt: string;
   releaseDate?: string | null;
   displayImageUrl?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tags".
- */
-export interface Tag {
-  id: number;
-  tag_name: string;
+  tags?: {
+    docs?: (number | PostTag)[] | null;
+    hasNextPage?: boolean | null;
+  } | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -155,6 +153,16 @@ export interface PostTag {
   id: number;
   post_id?: (number | null) | Post;
   tag_id?: (number | null) | Tag;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags".
+ */
+export interface Tag {
+  id: number;
+  tag_name: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -251,6 +259,7 @@ export interface PostsSelect<T extends boolean = true> {
   excerpt?: T;
   releaseDate?: T;
   displayImageUrl?: T;
+  tags?: T;
   updatedAt?: T;
   createdAt?: T;
 }

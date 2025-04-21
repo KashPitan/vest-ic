@@ -26,7 +26,7 @@ export default buildConfig({
           path: "/create-post",
         },
         "edit-post": {
-          Component: "/components/admin/PostFormContainer",
+          Component: "/components/admin/EditPostFormContainer",
           path: "/edit-post/:path",
         },
       },
