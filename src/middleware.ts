@@ -14,7 +14,6 @@ export async function middleware(request: NextRequest) {
   const forwardedFor = (await headersList).get("x-forwarded-for");
 
   const ipAddress = forwardedFor?.split(",").at(0) ?? undefined;
-  console.log(ipAddress);
 
   if (ipAddress && admin_ips.includes(ipAddress)) {
     return;
