@@ -5,7 +5,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/public/home-page/theme-provider";
 import Header from "@/components/public/home-page/header";
 import Footer from "@/components/public/home-page/footer";
-import Image from "next/image";
+import Gradient from "./Gradient";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,6 +15,26 @@ export const metadata: Metadata = {
     "Vest IC is revolutionizing the protein industry with cutting-edge AI technology.",
 };
 
+function BackgroundGraphic() {
+  return (
+    <div className="absolute inset-0 -z-10">
+      <Gradient />
+    </div>
+  );
+}
+
+function MainContent({ children }: { children: React.ReactNode }) {
+  return (
+    <>
+      <Header />
+      <div className="flex-1 flex items-center justify-center py-8">
+        {children}
+      </div>
+      <Footer />
+    </>
+  );
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -22,9 +42,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${inter.className} bg-black min-h-screen flex flex-col`}
-      >
+      <body className={`${inter.className}  min-h-screen flex flex-col`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
@@ -32,23 +50,8 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <div className="relative flex flex-col min-h-screen">
-            {/* Background graphic */}
-            <div className="absolute inset-0 -z-10 opacity-10">
-              <Image
-                src="/placeholder.svg?height=1200&width=1200"
-                alt="Background graphic"
-                fill
-                className="object-cover"
-              />
-            </div>
-
-            <Header />
-
-            <main className="flex-1 flex items-center justify-center py-8">
-              {children}
-            </main>
-
-            <Footer />
+            <BackgroundGraphic />
+            <MainContent>{children}</MainContent>
           </div>
         </ThemeProvider>
       </body>

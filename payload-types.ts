@@ -76,7 +76,7 @@ export interface Config {
   };
   collectionsJoins: {
     posts: {
-      tags: "postTags";
+      tags: 'postTags';
     };
   };
   collectionsSelect: {
