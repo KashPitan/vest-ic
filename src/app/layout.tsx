@@ -1,13 +1,17 @@
 import type React from "react";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/public/home-page/theme-provider";
 import Header from "@/components/public/home-page/header";
 import Footer from "@/components/public/home-page/footer";
 import Image from "next/image";
+import localFont from "next/font/local";
 
-const inter = Inter({ subsets: ["latin"] });
+const articulat = localFont({
+  src: "../../public/fonts/articulat/articulatcf-regular.otf",
+  weight: "200",
+  style: "normal",
+});
 
 export const metadata: Metadata = {
   title: "Vest IC | The Protein Revolution",
@@ -23,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.className} bg-black min-h-screen flex flex-col`}
+        className={`${articulat.className} bg-black min-h-screen flex flex-col`}
       >
         <ThemeProvider
           attribute="class"

@@ -1,15 +1,25 @@
-import Image from "next/image"
-import { Minus, Plus } from "lucide-react"
-import { AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import Image from "next/image";
+import { Minus, Plus } from "lucide-react";
+import {
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { elza } from "@/fonts";
 
 interface CustomAccordionItemProps {
-  value: string
-  title: string
-  content: string
-  imageSrc: string
+  value: string;
+  title: string;
+  content: string;
+  imageSrc: string;
 }
 
-export default function CustomAccordionItem({ value, title, content, imageSrc }: CustomAccordionItemProps) {
+export default function CustomAccordionItem({
+  value,
+  title,
+  content,
+  imageSrc,
+}: CustomAccordionItemProps) {
   return (
     <AccordionItem
       value={value}
@@ -17,7 +27,7 @@ export default function CustomAccordionItem({ value, title, content, imageSrc }:
     >
       <AccordionTrigger className="px-6 py-4 text-left font-medium text-pure-white hover:text-pure-white hover:bg-pure-white/5">
         <div className="flex items-center justify-between w-full">
-          <span className="truncate">{title}</span>
+          <span className={`truncate ${elza.className}`}>{title}</span>
           <div className="flex-shrink-0 ml-2">
             <Plus className="h-5 w-5 group-data-[state=open]:hidden" />
             <Minus className="h-5 w-5 hidden group-data-[state=open]:block" />
@@ -33,11 +43,16 @@ export default function CustomAccordionItem({ value, title, content, imageSrc }:
           {/* Image on the right (35%) */}
           <div className="md:w-[35%] p-6">
             <div className="relative h-56 md:h-full rounded-lg overflow-hidden">
-              <Image src={imageSrc || "/placeholder.svg"} alt={title} fill className="object-cover" />
+              <Image
+                src={imageSrc || "/placeholder.svg"}
+                alt={title}
+                fill
+                className="object-cover"
+              />
             </div>
           </div>
         </div>
       </AccordionContent>
     </AccordionItem>
-  )
+  );
 }
