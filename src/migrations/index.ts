@@ -6,6 +6,7 @@ import * as migration_20250324_000459_posts_slug_unique_not_title from "./202503
 import * as migration_20250329_220708 from "./20250329_220708";
 import * as migration_20250406_234106_add_display_image_url from "./20250406_234106_add_display_image_url";
 import * as migration_20250407_181635_add_release_date from "./20250407_181635_add_release_date";
+import * as migration_20250502_223324_add_highlights from "./20250502_223324_add_highlights";
 
 export const migrations = [
   {
@@ -47,5 +48,10 @@ export const migrations = [
     up: migration_20250407_181635_add_release_date.up,
     down: migration_20250407_181635_add_release_date.down,
     name: "20250407_181635_add_release_date",
+  },
+  {
+    up: migration_20250502_223324_add_highlights.up,
+    down: migration_20250502_223324_add_highlights.down,
+    name: "20250502_223324_add_highlights",
   },
 ];
