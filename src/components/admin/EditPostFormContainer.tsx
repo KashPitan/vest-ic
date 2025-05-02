@@ -6,6 +6,7 @@ import React from "react";
 import { EditPostForm } from "./EditPostForm";
 import { downloadFromBlob } from "@/lib/blob";
 import { getTagDropdownOptions } from "@/data-access-layer/tags";
+import { isPostHighlighted } from "@/data-access-layer/highlights";
 
 const getPostFormData = async (id: string, payload: BasePayload) => {
   try {
@@ -62,6 +63,7 @@ export const EditPostFormContainer: React.FC<AdminViewProps> = async ({
 
   const postFormData = await getPostFormData(id, initPageResult.req.payload);
   const tagOptions = await getTagDropdownOptions();
+  const highLightOptions = await isPostHighlighted(id)
 
   return (
     <DefaultTemplate
@@ -79,6 +81,7 @@ export const EditPostFormContainer: React.FC<AdminViewProps> = async ({
           <EditPostForm
             post={{ ...postFormData, id }}
             tagOptions={tagOptions}
+            highLightOptions={highLightOptions}
           />
         ) : (
           <p>No Post Found :(</p>
