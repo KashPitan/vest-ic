@@ -44,17 +44,19 @@ export const getHighlightedPosts = async () => {
   return highlightedPosts;
 };
 
-export const isPostHighlighted = async (id: string) => {
-  const highlight = await payload.findByID({
+export const isPostHighlighted = async (postId: string) => {
+  const highlight = await payload.find({
     collection: "highlights",
-    id,
+    where: {
+      post_id: { equals: postId },
+    },
     disableErrors: true,
   });
   const { totalDocs } = await payload.count({
     collection: "highlights",
   });
   return {
-    isHighlight: Boolean(highlight),
+    isHighlight: Boolean(highlight.docs.length),
     canHighlight: Boolean(totalDocs < HIGHLIGHT_LIMIT),
   };
 };

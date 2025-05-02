@@ -87,7 +87,7 @@ export const EditPostForm = ({
   highLightOptions: HighLightOptions;
 }) => {
   const [isLoading, setIsLoading] = useState(false);
-
+  const highlightsMaxed = !highLightOptions.isHighlight && !highLightOptions.canHighlight
   const oldDisplayImageUrl = post.displayImageUrl;
 
   const form = useForm<FormValues>({
@@ -329,15 +329,15 @@ export const EditPostForm = ({
           name="isHighlight"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Highlight insight</FormLabel>
               <FormControl>
                 <Checkbox
                   checked={field.value}
-                  disabled={!highLightOptions.canHighlight}
+                  disabled={highlightsMaxed}
                   onCheckedChange={field.onChange}
                 />
               </FormControl>
-              {!highLightOptions.canHighlight && (
+              <FormLabel className="mx-2">Highlight insight</FormLabel>
+              {highlightsMaxed && (
                   <p className="text-sm text-muted-foreground">
                     Maximum highlights for insights reached!
                   </p>
