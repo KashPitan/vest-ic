@@ -12,7 +12,7 @@ export const getHighlightedPosts = async () => {
     depth: 0,
   });
   const postIds = docs.map((d) => d.post_id);
-
+  console.log('postIds', postIds)
   const { docs: highlightedPosts } = await payload.find({
     collection: "posts",
     where: {
@@ -39,8 +39,10 @@ export const getHighlightedPosts = async () => {
       limit: HIGHLIGHT_LIMIT - highlightedPosts.length,
     });
     const posts = highlightedPosts.concat(mostRecentPosts);
+    console.log('with recent posts', posts);
     return posts;
   }
+  console.log('highlighted posts', highlightedPosts);
   return highlightedPosts;
 };
 

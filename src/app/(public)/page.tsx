@@ -4,6 +4,7 @@ import { getHighlightedPosts } from "@/data-access-layer/highlights";
 
 export default async function Home() {
   const highlightedPosts = await getHighlightedPosts();
+  console.log('highlighted posts page', highlightedPosts);
   const accordionItems = highlightedPosts.map((p) => ({
     title: p.title,
     value: `${p.id}`,
