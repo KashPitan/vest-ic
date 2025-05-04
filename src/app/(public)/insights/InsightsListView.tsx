@@ -6,7 +6,7 @@ import { Pagination } from "@/components/public/Pagination";
 import { SearchParams } from "@/lib/SearchParams";
 import Link from "next/link";
 import { useState } from "react";
-import { Post, Tag } from "../../../payload-types";
+import { Post, Tag } from "../../../../payload-types";
 import {
   ReadonlyURLSearchParams,
   redirect,

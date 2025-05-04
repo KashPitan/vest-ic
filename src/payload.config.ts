@@ -2,11 +2,11 @@ import sharp from "sharp";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { buildConfig } from "payload";
 import { postgresAdapter } from "@payloadcms/db-postgres";
-import { Posts, Tags, PostTags } from "./collections";
+import { Highlights, Posts, Tags, PostTags } from "./collections";
 
 export default buildConfig({
   editor: lexicalEditor(),
-  collections: [Posts, Tags, PostTags],
+  collections: [Highlights, Posts, Tags, PostTags],
   secret: process.env.PAYLOAD_SECRET || "",
   db: postgresAdapter({
     pool: {

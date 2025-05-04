@@ -66,6 +66,7 @@ export interface Config {
   };
   blocks: {};
   collections: {
+    highlights: Highlight;
     posts: Post;
     tags: Tag;
     postTags: PostTag;
@@ -80,6 +81,7 @@ export interface Config {
     };
   };
   collectionsSelect: {
+    highlights: HighlightsSelect<false> | HighlightsSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
     tags: TagsSelect<false> | TagsSelect<true>;
     postTags: PostTagsSelect<false> | PostTagsSelect<true>;
@@ -119,6 +121,16 @@ export interface UserAuthOperations {
     email: string;
     password: string;
   };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "highlights".
+ */
+export interface Highlight {
+  id: number;
+  post_id: number | Post;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -185,6 +197,10 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
+        relationTo: 'highlights';
+        value: number | Highlight;
+      } | null)
+    | ({
         relationTo: 'posts';
         value: number | Post;
       } | null)
@@ -241,6 +257,15 @@ export interface PayloadMigration {
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "highlights_select".
+ */
+export interface HighlightsSelect<T extends boolean = true> {
+  post_id?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

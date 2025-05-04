@@ -21,6 +21,7 @@ import { MinimalTiptapEditor } from "../minimal-tiptap";
 import { TagDropdownOption } from "@/schemas/tagsSchema";
 import { format } from "date-fns";
 import Image from "next/image";
+import { Checkbox } from "../ui/checkbox";
 
 const PostFormSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -32,6 +33,7 @@ const PostFormSchema = z.object({
   tags: z
     .array(z.object({ value: z.number(), label: z.string() }))
     .min(1, "At least one tag is required"),
+  isHighlight: z.boolean().optional(),
 });
 
 type FormValues = z.infer<typeof PostFormSchema>;
@@ -48,15 +50,44 @@ type PostFormData = {
   id: string;
 };
 
+type HighLightOptions = {
+  isHighlight: boolean;
+  canHighlight: boolean;
+};
+
+function getDirtyValues<
+  DirtyFields extends Record<string, unknown>,
+  Values extends Partial<Record<keyof DirtyFields, unknown>>,
+>(dirtyFields: DirtyFields, values: Values): Partial<typeof values> {
+  const dirtyValues = Object.keys(dirtyFields).reduce((prev, key) => {
+    if (!dirtyFields[key]) return prev;
+
+    return {
+      ...prev,
+      [key]:
+        typeof dirtyFields[key] === "object"
+          ? getDirtyValues(
+              dirtyFields[key] as DirtyFields,
+              values[key] as Values,
+            )
+          : values[key],
+    };
+  }, {});
+
+  return dirtyValues;
+}
+
 export const EditPostForm = ({
   post,
   tagOptions,
+  highLightOptions,
 }: {
   post: PostFormData;
   tagOptions: TagDropdownOption[];
+  highLightOptions: HighLightOptions;
 }) => {
   const [isLoading, setIsLoading] = useState(false);
-
+  const highlightsMaxed = !highLightOptions.isHighlight && !highLightOptions.canHighlight
   const oldDisplayImageUrl = post.displayImageUrl;
 
   const form = useForm<FormValues>({
@@ -66,12 +97,17 @@ export const EditPostForm = ({
       releaseDate: post.releaseDate
         ? format(new Date(post.releaseDate), "yyyy-MM-dd'T'HH:mm")
         : undefined,
+      isHighlight: highLightOptions.isHighlight,
+      displayImage: oldDisplayImageUrl,
     },
   });
 
   const onSubmit = async (values: FormValues) => {
     setIsLoading(true);
     try {
+      const dirtyValues = getDirtyValues(form.formState.dirtyFields, values);
+
+      // should use dirty values for below aswell
       const response = await fetch(`/api/admin/posts/${post.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -91,6 +127,33 @@ export const EditPostForm = ({
         alert("Post updated successfully!");
       } else {
         throw new Error(data.message || "Failed to update post");
+      }
+
+      if (Object.hasOwn(dirtyValues, "isHighlight")) {
+        let response: Response;
+        if (values.isHighlight) {
+          response = await fetch(`/api/admin/highlights`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              post_id: post.id,
+            })
+          });
+        } else {
+          response = await fetch(`/api/admin/highlights`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              post_id: post.id
+            })
+          });
+        }
+        const data = await response.json();
+        if (response.ok) {
+          alert("Highlights updated successfully!");
+        } else {
+          throw new Error(data.message || "Failed to update highlights");
+        }
       }
     } catch (error) {
       console.error("Error updating post:", error);
@@ -261,7 +324,29 @@ export const EditPostForm = ({
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isLoading}>
+        <FormField
+          control={form.control}
+          name="isHighlight"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  disabled={highlightsMaxed}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+              <FormLabel className="mx-2">Highlight insight</FormLabel>
+              {highlightsMaxed && (
+                  <p className="text-sm text-muted-foreground">
+                    Maximum highlights for insights reached!
+                  </p>
+                )}
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type="submit" disabled={isLoading || !form.formState.isDirty}>
           {isLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />

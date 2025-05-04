@@ -1,4 +1,4 @@
-import { Tag } from "../../../payload-types";
+import { Tag } from "../../../../payload-types";
 import { getPosts } from "@/data-access-layer/posts";
 import { getTags } from "@/data-access-layer/tags";
 import { InsightsListView } from "./InsightsListView";

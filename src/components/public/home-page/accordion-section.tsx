@@ -6,7 +6,7 @@ interface AccordionItem {
   value: string;
   title: string;
   content: string;
-  imageSrc: string;
+  imageSrc: string | undefined | null;
 }
 
 interface AccordionSectionProps {
