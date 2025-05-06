@@ -15,7 +15,7 @@ interface AccordionSectionProps {
 
 export default function AccordionSection({ items }: AccordionSectionProps) {
   return (
-    <div className="h-full flex flex-col justify-center">
+    <div className="h-full min-w-full flex flex-col justify-center">
       <Accordion
         type="single"
         defaultValue="item-1"
