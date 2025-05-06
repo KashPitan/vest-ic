@@ -11,7 +11,7 @@ interface CustomAccordionItemProps {
   value: string;
   title: string;
   content: string;
-  imageSrc: string;
+  imageSrc: string | undefined | null;
 }
 
 export default function CustomAccordionItem({
@@ -44,7 +44,7 @@ export default function CustomAccordionItem({
           <div className="md:w-[35%] p-6">
             <div className="relative h-56 md:h-full rounded-lg overflow-hidden">
               <Image
-                src={imageSrc || "/placeholder.svg"}
+                src={imageSrc || "/landscape-placeholder.svg"}
                 alt={title}
                 fill
                 className="object-cover"
