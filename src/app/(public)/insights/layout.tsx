@@ -1,5 +1,3 @@
-import Footer from "@/components/public/home-page/footer";
-import Header from "@/components/public/home-page/header";
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
 import Image from "next/image";
