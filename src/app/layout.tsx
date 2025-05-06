@@ -5,13 +5,7 @@ import { ThemeProvider } from "@/components/public/home-page/theme-provider";
 import Header from "@/components/public/home-page/header";
 import Footer from "@/components/public/home-page/footer";
 import Image from "next/image";
-import localFont from "next/font/local";
-
-const articulat = localFont({
-  src: "../../public/fonts/articulat/articulatcf-regular.otf",
-  weight: "200",
-  style: "normal",
-});
+import { articulat } from "@/fonts";
 
 export const metadata: Metadata = {
   title: "Vest IC | The Protein Revolution",
