@@ -1,8 +1,8 @@
+import BackgroundGraphic from "@/components/public/background-graphic/BackgroundGraphic";
 import Footer from "@/components/public/home-page/footer";
 import Header from "@/components/public/home-page/header";
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
-import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Vest IC | The Protein Revolution",
@@ -12,32 +12,28 @@ export const metadata: Metadata = {
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-      <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <div className="relative flex flex-col min-h-screen">
-              {/* Background graphic */}
-              <div className="absolute inset-0 -z-10 opacity-10">
-                <Image
-                  src="/landscape-placeholder.svg?height=1200&width=1200"
-                  alt="Background graphic"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-  
-              <Header />
-  
-              <main className="flex-1 flex items-center justify-center py-8">
-                {children}
-              </main>
-  
-              <Footer />
-            </div>
-          </ThemeProvider>);
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="light"
+      enableSystem
+      disableTransitionOnChange
+    >
+      <div className="relative flex flex-col min-h-screen">
+        {/* Background graphic */}
+        <div className="absolute inset-0 -z-10">
+          <BackgroundGraphic />
+        </div>
+
+        <Header />
+
+        <main className="flex-1 flex items-center justify-center py-8">
+          {children}
+        </main>
+
+        <Footer />
+      </div>
+    </ThemeProvider>
+  );
 };
 
 export default Layout;
