@@ -35,7 +35,7 @@ export default function AccordionSection({ items }: AccordionSectionProps) {
       <div className="flex justify-center">
         <Link
           href="/insights"
-          className="text-pure-white hover:text-highlight-yellow transition-colors"
+          className="text-pure-white hover:text-flat-gold transition-colors"
         >
           Read More
         </Link>

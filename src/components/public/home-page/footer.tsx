@@ -1,5 +1,5 @@
-import Link from "next/link"
-import SocialLink from "./social-link"
+import Link from "next/link";
+import SocialLink from "./social-link";
 
 export default function Footer() {
   return (
@@ -8,10 +8,16 @@ export default function Footer() {
         <div className="flex flex-wrap items-center justify-between">
           <div className="flex items-center space-x-6">
             <p className="text-sm text-pure-white">Vest IC. 2025</p>
-            <Link href="/disclaimer" className="text-sm text-pure-white hover:text-highlight-yellow">
+            <Link
+              href="/disclaimer"
+              className="text-sm text-pure-white hover:text-flat-gold"
+            >
               Disclaimer
             </Link>
-            <Link href="/cookie-policy" className="text-sm text-pure-white hover:text-highlight-yellow">
+            <Link
+              href="/cookie-policy"
+              className="text-sm text-pure-white hover:text-flat-gold"
+            >
               Cookie Policy
             </Link>
           </div>
@@ -23,5 +29,5 @@ export default function Footer() {
         </div>
       </div>
     </footer>
-  )
+  );
 }
