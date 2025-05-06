@@ -1,14 +1,9 @@
 import React from "react";
 import Image from "next/image";
+import vestIcBackgroundGif from "./vest-ic-background-graphic.gif";
 
 const BackgroundGraphic = () => {
-  return (
-    <Image
-      src="/vest-ic-background-graphic.gif"
-      alt="background-graphic"
-      fill
-    />
-  );
+  return <Image src={vestIcBackgroundGif} alt="background-graphic" fill />;
 };
 
 export default BackgroundGraphic;
