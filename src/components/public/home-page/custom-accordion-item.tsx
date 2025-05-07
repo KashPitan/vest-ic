@@ -1,9 +1,11 @@
 import Image from "next/image";
+import { Minus, Plus } from "lucide-react";
 import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { elza } from "@/fonts";
 
 interface CustomAccordionItemProps {
   value: string;
@@ -25,8 +27,11 @@ export default function CustomAccordionItem({
     >
       <AccordionTrigger className="px-6 py-4 text-left font-medium text-pure-white hover:text-pure-white hover:bg-pure-white/5">
         <div className="flex items-center justify-between w-full">
-          <span className="truncate">{title}</span>
-          <div className="flex-shrink-0 ml-2"></div>
+          <span className={`truncate ${elza.className}`}>{title}</span>
+          <div className="flex-shrink-0 ml-2">
+            <Plus className="h-5 w-5 group-data-[state=open]:hidden" />
+            <Minus className="h-5 w-5 hidden group-data-[state=open]:block" />
+          </div>
         </div>
       </AccordionTrigger>
       <AccordionContent className="p-0">
