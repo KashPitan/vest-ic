@@ -1,11 +1,10 @@
 import React from "react";
 import Image from "next/image";
-import vestIcBackgroundGif from "./vest-ic-background-graphic.gif";
 
 const BackgroundGraphic = () => {
   return (
     <Image
-      src={vestIcBackgroundGif}
+      src={`http://${process.env.BLOB_HOST}/assets/vest-ic-background-graphic.gif`}
       alt="background-graphic"
       fill
       unoptimized
