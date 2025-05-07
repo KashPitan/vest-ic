@@ -1,13 +1,19 @@
-import Link from "next/link"
-import type React from "react"
+import Link from "next/link";
+import type React from "react";
 
-export default function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
+export default function NavLink({
+  href,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+}) {
   return (
     <Link
       href={href}
-      className="font-medium transition-colors text-pure-white hover:text-highlight-yellow active:text-highlight-yellow"
+      className="font-medium transition-colors text-pure-white hover:text-flat-gold active:text-highlight-yellow"
     >
       {children}
     </Link>
-  )
+  );
 }
