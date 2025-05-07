@@ -12,7 +12,6 @@ export default function Header() {
         className="absolute top-[50px]"
       />
       <nav className="container mx-auto flex justify-end ">
-        {/* <div className="text-2xl font-bold text-pure-white">Vest IC</div> */}
         <div className="flex gap-8">
           <NavLink href="/insights">Insights</NavLink>
           <NavLink href="/about">About</NavLink>
