@@ -1,9 +1,12 @@
 import Image from "next/image";
+import { elza } from "@/fonts";
 import NavLink from "./nav-link";
 
 export default function Header() {
   return (
-    <header className="bg-racing-green/80 py-6 px-6 h-[120px] shadow-md backdrop-blur-md relative content-center">
+    <header
+      className={`bg-racing-green/80 py-6 px-6 h-[120px] shadow-md backdrop-blur-md relative content-center ${elza.className}`}
+    >
       <Image
         src={"/VestICLogo.png"}
         alt="vest-ic-logo-header"
@@ -11,7 +14,7 @@ export default function Header() {
         height="130"
         className="absolute top-[50px]"
       />
-      <nav className="container mx-auto flex justify-end ">
+      <nav className="container mx-auto flex justify-end">
         <div className="flex gap-8">
           <NavLink href="/insights">Insights</NavLink>
           <NavLink href="/about">About</NavLink>
