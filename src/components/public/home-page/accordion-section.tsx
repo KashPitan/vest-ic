@@ -16,7 +16,7 @@ interface AccordionSectionProps {
 
 export default function AccordionSection({ items }: AccordionSectionProps) {
   return (
-    <div className="h-full flex flex-col justify-center">
+    <div className="h-full min-w-full flex flex-col justify-center">
       <Accordion
         type="single"
         defaultValue="item-1"
@@ -36,7 +36,7 @@ export default function AccordionSection({ items }: AccordionSectionProps) {
       <div className="flex justify-center">
         <Link
           href="/insights"
-          className={`text-pure-white hover:text-highlight-yellow transition-colors ${elza.className}`}
+          className={`text-pure-white hover:text-flat-gold transition-colors ${elza.className}`}
         >
           Read More
         </Link>

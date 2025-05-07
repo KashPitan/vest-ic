@@ -13,13 +13,13 @@ export default function Footer() {
             <p className="text-sm text-pure-white">© Vest IC. 2025</p>
             <Link
               href="/disclaimer"
-              className="text-sm text-pure-white hover:text-highlight-yellow"
+              className="text-sm text-pure-white hover:text-flat-gold"
             >
               Disclaimer
             </Link>
             <Link
               href="/cookie-policy"
-              className="text-sm text-pure-white hover:text-highlight-yellow"
+              className="text-sm text-pure-white hover:text-flat-gold"
             >
               Cookie Policy
             </Link>
