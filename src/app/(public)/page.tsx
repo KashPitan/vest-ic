@@ -22,7 +22,7 @@ export default async function Home() {
 
       {/* Right Column - Accordions (65%) */}
       <div className="lg:w-7/10 lg:pl-12 flex items-center">
-        <AccordionSection items={accordionItems} />;
+        <AccordionSection items={accordionItems} />
       </div>
     </div>
   );
