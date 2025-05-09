@@ -19,7 +19,7 @@ export default function AccordionSection({ items }: AccordionSectionProps) {
     <div className="h-full min-w-full flex flex-col justify-center">
       <Accordion
         type="single"
-        defaultValue="item-1"
+        defaultValue={items[0].value}
         className="space-y-8 mb-10"
       >
         {items.map((item) => (
