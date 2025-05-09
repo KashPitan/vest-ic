@@ -9,7 +9,7 @@ export default function SocialLink({
   children: React.ReactNode;
 }) {
   return (
-    <Link href={href} className="text-sm text-pure-white hover:text-flat-gold">
+    <Link href={href} className="text-pure-white hover:text-flat-gold">
       {children}
     </Link>
   );
