@@ -1,7 +1,7 @@
 import { getPayload, Where } from "payload";
 import config from "@payload-config";
 import { PaginatedData } from "@/types/PaginatedData";
-import { Post } from "../../payload-types";
+import { Post, Tag } from "../../payload-types";
 import { z } from "zod";
 
 interface SearchParams {
@@ -77,4 +77,30 @@ export const getPosts = async (searchParams?: SearchParams) => {
     totalDocs: totalDocs,
   };
   return response;
+};
+
+export const getPostBySlug = async (slug: string) => {
+  const result = await payload.find({
+    collection: "posts",
+    where: {
+      slug: { equals: slug },
+    },
+    limit: 1,
+  });
+  const [post] = result.docs;
+  const { docs: postTags } = await payload.find({
+    collection: "postTags",
+    where: {
+      post_id: { equals: post.id },
+    },
+    depth: 1,
+    select: {
+      post_id: false,
+    },
+  });
+  const postWithTags = {
+    ...post,
+    tags: postTags.map((t) => t.tag_id) as Tag[],
+  };
+  return postWithTags;
 };
