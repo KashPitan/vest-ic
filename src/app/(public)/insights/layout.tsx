@@ -16,7 +16,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       enableSystem
       disableTransitionOnChange
     >
-      <div className="relative flex flex-col min-h-screen">
+      <div className="relative flex flex-col w-full">
         {/* Background graphic */}
         <div className="absolute inset-0 -z-10 opacity-10">
           <Image
