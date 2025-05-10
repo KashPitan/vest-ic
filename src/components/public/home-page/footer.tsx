@@ -10,16 +10,16 @@ export default function Footer() {
       <div className="container mx-auto px-6">
         <div className="flex flex-wrap items-center justify-between">
           <div className="flex items-center space-x-6">
-            <p className="text-sm text-pure-white">© Vest IC. 2025</p>
+            <p className="text-pure-white">© Vest IC. 2025</p>
             <Link
               href="/disclaimer"
-              className="text-sm text-pure-white hover:text-flat-gold"
+              className="text-pure-white hover:text-flat-gold"
             >
               Disclaimer
             </Link>
             <Link
               href="/cookie-policy"
-              className="text-sm text-pure-white hover:text-flat-gold"
+              className=" text-pure-white hover:text-flat-gold"
             >
               Cookie Policy
             </Link>

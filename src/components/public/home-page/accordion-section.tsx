@@ -19,7 +19,7 @@ export default function AccordionSection({ items }: AccordionSectionProps) {
     <div className="h-full min-w-full flex flex-col justify-center">
       <Accordion
         type="single"
-        defaultValue="item-1"
+        defaultValue={items[0].value}
         className="space-y-8 mb-10"
       >
         {items.map((item) => (
@@ -36,7 +36,7 @@ export default function AccordionSection({ items }: AccordionSectionProps) {
       <div className="flex justify-center">
         <Link
           href="/insights"
-          className={`text-pure-white hover:text-flat-gold transition-colors ${elza.className}`}
+          className={`text-xl text-pure-white hover:text-flat-gold transition-colors ${elza.className}`}
         >
           Read More
         </Link>
