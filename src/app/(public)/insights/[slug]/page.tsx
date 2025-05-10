@@ -1,8 +1,16 @@
 import Image from "next/image";
 import { getPayload } from "payload";
 import config from "@payload-config";
-import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { format } from "date-fns";
+import { FileText, Linkedin } from "lucide-react";
 
 const stringToHtml = (value: string) => {
   return (
@@ -26,32 +34,49 @@ const Insight = async ({ params }: { params: Promise<{ slug: string }> }) => {
     limit: 1,
   });
   const [post] = result.docs;
+  const formatedCreatedDate = format(new Date(post.createdAt), "dd/MM/yyyy");
   return (
-    <div className="w-full">
-      <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-pure-white">
-        {post.title || "UNKNOWN TITLE"}
-      </h1>
-      <Label className="text-pure-white">
-        This insight was created on: {post.createdAt}
-      </Label>
-      {post.releaseDate && (
-        <Label className="text-pure-white">
-          This insight was released on: {post.releaseDate}
-        </Label>
-      )}
+    <Card className="opacity-100 w-full h-full bg-racing-green/80 border-racing-green/80 mx-8">
+      <CardHeader>
+        <div className="flex justify-between">
+          <div>
+            <button
+              className="bg-gray-500 text-amber-500 px-5 py-1 rounded-xl">
+              Category 1
+            </button>
+              <button className="bg-gray-500 px-5 py-1 pb-2 ml-2 rounded-xl">
+                <FileText href="" size={18} />
+              </button>
+              <button className="bg-gray-500 px-5 py-1 pb-2 ml-2 rounded-xl">
+                <Linkedin href="" size={18} />
+              </button>
+          </div>
+          <CardDescription className="text-pure-white">
+            {formatedCreatedDate}
+          </CardDescription>
+        </div>
 
-      <Separator />
-      {post.displayImageUrl && (
-        <Image
-          className="h-60 w-60"
-          src={`${post.displayImageUrl}`}
-          alt="Post display image"
-          width={100}
-          height={100}
-        />
-      )}
-      {stringToHtml(post.content)}
-    </div>
+        <CardTitle className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-pure-white">
+          {post.title}
+        </CardTitle>
+
+        {post.releaseDate && (
+          <Label className="text-pure-white">
+            This insight was released on: {post.releaseDate}
+          </Label>
+        )}
+        {post.displayImageUrl && (
+          <Image
+            className="h-60 w-60"
+            src={`${post.displayImageUrl}`}
+            alt="Post display image"
+            width={100}
+            height={100}
+          />
+        )}
+      </CardHeader>
+      <CardContent>{stringToHtml(post.content)}</CardContent>
+    </Card>
   );
 };
 
