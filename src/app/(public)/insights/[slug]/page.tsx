@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { format } from "date-fns";
 import { FileText, Linkedin } from "lucide-react";
+import { SharePostButton } from '@/components/public/SharePostButton'
 
 const stringToHtml = (value: string) => {
   return (
@@ -47,9 +48,14 @@ const Insight = async ({ params }: { params: Promise<{ slug: string }> }) => {
               <button className="bg-gray-500 px-5 py-1 pb-2 ml-2 rounded-xl">
                 <FileText href="" size={18} />
               </button>
-              <button className="bg-gray-500 px-5 py-1 pb-2 ml-2 rounded-xl">
+              {/* <button className="bg-gray-500 px-5 py-1 pb-2 ml-2 rounded-xl">
                 <Linkedin href="" size={18} />
-              </button>
+              </button> */}
+              {/* <div className="bg-gray-500 px-5 py-1 pb-2 ml-2 rounded-xl" > */}
+                <SharePostButton className="bg-gray-500 px-5 py-1 pb-2 ml-2 rounded-xl"
+                ></SharePostButton>
+              {/* </div> */}
+              
           </div>
           <CardDescription className="text-pure-white">
             {formatedCreatedDate}
