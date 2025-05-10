@@ -1,6 +1,4 @@
 import Image from "next/image";
-import { getPayload } from "payload";
-import config from "@payload-config";
 import { Label } from "@/components/ui/label";
 import {
   Card,
@@ -11,6 +9,8 @@ import {
 } from "@/components/ui/card";
 import { format } from "date-fns";
 import { FileText, Linkedin } from "lucide-react";
+import { elza, articulat } from "@/fonts";
+import { getPostBySlug } from "@/data-access-layer/posts";
 
 const stringToHtml = (value: string) => {
   return (
@@ -25,38 +25,36 @@ const stringToHtml = (value: string) => {
 
 const Insight = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const { slug } = await params;
-  const payload = await getPayload({ config });
-  const result = await payload.find({
-    collection: "posts",
-    where: {
-      slug: { equals: slug },
-    },
-    limit: 1,
-  });
-  const [post] = result.docs;
+  const post = await getPostBySlug(slug);
   const formatedCreatedDate = format(new Date(post.createdAt), "dd/MM/yyyy");
   return (
-    <Card className="opacity-100 w-full h-full bg-racing-green/80 border-racing-green/80 mx-8">
+    <Card className="opacity-70 w-full h-full bg-pure-white/10 backdrop-blur-[10px] mx-8 px-6 py-4">
       <CardHeader>
         <div className="flex justify-between">
           <div>
-            <button
-              className="bg-gray-500 text-amber-500 px-5 py-1 rounded-xl">
-              Category 1
+            {post.tags.map((tag) => (
+              <button
+                key={tag.id}
+                className="bg-gray-500 text-amber-500 px-5 py-1 rounded-xl"
+              >
+                {tag.tag_name}
+              </button>
+            ))}
+            <button className="bg-gray-500 px-5 py-1 pb-2 ml-2 rounded-xl">
+              <FileText href={undefined} size={18} />
             </button>
-              <button className="bg-gray-500 px-5 py-1 pb-2 ml-2 rounded-xl">
-                <FileText href="" size={18} />
-              </button>
-              <button className="bg-gray-500 px-5 py-1 pb-2 ml-2 rounded-xl">
-                <Linkedin href="" size={18} />
-              </button>
+            <button className="bg-gray-500 px-5 py-1 pb-2 ml-2 rounded-xl">
+              <Linkedin href={undefined} size={18} />
+            </button>
           </div>
           <CardDescription className="text-pure-white">
             {formatedCreatedDate}
           </CardDescription>
         </div>
 
-        <CardTitle className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-pure-white">
+        <CardTitle
+          className={`scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-pure-white ${elza.className}`}
+        >
           {post.title}
         </CardTitle>
 
@@ -75,7 +73,9 @@ const Insight = async ({ params }: { params: Promise<{ slug: string }> }) => {
           />
         )}
       </CardHeader>
-      <CardContent>{stringToHtml(post.content)}</CardContent>
+      <CardContent className={`${articulat.className}`}>
+        {stringToHtml(post.content)}
+      </CardContent>
     </Card>
   );
 };
