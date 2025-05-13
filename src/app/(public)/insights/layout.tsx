@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
-import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Vest IC | The Protein Revolution",
