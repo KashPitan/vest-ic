@@ -70,9 +70,9 @@ export const CreatePostForm = ({
   const clearFileInput = () => {
     const imageInput = document.getElementById("post-form-image-input");
     if (imageInput) {
-      // @ts-ignore
+      // @ts-expect-error
       imageInput.type = "";
-      // @ts-ignore
+      // @ts-expect-error
       imageInput.type = "file";
     }
   };
