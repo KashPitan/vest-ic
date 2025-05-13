@@ -15,7 +15,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       enableSystem
       disableTransitionOnChange
     >
-      <div className="relative flex flex-col min-h-screen">
+      <div className="relative flex flex-col w-full">
         <main className="flex-1 flex items-start justify-center py-8">
           {children}
         </main>

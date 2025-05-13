@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
@@ -26,9 +25,9 @@ const stringToHtml = (value: string) => {
 const Insight = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const { slug } = await params;
   const post = await getPostBySlug(slug);
-  const formatedCreatedDate = format(new Date(post.createdAt), "dd/MM/yyyy");
+  const formatedReleaseDate = post.releaseDate ? format(new Date(post.releaseDate), "dd/MM/yyyy") : '';
   return (
-    <Card className="opacity-70 w-full h-full bg-pure-white/10 backdrop-blur-[10px] mx-8 px-6 py-4">
+    <Card className="opacity-70 w-full h-full bg-pure-white/10 backdrop-blur-[10px] mx-8 px-6 py-4 max-w-[1440]">
       <CardHeader>
         <div className="flex justify-between">
           <div>
@@ -48,7 +47,7 @@ const Insight = async ({ params }: { params: Promise<{ slug: string }> }) => {
             </button>
           </div>
           <CardDescription className="text-pure-white">
-            {formatedCreatedDate}
+            {formatedReleaseDate}
           </CardDescription>
         </div>
 
@@ -57,12 +56,6 @@ const Insight = async ({ params }: { params: Promise<{ slug: string }> }) => {
         >
           {post.title}
         </CardTitle>
-
-        {post.releaseDate && (
-          <Label className="text-pure-white">
-            This insight was released on: {post.releaseDate}
-          </Label>
-        )}
         {post.displayImageUrl && (
           <Image
             className="h-60 w-60"
