@@ -56,6 +56,27 @@ export const CreatePostForm = ({
     },
   });
 
+  const clearEditorText = () => {
+    // this looks for an element by an id we've added and clears all the child elements
+    // as the editor content takes the form of html elements within it
+    const editorElement = document.getElementById("editor-content-input");
+    if (editorElement) {
+      while (editorElement.firstChild) {
+        editorElement.removeChild(editorElement.firstChild);
+      }
+    }
+  };
+
+  const clearFileInput = () => {
+    const imageInput = document.getElementById("post-form-image-input");
+    if (imageInput) {
+      // @ts-ignore
+      imageInput.type = "";
+      // @ts-ignore
+      imageInput.type = "file";
+    }
+  };
+
   const onSubmit = async (values: FormValues) => {
     setIsLoading(true);
     try {
@@ -75,6 +96,15 @@ export const CreatePostForm = ({
       const data = await response.json();
       if (response.ok) {
         form.reset();
+
+        // the previous file name remains after submission so clearing it manually
+        // to avoid confusion
+        clearFileInput();
+
+        // react hook form clears the html value it stores but not the actual editor text
+        // so without this its still viewable in the form after submission
+        clearEditorText();
+
         alert("Post created successfully!");
       } else {
         throw new Error(data.message || "Failed to create post");
@@ -204,6 +234,7 @@ export const CreatePostForm = ({
               <FormControl>
                 <div className="flex flex-col gap-4">
                   <Input
+                    id="post-form-image-input"
                     type="file"
                     accept="image/*"
                     {...field}

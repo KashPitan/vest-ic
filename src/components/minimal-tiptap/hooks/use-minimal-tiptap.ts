@@ -195,7 +195,8 @@ export const useMinimalTiptapEditor = ({
         autocomplete: 'off',
         autocorrect: 'off',
         autocapitalize: 'off',
-        class: cn('focus:outline-none', editorClassName)
+        class: cn('focus:outline-none', editorClassName),
+        id: 'editor-content-input'
       }
     },
     onUpdate: ({ editor }) => handleUpdate(editor),
