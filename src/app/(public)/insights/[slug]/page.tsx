@@ -27,7 +27,7 @@ const Insight = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const post = await getPostBySlug(slug);
   const formatedReleaseDate = post.releaseDate ? format(new Date(post.releaseDate), "dd/MM/yyyy") : '';
   return (
-    <Card className="opacity-70 w-full h-full bg-pure-white/10 backdrop-blur-[10px] mx-8 px-6 py-4 max-w-[1440]">
+    <Card className="opacity-70 w-full h-full bg-pure-white/10 backdrop-blur-[10px] mx-8 px-6 py-4 max-w-[1440px]">
       <CardHeader>
         <div className="flex justify-between">
           <div>
