@@ -2,6 +2,17 @@ import type { CollectionConfig } from "payload";
 
 export const Posts: CollectionConfig = {
   slug: "posts",
+  admin: {
+    components: {
+      views: {
+        edit: {
+          default: {
+            Component: "/components/admin/EditPostFormContainer",
+          },
+        },
+      },
+    },
+  },
   fields: [
     {
       name: "title",
