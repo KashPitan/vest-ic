@@ -1,12 +1,12 @@
 import type { AdminViewProps, BasePayload } from "payload";
 
-import { DefaultTemplate } from "@payloadcms/next/templates";
 import { Gutter } from "@payloadcms/ui";
 import React from "react";
 import { EditPostForm } from "./EditPostForm";
 import { downloadFromBlob } from "@/lib/blob";
 import { getTagDropdownOptions } from "@/data-access-layer/tags";
 import { isPostHighlighted } from "@/data-access-layer/highlights";
+import { CreatePostForm } from "./PostForm";
 
 const getPostFormData = async (id: string, payload: BasePayload) => {
   try {
@@ -54,28 +54,21 @@ const getPostFormData = async (id: string, payload: BasePayload) => {
 export const EditPostFormContainer: React.FC<AdminViewProps> = async ({
   initPageResult,
   params,
-  searchParams,
 }) => {
-  const id = params?.segments?.[1];
-  if (!id) {
-    throw new Error("Post ID is required");
-  }
-
-  const postFormData = await getPostFormData(id, initPageResult.req.payload);
   const tagOptions = await getTagDropdownOptions();
+  const id = params?.segments?.at(-1) || '';
+  if (isNaN(+id)) {
+    return (
+      <Gutter>
+          <CreatePostForm tagOptions={tagOptions} />
+        </Gutter>
+    )
+  }
+  const postFormData = await getPostFormData(id, initPageResult.req.payload);
+  
   const highLightOptions = await isPostHighlighted(id)
 
   return (
-    <DefaultTemplate
-      i18n={initPageResult.req.i18n}
-      locale={initPageResult.locale}
-      params={params}
-      payload={initPageResult.req.payload}
-      permissions={initPageResult.permissions}
-      searchParams={searchParams}
-      user={initPageResult.req.user || undefined}
-      visibleEntities={initPageResult.visibleEntities}
-    >
       <Gutter>
         {postFormData ? (
           <EditPostForm
@@ -87,7 +80,6 @@ export const EditPostFormContainer: React.FC<AdminViewProps> = async ({
           <p>No Post Found :(</p>
         )}
       </Gutter>
-    </DefaultTemplate>
   );
 };
 
