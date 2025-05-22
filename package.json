@@ -15,10 +15,14 @@
     "test:watch": "jest --watch",
     "prepare": "husky",
     "payload": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload",
-    "ci": "payload migrate && npm run build"
+    "ci": "payload migrate && npm run build",
+    "db:generate": "drizzle-kit generate:pg",
+    "db:push": "drizzle-kit push:pg",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@hookform/resolvers": "^4.1.3",
+    "@neondatabase/serverless": "^1.0.0",
     "@payloadcms/db-postgres": "^3.24.0",
     "@payloadcms/next": "^3.24.0",
     "@payloadcms/richtext-lexical": "^3.24.0",
@@ -54,6 +58,7 @@
     "clsx": "^2.1.1",
     "cmdk": "1.0.4",
     "date-fns": "^4.1.0",
+    "drizzle-orm": "^0.43.1",
     "graphql": "^16.10.0",
     "lowlight": "^3.3.0",
     "lucide-react": "^0.479.0",
@@ -82,6 +87,7 @@
     "@types/react-dom": "^19",
     "@types/sanitize-html": "^2.15.0",
     "cross-env": "^7.0.3",
+    "drizzle-kit": "^0.31.1",
     "eslint": "^9",
     "eslint-config-next": "15.1.7",
     "eslint-config-prettier": "^10.1.2",
