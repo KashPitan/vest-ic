@@ -1,10 +1,10 @@
 import { z } from "zod";
 
 export const TagsSchema = z
-  .array(z.object({ id: z.number(), tag_name: z.string() }))
+  .array(z.object({ id: z.string().uuid(), tagName: z.string() }))
   .min(1, "At least one tag is required");
 
 export type TagDropdownOption = {
-  value: number;
+  value: string;
   label: string;
 };

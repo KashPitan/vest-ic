@@ -31,7 +31,7 @@ const PostFormSchema = z.object({
   releaseDate: z.string().optional(),
   displayImage: z.string().optional(),
   tags: z
-    .array(z.object({ value: z.number(), label: z.string() }))
+    .array(z.object({ value: z.string(), label: z.string() }))
     .min(1, "At least one tag is required"),
   isHighlight: z.boolean().optional(),
 });
@@ -46,7 +46,7 @@ type PostFormData = {
   releaseDate?: string;
   displayImage?: string;
   displayImageUrl?: string;
-  tags?: { value: number; label: string }[];
+  tags?: { value: string; label: string }[];
   id: string;
 };
 
@@ -87,7 +87,8 @@ export const EditPostForm = ({
   highLightOptions: HighLightOptions;
 }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const highlightsMaxed = !highLightOptions.isHighlight && !highLightOptions.canHighlight
+  const highlightsMaxed =
+    !highLightOptions.isHighlight && !highLightOptions.canHighlight;
   const oldDisplayImageUrl = post.displayImageUrl;
 
   const form = useForm<FormValues>({
@@ -137,15 +138,15 @@ export const EditPostForm = ({
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               post_id: post.id,
-            })
+            }),
           });
         } else {
           response = await fetch(`/api/admin/highlights`, {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              post_id: post.id
-            })
+              post_id: post.id,
+            }),
           });
         }
         const data = await response.json();
@@ -338,10 +339,10 @@ export const EditPostForm = ({
               </FormControl>
               <FormLabel className="mx-2">Highlight insight</FormLabel>
               {highlightsMaxed && (
-                  <p className="text-sm text-muted-foreground">
-                    Maximum highlights for insights reached!
-                  </p>
-                )}
+                <p className="text-sm text-muted-foreground">
+                  Maximum highlights for insights reached!
+                </p>
+              )}
               <FormMessage />
             </FormItem>
           )}

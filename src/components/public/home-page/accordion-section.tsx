@@ -11,36 +11,39 @@ interface AccordionItem {
 }
 
 interface AccordionSectionProps {
-  items: AccordionItem[];
+  items?: AccordionItem[];
 }
 
 export default function AccordionSection({ items }: AccordionSectionProps) {
   return (
     <div className="h-full min-w-full flex flex-col justify-center">
-      <Accordion
-        type="single"
-        defaultValue={items[0].value}
-        className="space-y-8 mb-10"
-      >
-        {items.map((item) => (
-          <CustomAccordionItem
-            key={item.value}
-            value={item.value}
-            title={item.title}
-            content={item.content}
-            imageSrc={item.imageSrc}
-          />
-        ))}
-      </Accordion>
-
-      <div className="flex justify-center">
-        <Link
-          href="/insights"
-          className={`text-xl text-pure-white hover:text-flat-gold transition-colors ${elza.className}`}
-        >
-          Read More
-        </Link>
-      </div>
+      {items && items.length > 0 && (
+        <>
+          <Accordion
+            type="single"
+            defaultValue={items[0].value}
+            className="space-y-8 mb-10"
+          >
+            {items.map((item) => (
+              <CustomAccordionItem
+                key={item.value}
+                value={item.value}
+                title={item.title}
+                content={item.content}
+                imageSrc={item.imageSrc}
+              />
+            ))}
+          </Accordion>
+          <div className="flex justify-center">
+            <Link
+              href="/insights"
+              className={`text-xl text-pure-white hover:text-flat-gold transition-colors ${elza.className}`}
+            >
+              Read More
+            </Link>
+          </div>
+        </>
+      )}
     </div>
   );
 }
