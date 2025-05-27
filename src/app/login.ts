@@ -1,15 +1,16 @@
-"use server";
+'use server'
 import { hash, verify } from "@node-rs/argon2";
 import { eq } from "drizzle-orm";
 import { generateIdFromEntropySize } from "lucia";
 import { lucia } from "@/lib/auth";
-import { db } from '@/db';
+import db from '@/drizzle.server';
 import { redirect } from "next/navigation";
 import { cookies as getCookies } from "next/headers";
 import { users } from "@/db/schema/users";
 import { validateRequest } from "./validateRequest";
 
-export const login = async (formData: FormData) => {
+export async function login (formData: FormData) {
+	console.log('logging in...')
     const username = formData.get('username');
     // username must be between 4 ~ 31 characters, and only consists of lowercase letters, 0-9, -, and _
 	// keep in mind some database (e.g. mysql) are case insensitive
@@ -29,6 +30,7 @@ export const login = async (formData: FormData) => {
 			error: "Invalid password"
 		};
 	}
+	// db._.tableNamesMap
     const result = await db.select().from(users).limit(1).where(eq(users.username,username.toLowerCase()));
     const [existingUser] = result;
     if (!existingUser) {
