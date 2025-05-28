@@ -18,8 +18,9 @@ const UpdatePostRequestSchema = z.object({
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
+  const { id } = await params;
   try {
     const data = await request.json();
     const {
@@ -62,7 +63,7 @@ export async function PUT(
           displayImageUrl,
           updatedAt: new Date(),
         })
-        .where(eq(posts.id, params.id))
+        .where(eq(posts.id, id))
         .returning();
 
       if (!updatedPost) {
@@ -70,12 +71,12 @@ export async function PUT(
       }
 
       // Delete existing tag associations
-      await tx.delete(postTags).where(eq(postTags.postId, params.id));
+      await tx.delete(postTags).where(eq(postTags.postId, id));
 
       // Create new tag associations
       await tx.insert(postTags).values(
         tags.map((tagId) => ({
-          postId: params.id,
+          postId: id,
           tagId: tagId.toString(),
         })),
       );
