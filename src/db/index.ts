@@ -1,6 +1,7 @@
 import { neonConfig, Pool } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-serverless";
 import { WebSocket } from "ws";
+import * as schema from "./schema";
 
 const connectionString =
   process.env.NODE_ENV === "production"
@@ -19,5 +20,5 @@ if (process.env.NODE_ENV === "production") {
 
 const pool = new Pool({ connectionString });
 
-export const db = drizzle(pool);
+export const db = drizzle(pool, { schema });
 export type DbClient = typeof db;

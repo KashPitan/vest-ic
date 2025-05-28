@@ -6,8 +6,6 @@ import { sql, desc } from "drizzle-orm";
 const HIGHLIGHT_LIMIT = 4;
 
 export const getHighlightedPosts = async () => {
-  // TODO: should be tag array?
-
   const highlightedPosts = await db
     .select({
       post: posts,

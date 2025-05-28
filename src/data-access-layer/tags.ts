@@ -4,7 +4,6 @@ import { TagsSchema, TagDropdownOption } from "@/schemas/tagsSchema";
 
 export const getTags = async () => {
   const allTags = await db.select().from(tags).orderBy(tags.tagName);
-  console.log(allTags);
   return { data: allTags };
 };
 
