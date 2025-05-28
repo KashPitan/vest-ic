@@ -1,10 +1,24 @@
-import { neon } from "@neondatabase/serverless";
-import { drizzle } from "drizzle-orm/neon-http";
+import { neonConfig, Pool } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/neon-serverless";
+import { WebSocket } from "ws";
 import * as schema from "./schema";
 
-// Get the database URL from environment variables
-const sql = neon(process.env.DATABASE_URL_2!);
-export const db = drizzle(sql, { schema });
+const connectionString =
+  process.env.NODE_ENV === "production"
+    ? process.env.DATABASE_URL_2
+    : process.env.LOCAL_POSTGRES_URL;
 
-// Export types
+if (process.env.NODE_ENV === "production") {
+  neonConfig.webSocketConstructor = WebSocket;
+  neonConfig.poolQueryViaFetch = true;
+} else {
+  neonConfig.wsProxy = (host) => `${host}:5433/v1`;
+  neonConfig.useSecureWebSocket = false;
+  neonConfig.pipelineTLS = false;
+  neonConfig.pipelineConnect = false;
+}
+
+const pool = new Pool({ connectionString });
+
+export const db = drizzle(pool, { schema });
 export type DbClient = typeof db;

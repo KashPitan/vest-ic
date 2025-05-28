@@ -5,12 +5,16 @@ import { articulat } from "@/fonts";
 
 export default async function Home() {
   const highlightedPosts = await getHighlightedPosts();
-  const accordionItems = highlightedPosts.map((p) => ({
-    title: p.title,
-    value: `${p.id}`,
-    content: p.excerpt,
-    imageSrc: p.displayImageUrl,
-  }));
+  const accordionItems =
+    highlightedPosts.length > 0
+      ? highlightedPosts.map(({ post }) => ({
+          title: post.title,
+          value: `${post.id}`,
+          content: post.excerpt,
+          imageSrc: post.displayImageUrl,
+        }))
+      : [];
+
   return (
     <div
       className={`${articulat.className} container mx-auto px-6 py-4 flex flex-col lg:flex-row gap-12 items-center`}

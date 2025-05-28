@@ -1,80 +1,74 @@
 import { NextResponse } from "next/server";
-import { getPayload } from "payload";
-import config from "@payload-config";
 import { z } from "zod";
-
-const payload = await getPayload({ config });
+import { db } from "@/db";
+import { highlights, posts } from "@/db/schema";
+import { eq } from "drizzle-orm";
 
 const CreateHighlightSchema = z.object({
-  post_id: z.coerce.number(),
+  post_id: z.string().uuid(),
 });
 
 export async function PUT(request: Request) {
-  const transactionID = (await payload.db.beginTransaction()) as string;
-
   try {
     const data = await request.json();
-    const { totalDocs } = await payload.count({
-      collection: "highlights",
-    });
-    if (totalDocs > 4) throw new Error("Only 5 highlights are allowed");
     const { post_id } = CreateHighlightSchema.parse(data);
-    const post = await payload.findByID({
-      collection: "posts",
-      id: post_id,
-      disableErrors: true,
-    });
-    if (!post) throw new Error("Post does not exist");
-    const highlight = await payload.create({
-      collection: "highlights",
-      data: { post_id },
-      req: {
-        transactionID,
-      },
-    });
-    await payload.db.commitTransaction(transactionID);
 
-    return NextResponse.json({ success: true, highlight });
+    // Start transaction
+    const result = await db.transaction(async (tx) => {
+      // Check if post exists
+      const post = await tx.query.posts.findFirst({
+        where: eq(posts.id, post_id),
+      });
+      if (!post) throw new Error("Post does not exist");
+
+      // Count existing highlights
+      const existingHighlights = await tx.query.highlights.findMany();
+      if (existingHighlights.length >= 5) {
+        throw new Error("Only 5 highlights are allowed");
+      }
+
+      // Create new highlight
+      const [highlight] = await tx
+        .insert(highlights)
+        .values({ postId: post_id })
+        .returning();
+
+      return highlight;
+    });
+
+    return NextResponse.json({ success: true, highlight: result });
   } catch (error) {
-    await payload.db.rollbackTransaction(transactionID);
-
-    console.error("Error creating post:", error);
+    console.error("Error creating highlight:", error);
     return NextResponse.json(
-      { error: "Failed to create insight" },
+      { error: "Failed to create highlight" },
       { status: 500 },
     );
   }
 }
 
 const DeleteHighlightSchema = z.object({
-  post_id: z.coerce.number(),
+  post_id: z.string().uuid(),
 });
 
 export async function DELETE(request: Request) {
-  const transactionID = (await payload.db.beginTransaction()) as string;
-
   try {
     const data = await request.json();
-
     const { post_id } = DeleteHighlightSchema.parse(data);
-    const highlight = await payload.delete({
-      collection: "highlights",
-      where: {
-        post_id: { equals: post_id },
-      },
-      req: {
-        transactionID,
-      },
+
+    const result = await db.transaction(async (tx) => {
+      const [deletedHighlight] = await tx
+        .delete(highlights)
+        .where(eq(highlights.postId, post_id))
+        .returning();
+
+      return deletedHighlight;
     });
-    await payload.db.commitTransaction(transactionID);
 
-    return NextResponse.json({ success: true, highlight });
+    return NextResponse.json({ success: true, highlight: result });
   } catch (error) {
-    await payload.db.rollbackTransaction(transactionID);
-
-    console.error("Error creating post:", error);
+    console.error("Error deleting highlight:", error);
     return NextResponse.json(
-      { error: "Failed to create insight" },
+      { error: "Failed to delete highlight" },
       { status: 500 },
     );
   }

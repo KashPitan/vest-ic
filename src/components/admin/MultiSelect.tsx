@@ -8,7 +8,7 @@ import { Command, CommandGroup, CommandItem } from "@/components/ui/command";
 import { CommandList, Command as CommandPrimitive } from "cmdk";
 
 export type Option = {
-  value: number;
+  value: string;
   label: string;
 };
 

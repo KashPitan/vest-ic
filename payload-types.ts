@@ -66,25 +66,13 @@ export interface Config {
   };
   blocks: {};
   collections: {
-    highlights: Highlight;
-    posts: Post;
-    tags: Tag;
-    postTags: PostTag;
     users: User;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
-  collectionsJoins: {
-    posts: {
-      tags: 'postTags';
-    };
-  };
+  collectionsJoins: {};
   collectionsSelect: {
-    highlights: HighlightsSelect<false> | HighlightsSelect<true>;
-    posts: PostsSelect<false> | PostsSelect<true>;
-    tags: TagsSelect<false> | TagsSelect<true>;
-    postTags: PostTagsSelect<false> | PostTagsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -124,56 +112,6 @@ export interface UserAuthOperations {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "highlights".
- */
-export interface Highlight {
-  id: number;
-  post_id: number | Post;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "posts".
- */
-export interface Post {
-  id: number;
-  title: string;
-  slug: string;
-  content: string;
-  excerpt: string;
-  releaseDate?: string | null;
-  displayImageUrl?: string | null;
-  tags?: {
-    docs?: (number | PostTag)[] | null;
-    hasNextPage?: boolean | null;
-  } | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "postTags".
- */
-export interface PostTag {
-  id: number;
-  post_id?: (number | null) | Post;
-  tag_id?: (number | null) | Tag;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tags".
- */
-export interface Tag {
-  id: number;
-  tag_name: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
@@ -195,27 +133,10 @@ export interface User {
  */
 export interface PayloadLockedDocument {
   id: number;
-  document?:
-    | ({
-        relationTo: 'highlights';
-        value: number | Highlight;
-      } | null)
-    | ({
-        relationTo: 'posts';
-        value: number | Post;
-      } | null)
-    | ({
-        relationTo: 'tags';
-        value: number | Tag;
-      } | null)
-    | ({
-        relationTo: 'postTags';
-        value: number | PostTag;
-      } | null)
-    | ({
-        relationTo: 'users';
-        value: number | User;
-      } | null);
+  document?: {
+    relationTo: 'users';
+    value: number | User;
+  } | null;
   globalSlug?: string | null;
   user: {
     relationTo: 'users';
@@ -257,49 +178,6 @@ export interface PayloadMigration {
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "highlights_select".
- */
-export interface HighlightsSelect<T extends boolean = true> {
-  post_id?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "posts_select".
- */
-export interface PostsSelect<T extends boolean = true> {
-  title?: T;
-  slug?: T;
-  content?: T;
-  excerpt?: T;
-  releaseDate?: T;
-  displayImageUrl?: T;
-  tags?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tags_select".
- */
-export interface TagsSelect<T extends boolean = true> {
-  tag_name?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "postTags_select".
- */
-export interface PostTagsSelect<T extends boolean = true> {
-  post_id?: T;
-  tag_id?: T;
-  updatedAt?: T;
-  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
