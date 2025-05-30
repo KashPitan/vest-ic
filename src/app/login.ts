@@ -1,7 +1,6 @@
 'use server'
 import { hash, verify } from "@node-rs/argon2";
 import { eq } from "drizzle-orm";
-import { generateIdFromEntropySize } from "lucia";
 import { lucia } from "@/lib/auth";
 import db from '@/drizzle.server';
 import { redirect } from "next/navigation";
@@ -10,7 +9,6 @@ import { users } from "@/db/schema/users";
 import { validateRequest } from "./validateRequest";
 
 export async function login (formData: FormData) {
-	console.log('logging in...')
     const username = formData.get('username');
     // username must be between 4 ~ 31 characters, and only consists of lowercase letters, 0-9, -, and _
 	// keep in mind some database (e.g. mysql) are case insensitive
@@ -85,18 +83,15 @@ export const signup = async (formData: FormData) => {
 		outputLen: 32,
 		parallelism: 1
 	});
-    const userId = generateIdFromEntropySize(10); // 16 characters long
-    await db.insert(users).values({id: userId,
+    const [{id: userId}] = await db.insert(users).values({
 		username: username.toLowerCase(),
 		passwordHash: passwordHash
-    });
-
-
+    }).returning({ id: users.id });
     const session = await lucia.createSession(userId, {});
 	const sessionCookie = lucia.createSessionCookie(session.id);
 	const cookies = await getCookies()
     cookies.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
-	return redirect("/");
+	return redirect("/login");
     
 }
 
