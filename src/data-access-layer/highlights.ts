@@ -10,13 +10,13 @@ export const getHighlightedPosts = async () => {
     .select({
       post: posts,
     })
-    .from(posts)
-    .leftJoin(highlights, eq(posts.id, highlights.postId))
+    .from(highlights)
+    .leftJoin(posts, eq(posts.id, highlights.postId))
     .limit(HIGHLIGHT_LIMIT);
 
-  if (highlightedPosts.length === 0) return [];
-
-  const highlightedPostIds = highlightedPosts.map((h) => h.post.id);
+  const highlightedPostIds = highlightedPosts
+    .filter((h) => h.post !== undefined && h.post !== null)
+    .map((h) => h.post!.id);
 
   // If we don't have enough highlighted posts, get recent posts
   if (highlightedPosts.length < HIGHLIGHT_LIMIT) {
@@ -25,16 +25,15 @@ export const getHighlightedPosts = async () => {
         post: posts,
       })
       .from(posts)
-      .leftJoin(highlights, eq(posts.id, highlights.postId))
       .limit(HIGHLIGHT_LIMIT - highlightedPosts.length)
       .orderBy(desc(posts.createdAt));
 
     // Filter out recent posts that are already in highlightedPostsWithTagsIds
-    const filteredRecentPostsWithTags = recentPostsWithTags.filter(
+    const filteredRecentPosts = recentPostsWithTags.filter(
       (r) => !highlightedPostIds.includes(r.post.id),
     );
 
-    return [...highlightedPosts, ...filteredRecentPostsWithTags];
+    return [...highlightedPosts, ...filteredRecentPosts];
   }
 
   return highlightedPosts;
