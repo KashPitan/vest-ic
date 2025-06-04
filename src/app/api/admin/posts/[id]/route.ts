@@ -13,7 +13,7 @@ const UpdatePostRequestSchema = z.object({
   excerpt: z.string().min(1, "Excerpt is required"),
   displayImage: z.string().optional(),
   oldDisplayImageUrl: z.string().optional(),
-  tags: z.array(z.number()).min(1, "At least one tag is required"),
+  tags: z.array(z.string()).min(1, "At least one tag is required"),
 });
 
 export async function PUT(
