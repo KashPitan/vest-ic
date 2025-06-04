@@ -1,4 +1,6 @@
 import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { postTags } from "./postTags";
+import { relations } from "drizzle-orm";
 
 export const posts = pgTable("posts", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -11,6 +13,10 @@ export const posts = pgTable("posts", {
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
+
+export const postTagsPostRelations = relations(posts, ({ many }) => ({
+  postTags: many(postTags),
+}));
 
 export type Post = typeof posts.$inferSelect;
 export type NewPost = typeof posts.$inferInsert;

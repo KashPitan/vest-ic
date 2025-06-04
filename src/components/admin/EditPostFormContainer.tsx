@@ -9,7 +9,7 @@ import { isPostHighlighted } from "@/data-access-layer/highlights";
 import { db } from "@/db";
 import { posts } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import type { Post } from "@/db/schema";
+import type { PostTag, Tag } from "@/db/schema";
 
 interface TagOption {
   value: string;
@@ -34,53 +34,31 @@ const getPostFormData = async (
   id: string,
 ): Promise<PostFormData | undefined> => {
   try {
-    // Explicitly type the result to include the nested tag
-    type PostWithTags = Post & {
-      tags: { tag: { id: string; tagName: string } }[];
-    };
-    const result = (
-      await db
-        .select({
-          id: posts.id,
-          title: posts.title,
-          slug: posts.slug,
-          content: posts.content,
-          excerpt: posts.excerpt,
-          releaseDate: posts.releaseDate,
-          displayImageUrl: posts.displayImageUrl,
-          createdAt: posts.createdAt,
-          updatedAt: posts.updatedAt,
-          tags: {
-            // Assuming posts.tags is a relation, you may need to join here
-            // This assumes you have a join table postsToTags and a tags table
-            // Adjust table/column names as needed
-            // This is a common pattern for many-to-many in Drizzle
-            // If you have a postsToTags join table:
-            // postsToTags: {
-            //   tag: { id: tags.id, tagName: tags.tagName }
-            // }
+    // get post with all tags (the type doesn't include the tag object for some reason)
+    const result = await db.query.posts.findFirst({
+      with: {
+        postTags: {
+          with: {
+            tag: true,
           },
-        })
-        .from(posts)
-        .where(eq(posts.id, id))
-        // If you need to join, do it here:
-        // .leftJoin(postsToTags, eq(postsToTags.postId, posts.id))
-        // .leftJoin(tags, eq(postsToTags.tagId, tags.id))
-        // .groupBy(posts.id)
-        // .addSelect({
-        //   tags: sql`json_agg(json_build_object('id', tags.id, 'tagName', tags.tagName))`
-        // })
-        .limit(1)
-    )[0] as PostWithTags | undefined;
+        },
+      },
+      where: eq(posts.id, id),
+    });
 
     if (!result) {
       return undefined;
     }
 
-    const tagOptions: TagOption[] = (result.tags ?? []).map((postTag) => ({
-      value: postTag.tag.id,
-      label: postTag.tag.tagName,
-    }));
+    const tagOptions: TagOption[] = (result.postTags ?? []).map(
+      // explicitly typing the tag here, it will always be defined
+      (postTag: PostTag & { tag?: Tag }) => {
+        return {
+          value: postTag.tag?.id ?? "",
+          label: postTag.tag?.tagName ?? "",
+        };
+      },
+    );
 
     const displayImage = result.displayImageUrl
       ? await downloadFromBlob(result.displayImageUrl)
