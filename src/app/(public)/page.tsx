@@ -7,15 +7,12 @@ export default async function Home() {
   const highlightedPosts = await getHighlightedPosts();
 
   // TODO: fix typing so we don't need bangs here
-  const accordionItems =
-    highlightedPosts.length > 0
-      ? highlightedPosts.map(({ post }) => ({
-          title: post!.title,
-          value: `${post!.id}`,
-          content: post!.excerpt,
-          imageSrc: post!.displayImageUrl,
-        }))
-      : [];
+  const accordionItems = highlightedPosts.map(({ post }) => ({
+    title: post!.title,
+    value: `${post!.id}`,
+    content: post!.excerpt,
+    imageSrc: post!.displayImageUrl,
+  }));
 
   return (
     <div
