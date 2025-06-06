@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
 import "../../globals.css";
 import { Inter } from "next/font/google";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Admin Dashboard | Vest IC",
@@ -25,6 +26,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
               {children}
             </main>
           </div>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
