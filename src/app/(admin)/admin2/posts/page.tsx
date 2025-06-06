@@ -21,7 +21,7 @@ export default async function PostsPage() {
     <div className="container mx-auto py-8">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Posts</h1>
-        <Link href="/admin/create-post">
+        <Link href="/admin2/posts/create">
           <Button>Create New Post</Button>
         </Link>
       </div>
