@@ -1,8 +1,10 @@
 import Image from "next/image";
-import { getPayload } from "payload";
-import config from "@payload-config";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
+import { db } from "@/db";
+import { posts } from "@/db/schema";
+import { eq } from "drizzle-orm";
+import { notFound } from "next/navigation";
 
 const stringToHtml = (value: string) => {
   return (
@@ -17,26 +19,39 @@ const stringToHtml = (value: string) => {
 
 const Insight = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const { slug } = await params;
-  const payload = await getPayload({ config });
-  const result = await payload.find({
-    collection: "posts",
-    where: {
-      slug: { equals: slug },
+
+  // TODO: extract to function
+  const post = await db.query.posts.findFirst({
+    with: {
+      postTags: {
+        with: {
+          tag: true,
+        },
+      },
     },
-    limit: 1,
+    where: eq(posts.slug, slug),
   });
-  const [post] = result.docs;
+
+  // TODO: add 404 page
+  if (!post) {
+    return notFound();
+  }
+
+  // TODO: add tags to the post
   return (
     <div className="w-full">
       <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-pure-white">
         {post.title || "UNKNOWN TITLE"}
       </h1>
-      <Label className="text-pure-white">
-        This insight was created on: {post.createdAt}
-      </Label>
+      {post.createdAt && (
+        <Label className="text-pure-white">
+          This insight was created on: {post.createdAt.toDateString()}
+        </Label>
+      )}
+
       {post.releaseDate && (
         <Label className="text-pure-white">
-          This insight was released on: {post.releaseDate}
+          This insight was released on: {post.releaseDate.toDateString()}
         </Label>
       )}
 

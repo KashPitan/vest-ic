@@ -30,7 +30,7 @@ const PostFormSchema = z.object({
   releaseDate: z.string().optional(),
   displayImage: z.string().optional(),
   tags: z
-    .array(z.object({ value: z.number(), label: z.string() }))
+    .array(z.object({ value: z.string(), label: z.string() }))
     .min(1, "At least one tag is required"),
 });
 

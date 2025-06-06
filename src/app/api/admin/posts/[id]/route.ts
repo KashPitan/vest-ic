@@ -1,11 +1,10 @@
 import { NextResponse } from "next/server";
-import { getPayload } from "payload";
-import config from "@payload-config";
 import { z } from "zod";
+import { db } from "@/db";
+import { posts, postTags } from "@/db/schema";
+import { eq } from "drizzle-orm";
 import sanitizeHtml from "sanitize-html";
 import { deleteFromBlob, uploadToBlob } from "@/lib/blob";
-
-const payload = await getPayload({ config });
 
 const UpdatePostRequestSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -14,16 +13,14 @@ const UpdatePostRequestSchema = z.object({
   excerpt: z.string().min(1, "Excerpt is required"),
   displayImage: z.string().optional(),
   oldDisplayImageUrl: z.string().optional(),
-  tags: z.array(z.number()).min(1, "At least one tag is required"),
+  tags: z.array(z.string()).min(1, "At least one tag is required"),
 });
 
 export async function PUT(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const transactionID = (await payload.db.beginTransaction()) as string;
   const { id } = await params;
-
   try {
     const data = await request.json();
     const {
@@ -52,48 +49,43 @@ export async function PUT(
     }
 
     const cleanContent = sanitizeHtml(content);
-    const post = await payload.update({
-      collection: "posts",
-      id,
-      data: {
-        title,
-        slug,
-        content: cleanContent,
-        excerpt,
-        displayImageUrl,
-      },
-      req: { transactionID },
+
+    // Use Drizzle transaction
+    const result = await db.transaction(async (tx) => {
+      // Update post
+      const [updatedPost] = await tx
+        .update(posts)
+        .set({
+          title,
+          slug,
+          content: cleanContent,
+          excerpt,
+          displayImageUrl,
+          updatedAt: new Date(),
+        })
+        .where(eq(posts.id, id))
+        .returning();
+
+      if (!updatedPost) {
+        throw new Error("Post not found");
+      }
+
+      // Delete existing tag associations
+      await tx.delete(postTags).where(eq(postTags.postId, id));
+
+      // Create new tag associations
+      await tx.insert(postTags).values(
+        tags.map((tagId) => ({
+          postId: id,
+          tagId: tagId.toString(),
+        })),
+      );
+
+      return updatedPost;
     });
 
-    // Delete existing tag associations
-    await payload.delete({
-      collection: "postTags",
-      where: {
-        post_id: { equals: id },
-      },
-      req: { transactionID },
-    });
-
-    // Create new tag associations
-    await Promise.all(
-      tags.map((value) =>
-        payload.create({
-          collection: "postTags",
-          data: {
-            post_id: post.id,
-            tag_id: value,
-          },
-          req: { transactionID },
-        }),
-      ),
-    );
-
-    await payload.db.commitTransaction(transactionID);
-
-    return NextResponse.json({ success: true, post });
+    return NextResponse.json({ success: true, post: result });
   } catch (error) {
-    await payload.db.rollbackTransaction(transactionID);
-
     console.error("Error updating post:", error);
     return NextResponse.json(
       { error: "Failed to update post" },

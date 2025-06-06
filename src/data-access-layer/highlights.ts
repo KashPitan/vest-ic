@@ -1,62 +1,57 @@
-import { getPayload } from "payload";
-import config from "@payload-config";
-
-const payload = await getPayload({ config });
+import { db } from "@/db";
+import { highlights, posts } from "@/db/schema";
+import { eq } from "drizzle-orm";
+import { sql, desc } from "drizzle-orm";
 
 const HIGHLIGHT_LIMIT = 4;
 
 export const getHighlightedPosts = async () => {
-  const { docs } = await payload.find({
-    collection: "highlights",
-    limit: HIGHLIGHT_LIMIT,
-    depth: 0,
-  });
-  const postIds = docs.map((d) => d.post_id);
+  const highlightedPosts = await db
+    .select({
+      post: posts,
+    })
+    .from(highlights)
+    .leftJoin(posts, eq(posts.id, highlights.postId))
+    .limit(HIGHLIGHT_LIMIT);
 
-  const { docs: highlightedPosts } = await payload.find({
-    collection: "posts",
-    where: {
-      id: {
-        in: postIds,
-      },
-    },
-    select: {
-      content: false,
-    },
-  });
+  const highlightedPostIds = highlightedPosts
+    .filter((h) => h.post !== undefined && h.post !== null)
+    .map((h) => h.post!.id);
+
+  // If we don't have enough highlighted posts, get recent posts
   if (highlightedPosts.length < HIGHLIGHT_LIMIT) {
-    const { docs: mostRecentPosts } = await payload.find({
-      collection: "posts",
-      where: {
-        id: {
-          not_in: postIds,
-        },
-      },
-      sort: "-createdAt",
-      select: {
-        content: false,
-      },
-      limit: HIGHLIGHT_LIMIT - highlightedPosts.length,
-    });
-    const posts = highlightedPosts.concat(mostRecentPosts);
-    return posts;
+    const recentPostsWithTags = await db
+      .select({
+        post: posts,
+      })
+      .from(posts)
+      .limit(HIGHLIGHT_LIMIT - highlightedPosts.length)
+      .orderBy(desc(posts.createdAt));
+
+    // Filter out recent posts that are already in highlightedPostsWithTagsIds
+    const filteredRecentPosts = recentPostsWithTags.filter(
+      (r) => !highlightedPostIds.includes(r.post.id),
+    );
+
+    return [...highlightedPosts, ...filteredRecentPosts];
   }
+
   return highlightedPosts;
 };
 
 export const isPostHighlighted = async (postId: string) => {
-  const highlight = await payload.find({
-    collection: "highlights",
-    where: {
-      post_id: { equals: postId },
-    },
-    disableErrors: true,
-  });
-  const { totalDocs } = await payload.count({
-    collection: "highlights",
-  });
+  const highlight = await db
+    .select()
+    .from(highlights)
+    .where(eq(highlights.postId, postId))
+    .then((rows) => rows[0]);
+
+  const totalHighlights = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(highlights);
+
   return {
-    isHighlight: Boolean(highlight.docs.length),
-    canHighlight: Boolean(totalDocs < HIGHLIGHT_LIMIT),
+    isHighlight: Boolean(highlight),
+    canHighlight: totalHighlights[0].count < HIGHLIGHT_LIMIT,
   };
 };
