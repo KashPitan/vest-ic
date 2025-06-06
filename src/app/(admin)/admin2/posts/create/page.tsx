@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -18,9 +18,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import MultiSelect from "./MultiSelect";
-import { MinimalTiptapEditor } from "../minimal-tiptap";
+import MultiSelect from "@/components/admin/MultiSelect";
+import { MinimalTiptapEditor } from "@/components/minimal-tiptap";
 import { TagDropdownOption } from "@/schemas/tagsSchema";
+import { Tag } from "@/db/schema";
+import { toast } from "sonner";
 
 const PostFormSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -36,12 +38,53 @@ const PostFormSchema = z.object({
 
 type FormValues = z.infer<typeof PostFormSchema>;
 
-export const CreatePostForm = ({
-  tagOptions,
-}: {
-  tagOptions: TagDropdownOption[];
-}) => {
+export default function CreatePostPage() {
+  const [tagOptions, setTagOptions] = useState<TagDropdownOption[]>([]);
+  const [isLoadingTags, setIsLoadingTags] = useState(true);
+
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const response = await fetch("/api/admin/tags");
+        if (!response.ok) {
+          throw new Error("Failed to fetch tags");
+        }
+        const data = (await response.json()) as Tag[];
+        const mappedData = data.map((tag) => ({
+          value: tag.id,
+          label: tag.tagName,
+        }));
+
+        setTagOptions(mappedData);
+      } catch (error) {
+        console.error("Error fetching tags:", error);
+        toast.error("Failed to fetch tags");
+      } finally {
+        setIsLoadingTags(false);
+      }
+    };
+
+    fetchTags();
+  }, []);
+
+  return (
+    <div className="container mx-auto py-8">
+      <h1 className="text-2xl font-bold mb-6">Create New Post</h1>
+      {isLoadingTags ? (
+        <div className="flex items-center justify-center">
+          <Loader2 className="h-6 w-6 animate-spin" />
+          <span className="ml-2">Loading tags...</span>
+        </div>
+      ) : (
+        <CreatePostForm tagOptions={tagOptions} />
+      )}
+    </div>
+  );
+}
+
+function CreatePostForm({ tagOptions }: { tagOptions: TagDropdownOption[] }) {
   const [isLoading, setIsLoading] = useState(false);
+  console.log(tagOptions[0]);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(PostFormSchema),
@@ -57,8 +100,6 @@ export const CreatePostForm = ({
   });
 
   const clearEditorText = () => {
-    // this looks for an element by an id we've added and clears all the child elements
-    // as the editor content takes the form of html elements within it
     const editorElement = document.getElementById("editor-content-input");
     if (editorElement) {
       while (editorElement.firstChild) {
@@ -96,22 +137,19 @@ export const CreatePostForm = ({
       const data = await response.json();
       if (response.ok) {
         form.reset();
-
-        // the previous file name remains after submission so clearing it manually
-        // to avoid confusion
         clearFileInput();
-
-        // react hook form clears the html value it stores but not the actual editor text
-        // so without this its still viewable in the form after submission
         clearEditorText();
-
-        alert("Post created successfully!");
+        toast.success("Post created successfully!");
       } else {
         throw new Error(data.message || "Failed to create post");
       }
     } catch (error) {
       console.error("Error creating post:", error);
-      alert("Failed to create post. Please try again.");
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to create post. Please try again.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -225,6 +263,7 @@ export const CreatePostForm = ({
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="displayImage"
@@ -291,4 +330,4 @@ export const CreatePostForm = ({
       </form>
     </Form>
   );
-};
+}
