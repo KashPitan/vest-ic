@@ -1,8 +1,5 @@
 "use client";
 
-import { db } from "@/db";
-import { posts } from "@/db/schema";
-import { desc } from "drizzle-orm";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
@@ -141,7 +138,7 @@ function DeletePostDialog({
           <AlertDialogTitle>Are you sure?</AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone. This will permanently delete the post
-            "{post.title}".
+            `&ldquo;`{post.title}`&ldquo;`.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

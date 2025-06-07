@@ -134,8 +134,9 @@ function DeleteTagDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>Are you sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete the tag "
-            {tag.tagName}".
+            This action cannot be undone. This will permanently delete the tag
+            `&ldquo;`
+            {tag.tagName}`&ldquo;`.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

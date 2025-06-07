@@ -40,7 +40,7 @@ export default function EditTagPage() {
   const params = useParams();
   const router = useRouter();
   const id = params?.id as string;
-  const [tagData, setTagData] = useState<TagFormData | null>(null);
+  const [_, setTagData] = useState<TagFormData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const form = useForm<FormValues>({
