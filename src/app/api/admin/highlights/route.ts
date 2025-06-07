@@ -3,6 +3,7 @@ import { z } from "zod";
 import { db } from "@/db";
 import { highlights, posts } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { isPostHighlighted } from "@/data-access-layer/highlights";
 
 const CreateHighlightSchema = z.object({
   post_id: z.string().uuid(),
@@ -69,6 +70,38 @@ export async function DELETE(request: Request) {
     console.error("Error deleting highlight:", error);
     return NextResponse.json(
       { error: "Failed to delete highlight" },
+      { status: 500 },
+    );
+  }
+}
+
+const GetHighlightStatusSchema = z.object({
+  post_id: z.string().uuid(),
+});
+
+// gets highlight data for a post
+export async function GET(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const post_id = searchParams.get("post_id");
+
+    if (!post_id) {
+      return NextResponse.json(
+        { error: "post_id is required" },
+        { status: 400 },
+      );
+    }
+
+    const { post_id: validatedPostId } = GetHighlightStatusSchema.parse({
+      post_id,
+    });
+    const result = await isPostHighlighted(validatedPostId);
+
+    return NextResponse.json(result);
+  } catch (error) {
+    console.error("Error checking highlight status:", error);
+    return NextResponse.json(
+      { error: "Failed to check highlight status" },
       { status: 500 },
     );
   }

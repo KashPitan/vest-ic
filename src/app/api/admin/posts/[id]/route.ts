@@ -93,3 +93,47 @@ export async function PUT(
     );
   }
 }
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const { id } = await params;
+  try {
+    // Get the post first to check if it exists and get the display image URL
+    const post = await db.query.posts.findFirst({
+      where: eq(posts.id, id),
+    });
+
+    if (!post) {
+      return NextResponse.json({ error: "Post not found" }, { status: 404 });
+    }
+
+    // Delete the post and its associated data in a transaction
+    const result = await db.transaction(async (tx) => {
+      // Delete post-tag associations
+      await tx.delete(postTags).where(eq(postTags.postId, id));
+
+      // Delete the post
+      const [deletedPost] = await tx
+        .delete(posts)
+        .where(eq(posts.id, id))
+        .returning();
+
+      return deletedPost;
+    });
+
+    // Delete the display image from blob storage if it exists
+    if (post.displayImageUrl) {
+      await deleteFromBlob(post.displayImageUrl);
+    }
+
+    return NextResponse.json({ success: true, post: result });
+  } catch (error) {
+    console.error("Error deleting post:", error);
+    return NextResponse.json(
+      { error: "Failed to delete post" },
+      { status: 500 },
+    );
+  }
+}
