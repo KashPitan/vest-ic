@@ -14,17 +14,4 @@ export default buildConfig({
     migrationDir: "./src/migrations",
   }),
   sharp,
-  admin: {
-    importMap: {
-      baseDir: "../../../../src",
-    },
-    components: {
-      views: {
-        "edit-post": {
-          Component: "/components/admin/EditPostFormContainer",
-          path: "/edit-post/:path",
-        },
-      },
-    },
-  },
 });

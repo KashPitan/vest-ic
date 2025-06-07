@@ -1,9 +1,11 @@
 "use client";
-import { useState, useCallback } from "react";
+
+import { useState, useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Loader2 } from "lucide-react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -16,12 +18,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import MultiSelect from "./MultiSelect";
-import { MinimalTiptapEditor } from "../minimal-tiptap";
+import MultiSelect from "@/components/admin/MultiSelect";
+import { MinimalTiptapEditor } from "@/components/minimal-tiptap";
 import { TagDropdownOption } from "@/schemas/tagsSchema";
 import { format } from "date-fns";
-import Image from "next/image";
-import { Checkbox } from "../ui/checkbox";
+import { Checkbox } from "@/components/ui/checkbox";
+import { toast } from "sonner";
+import { useParams } from "next/navigation";
+import { Tag } from "@/db/schema";
 
 const PostFormSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -77,29 +81,30 @@ function getDirtyValues<
   return dirtyValues;
 }
 
-export const EditPostForm = ({
-  post,
-  tagOptions,
-  highLightOptions,
-}: {
-  post: PostFormData;
+type EditPostFormProps = {
+  postData: PostFormData;
   tagOptions: TagDropdownOption[];
   highLightOptions: HighLightOptions;
-}) => {
+};
+
+function EditPostForm({
+  postData,
+  tagOptions,
+  highLightOptions,
+}: EditPostFormProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const highlightsMaxed =
-    !highLightOptions.isHighlight && !highLightOptions.canHighlight;
-  const oldDisplayImageUrl = post.displayImageUrl;
+  const params = useParams();
+  const id = params?.id as string;
 
   const form = useForm<FormValues>({
     resolver: zodResolver(PostFormSchema),
     defaultValues: {
-      ...post,
-      releaseDate: post.releaseDate
-        ? format(new Date(post.releaseDate), "yyyy-MM-dd'T'HH:mm")
+      ...postData,
+      releaseDate: postData.releaseDate
+        ? format(new Date(postData.releaseDate), "yyyy-MM-dd'T'HH:mm")
         : undefined,
       isHighlight: highLightOptions.isHighlight,
-      displayImage: oldDisplayImageUrl,
+      displayImage: postData.displayImageUrl,
     },
   });
 
@@ -108,8 +113,7 @@ export const EditPostForm = ({
     try {
       const dirtyValues = getDirtyValues(form.formState.dirtyFields, values);
 
-      // should use dirty values for below aswell
-      const response = await fetch(`/api/admin/posts/${post.id}`, {
+      const response = await fetch(`/api/admin/posts/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -119,13 +123,13 @@ export const EditPostForm = ({
           excerpt: values.excerpt,
           releaseDate: values.releaseDate,
           displayImage: values.displayImage,
-          oldDisplayImageUrl,
+          oldDisplayImageUrl: postData?.displayImageUrl,
           tags: values.tags.map((tag) => tag.value),
         }),
       });
       const data = await response.json();
       if (response.ok) {
-        alert("Post updated successfully!");
+        toast.success("Post updated successfully!");
       } else {
         throw new Error(data.message || "Failed to update post");
       }
@@ -137,7 +141,7 @@ export const EditPostForm = ({
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              post_id: post.id,
+              post_id: id,
             }),
           });
         } else {
@@ -145,20 +149,24 @@ export const EditPostForm = ({
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              post_id: post.id,
+              post_id: id,
             }),
           });
         }
         const data = await response.json();
         if (response.ok) {
-          alert("Highlights updated successfully!");
+          toast.success("Highlights updated successfully!");
         } else {
           throw new Error(data.message || "Failed to update highlights");
         }
       }
     } catch (error) {
       console.error("Error updating post:", error);
-      alert("Failed to update post. Please try again.");
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to update post. Please try again.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -178,6 +186,9 @@ export const EditPostForm = ({
     },
     [form],
   );
+
+  const highlightsMaxed =
+    !highLightOptions.isHighlight && !highLightOptions.canHighlight;
 
   return (
     <Form {...form}>
@@ -307,24 +318,28 @@ export const EditPostForm = ({
           )}
         />
         {/* Tags */}
-        <FormField
-          control={form.control}
-          name="tags"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Tags</FormLabel>
-              <FormControl>
-                <MultiSelect
-                  selected={field.value}
-                  options={tagOptions}
-                  onChange={field.onChange}
-                  placeholder="Select tags"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {form.getValues().tags && (
+          <FormField
+            control={form.control}
+            name="tags"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tags</FormLabel>
+                <FormControl>
+                  <MultiSelect
+                    selected={field.value}
+                    options={tagOptions}
+                    onChange={field.onChange}
+                    placeholder="Select tags"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+
+        {/* Highlight */}
         <FormField
           control={form.control}
           name="isHighlight"
@@ -360,4 +375,71 @@ export const EditPostForm = ({
       </form>
     </Form>
   );
-};
+}
+
+export default function EditPostPage() {
+  const params = useParams();
+  const id = params?.id as string;
+  const [postData, setPostData] = useState<PostFormData | null>(null);
+  const [tagOptions, setTagOptions] = useState<TagDropdownOption[]>([]);
+  const [highLightOptions, setHighLightOptions] = useState<HighLightOptions>({
+    isHighlight: false,
+    canHighlight: false,
+  });
+
+  // Fetch post data and options
+  const fetchData = async () => {
+    try {
+      const [postResponse, tagsResponse, highlightsResponse] =
+        await Promise.all([
+          fetch(`/api/admin/posts/${id}/form-data`),
+          fetch("/api/admin/tags"),
+          fetch(`/api/admin/highlights?post_id=${id}`),
+        ]);
+
+      const [postData, tagsData, highlightsData] = await Promise.all([
+        postResponse.json(),
+        tagsResponse.json(),
+        highlightsResponse.json(),
+      ]);
+      if (postData) {
+        setPostData(postData);
+      }
+      if (tagsData) {
+        const mappedData = tagsData.map((tag: Tag) => ({
+          value: tag.id,
+          label: tag.tagName,
+        }));
+        setTagOptions(mappedData);
+      }
+      if (highlightsData) {
+        setHighLightOptions(highlightsData);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      toast.error("Failed to load post data");
+    }
+  };
+
+  // Fetch data on mount
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  if (!postData) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <p className="text-muted-foreground">Loading post data...</p>
+      </div>
+    );
+  }
+
+  return (
+    <EditPostForm
+      postData={postData}
+      tagOptions={tagOptions}
+      highLightOptions={highLightOptions}
+    />
+  );
+}

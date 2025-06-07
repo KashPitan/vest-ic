@@ -31,7 +31,7 @@ export default async function PostsPage() {
           <Card key={post.id}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-xl font-bold">{post.title}</CardTitle>
-              <Link href={`/admin/edit-post/${post.id}`}>
+              <Link href={`/admin2/posts/edit/${post.id}`}>
                 <Button variant="outline">Edit</Button>
               </Link>
             </CardHeader>
