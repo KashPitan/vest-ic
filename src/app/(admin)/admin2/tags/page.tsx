@@ -93,7 +93,7 @@ export default function TagsPage() {
                   {tag.tagName}
                 </CardTitle>
                 <div className="flex gap-2">
-                  <Link href={`/admin/tags/edit-tag/${tag.id}`}>
+                  <Link href={`/admin2/tags/edit/${tag.id}`}>
                     <Button variant="outline">Edit</Button>
                   </Link>
                   <DeleteTagDialog tag={tag} onDelete={deleteTag} />
