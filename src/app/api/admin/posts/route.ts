@@ -4,6 +4,7 @@ import sanitizeHtml from "sanitize-html";
 import { uploadToBlob } from "@/lib/blob";
 import { db } from "@/db";
 import { posts, postTags } from "@/db/schema";
+import { desc } from "drizzle-orm";
 
 const CreatePostRequestSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -68,6 +69,28 @@ export async function POST(request: Request) {
     console.error("Error creating post:", error);
     return NextResponse.json(
       { error: "Failed to create post" },
+      { status: 500 },
+    );
+  }
+}
+
+export async function GET() {
+  try {
+    const fetchedPosts = await db.query.posts.findMany({
+      columns: {
+        id: true,
+        title: true,
+        slug: true,
+        releaseDate: true,
+      },
+      orderBy: [desc(posts.createdAt)],
+    });
+
+    return NextResponse.json(fetchedPosts);
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    return NextResponse.json(
+      { message: "Failed to fetch posts" },
       { status: 500 },
     );
   }
