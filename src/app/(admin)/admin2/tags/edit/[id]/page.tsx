@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
-import { CATEGORIES, Category, categorySchema } from "@/types/schemas/tags";
+import { CATEGORIES, categorySchema } from "@/types/schemas/tags";
 
 const formSchema = z.object({
   tagName: z
