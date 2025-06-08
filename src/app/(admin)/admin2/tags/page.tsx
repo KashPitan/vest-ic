@@ -41,6 +41,7 @@ export default function TagsPage() {
         const fetchedTags = await response.json();
         setAllTags(fetchedTags);
       } catch (error) {
+        console.error(error);
         toast.error("Failed to fetch tags");
       } finally {
         setIsLoading(false);
