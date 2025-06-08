@@ -84,7 +84,6 @@ export default function CreatePostPage() {
 
 function CreatePostForm({ tagOptions }: { tagOptions: TagDropdownOption[] }) {
   const [isLoading, setIsLoading] = useState(false);
-  console.log(tagOptions[0]);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(PostFormSchema),

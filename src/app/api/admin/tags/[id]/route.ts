@@ -50,17 +50,14 @@ export async function PUT(
 
   try {
     const body = await request.json();
-    console.log(body);
     // Validate request body
     const result = updateTagSchema.safeParse(body);
     if (!result.success) {
-      console.log(result.error.errors);
       return NextResponse.json(
         { message: "Invalid request body", errors: result.error.errors },
         { status: 400 },
       );
     }
-    console.log(result.data);
     const { tagName, category } = result.data;
 
     // Check if tag already exists (excluding current tag)
