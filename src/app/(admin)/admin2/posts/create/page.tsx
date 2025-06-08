@@ -20,7 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import MultiSelect from "@/components/admin/MultiSelect";
 import { MinimalTiptapEditor } from "@/components/minimal-tiptap";
-import { TagDropdownOption } from "@/schemas/tagsSchema";
+import { TagDropdownOption } from "@/types/schemas/tags";
 import { Tag } from "@/db/schema";
 import { toast } from "sonner";
 

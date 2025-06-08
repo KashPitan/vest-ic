@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { tags } from "@/db/schema";
-import { TagsSchema, TagDropdownOption } from "@/schemas/tagsSchema";
+import { TagsSchema, TagDropdownOption } from "@/types/schemas/tags";
 
 export const getTags = async () => {
   const allTags = await db.select().from(tags).orderBy(tags.tagName);

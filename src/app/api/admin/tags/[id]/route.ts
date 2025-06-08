@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { tags } from "@/db/schema/tags";
 import { eq } from "drizzle-orm";
 import * as z from "zod";
+import { categorySchema } from "@/types/schemas/tags";
 
 const updateTagSchema = z.object({
   tagName: z
@@ -13,15 +14,18 @@ const updateTagSchema = z.object({
       /^[a-zA-Z0-9\s-]+$/,
       "Tag name can only contain letters, numbers, spaces, and hyphens",
     ),
+  category: categorySchema,
 });
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
+  const { id } = await params;
+
   try {
     const tag = await db.query.tags.findFirst({
-      where: eq(tags.id, params.id),
+      where: eq(tags.id, id),
     });
 
     if (!tag) {
@@ -40,28 +44,31 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
+  const { id } = await params;
+
   try {
     const body = await request.json();
-
+    console.log(body);
     // Validate request body
     const result = updateTagSchema.safeParse(body);
     if (!result.success) {
+      console.log(result.error.errors);
       return NextResponse.json(
         { message: "Invalid request body", errors: result.error.errors },
         { status: 400 },
       );
     }
-
-    const { tagName } = result.data;
+    console.log(result.data);
+    const { tagName, category } = result.data;
 
     // Check if tag already exists (excluding current tag)
     const existingTag = await db.query.tags.findFirst({
       where: eq(tags.tagName, tagName),
     });
 
-    if (existingTag && existingTag.id !== params.id) {
+    if (existingTag && existingTag.id !== id) {
       return NextResponse.json(
         { message: "A tag with this name already exists" },
         { status: 409 },
@@ -73,9 +80,10 @@ export async function PUT(
       .update(tags)
       .set({
         tagName,
+        category,
         updatedAt: new Date(),
       })
-      .where(eq(tags.id, params.id))
+      .where(eq(tags.id, id))
       .returning();
 
     if (!updatedTag) {

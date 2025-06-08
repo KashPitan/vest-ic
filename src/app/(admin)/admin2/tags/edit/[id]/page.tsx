@@ -15,8 +15,16 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
+import { CATEGORIES, Category, categorySchema } from "@/types/schemas/tags";
 
 const formSchema = z.object({
   tagName: z
@@ -27,6 +35,7 @@ const formSchema = z.object({
       /^[a-zA-Z0-9\s-]+$/,
       "Tag name can only contain letters, numbers, spaces, and hyphens",
     ),
+  category: categorySchema,
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -34,6 +43,7 @@ type FormValues = z.infer<typeof formSchema>;
 type TagFormData = {
   id: string;
   tagName: string;
+  category: Category;
 };
 
 export default function EditTagPage() {
@@ -47,6 +57,7 @@ export default function EditTagPage() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       tagName: "",
+      category: "Cat1",
     },
   });
 
@@ -59,7 +70,7 @@ export default function EditTagPage() {
         }
         const data = await response.json();
         setTagData(data);
-        form.reset({ tagName: data.tagName });
+        form.reset({ tagName: data.tagName, category: data.category });
       } catch (error) {
         console.error("Error fetching tag:", error);
         toast.error("Failed to fetch tag data");
@@ -110,7 +121,7 @@ export default function EditTagPage() {
     <div className="container mx-auto py-10">
       <h1 className="text-2xl font-bold mb-6">Edit Tag</h1>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormField
             control={form.control}
             name="tagName"
@@ -118,13 +129,43 @@ export default function EditTagPage() {
               <FormItem>
                 <FormLabel>Tag Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter tag name" {...field} />
+                  <Input {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button type="submit">Update Tag</Button>
+          <FormField
+            control={form.control}
+            name="category"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Category</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a category" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {CATEGORIES.map((category) => (
+                      <SelectItem key={category} value={category}>
+                        {category}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button type="submit" disabled={isLoading}>
+            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Save Changes
+          </Button>
         </form>
       </Form>
     </div>

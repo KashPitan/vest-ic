@@ -3,6 +3,7 @@ export type Tag = {
   createdAt: Date | null;
   updatedAt: Date | null;
   tagName: string;
+  category: string;
 };
 
 export interface PaginatedData<D = never> {
