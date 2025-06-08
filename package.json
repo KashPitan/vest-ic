@@ -90,6 +90,7 @@
     "@types/react-dom": "^19",
     "@types/sanitize-html": "^2.15.0",
     "@types/ws": "^8.18.1",
+    "bufferutil": "^4.0.9",
     "cross-env": "^7.0.3",
     "drizzle-kit": "^0.31.1",
     "eslint": "^9",
