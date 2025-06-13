@@ -47,7 +47,6 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
-
   try {
     const body = await request.json();
     // Validate request body

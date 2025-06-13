@@ -44,6 +44,7 @@ export default function EditTagPage() {
   const params = useParams();
   const router = useRouter();
   const id = params?.id as string;
+  // eslint-disable-next-line no-unused-vars
   const [isLoading, setIsLoading] = useState(true);
 
   const form = useForm<FormValues>({
