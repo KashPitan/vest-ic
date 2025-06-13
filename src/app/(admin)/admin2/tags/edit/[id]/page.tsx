@@ -31,16 +31,11 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-type TagFormData = {
-  id: string;
-  tagName: string;
-};
-
 export default function EditTagPage() {
   const params = useParams();
   const router = useRouter();
   const id = params?.id as string;
-  const [_, setTagData] = useState<TagFormData | null>(null);
+  // eslint-disable-next-line no-unused-vars
   const [isLoading, setIsLoading] = useState(true);
 
   const form = useForm<FormValues>({
@@ -58,7 +53,6 @@ export default function EditTagPage() {
           throw new Error("Failed to fetch tag");
         }
         const data = await response.json();
-        setTagData(data);
         form.reset({ tagName: data.tagName });
       } catch (error) {
         console.error("Error fetching tag:", error);
