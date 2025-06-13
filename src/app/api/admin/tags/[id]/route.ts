@@ -17,11 +17,13 @@ const updateTagSchema = z.object({
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
+  const { id } = await params;
+
   try {
     const tag = await db.query.tags.findFirst({
-      where: eq(tags.id, params.id),
+      where: eq(tags.id, id),
     });
 
     if (!tag) {
@@ -40,8 +42,9 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
+  const { id } = await params;
   try {
     const body = await request.json();
 
@@ -61,7 +64,7 @@ export async function PUT(
       where: eq(tags.tagName, tagName),
     });
 
-    if (existingTag && existingTag.id !== params.id) {
+    if (existingTag && existingTag.id !== id) {
       return NextResponse.json(
         { message: "A tag with this name already exists" },
         { status: 409 },
@@ -75,7 +78,7 @@ export async function PUT(
         tagName,
         updatedAt: new Date(),
       })
-      .where(eq(tags.id, params.id))
+      .where(eq(tags.id, id))
       .returning();
 
     if (!updatedTag) {
