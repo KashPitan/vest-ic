@@ -20,7 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import MultiSelect from "@/components/admin/MultiSelect";
 import { MinimalTiptapEditor } from "@/components/minimal-tiptap";
-import { TagDropdownOption } from "@/schemas/tagsSchema";
+import { TagDropdownOption } from "@/types/schemas/tags";
 import { Tag } from "@/db/schema";
 import { toast } from "sonner";
 
@@ -84,7 +84,6 @@ export default function CreatePostPage() {
 
 function CreatePostForm({ tagOptions }: { tagOptions: TagDropdownOption[] }) {
   const [isLoading, setIsLoading] = useState(false);
-  console.log(tagOptions[0]);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(PostFormSchema),

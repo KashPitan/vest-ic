@@ -24,6 +24,7 @@ export default function TagsPage() {
     Array<{
       id: string;
       tagName: string;
+      category: string;
       createdAt: Date | null;
     }>
   >([]);
@@ -40,7 +41,7 @@ export default function TagsPage() {
         const fetchedTags = await response.json();
         setAllTags(fetchedTags);
       } catch (error) {
-        console.log(error);
+        console.error(error);
         toast.error("Failed to fetch tags");
       } finally {
         setIsLoading(false);
@@ -101,6 +102,9 @@ export default function TagsPage() {
               </CardHeader>
               <CardContent>
                 <div className="flex flex-col space-y-2">
+                  <p className="text-sm text-muted-foreground">
+                    Category: {tag.category}
+                  </p>
                   {tag.createdAt && (
                     <p className="text-sm text-muted-foreground">
                       Created: {format(new Date(tag.createdAt), "PPP")}

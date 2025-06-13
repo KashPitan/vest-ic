@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { tags } from "@/db/schema/tags";
 import { eq } from "drizzle-orm";
 import * as z from "zod";
+import { categorySchema } from "@/types/schemas/tags";
 
 const updateTagSchema = z.object({
   tagName: z
@@ -13,6 +14,7 @@ const updateTagSchema = z.object({
       /^[a-zA-Z0-9\s-]+$/,
       "Tag name can only contain letters, numbers, spaces, and hyphens",
     ),
+  category: categorySchema,
 });
 
 export async function GET(
@@ -47,7 +49,6 @@ export async function PUT(
   const { id } = await params;
   try {
     const body = await request.json();
-
     // Validate request body
     const result = updateTagSchema.safeParse(body);
     if (!result.success) {
@@ -56,8 +57,7 @@ export async function PUT(
         { status: 400 },
       );
     }
-
-    const { tagName } = result.data;
+    const { tagName, category } = result.data;
 
     // Check if tag already exists (excluding current tag)
     const existingTag = await db.query.tags.findFirst({
@@ -76,6 +76,7 @@ export async function PUT(
       .update(tags)
       .set({
         tagName,
+        category,
         updatedAt: new Date(),
       })
       .where(eq(tags.id, id))
