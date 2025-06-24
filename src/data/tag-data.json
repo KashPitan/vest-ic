@@ -1,0 +1,60 @@
+{
+  "Cat1": [
+    { "id": 1, "name": "Cash, Equivalents & Other" },
+    { "id": 2, "name": "Commodities" },
+    { "id": 3, "name": "Equities" },
+    { "id": 4, "name": "Fixed Income" },
+    { "id": 5, "name": "FX" },
+    { "id": 6, "name": "Multi Asset" },
+    { "id": 7, "name": "Options & Futures" },
+    { "id": 8, "name": "Other" },
+    { "id": 9, "name": "Uncorrelated" }
+  ],
+  "Cat2": [
+    { "id": 10, "name": "Cash & Other" },
+    { "id": 11, "name": "Cash, Equivalents & Other" },
+    { "id": 12, "name": "Commodities" },
+    { "id": 13, "name": "Equities" },
+    { "id": 14, "name": "Fixed Income" },
+    { "id": 15, "name": "Multi Asset" },
+    { "id": 16, "name": "Other" },
+    { "id": 17, "name": "Uncorrelated" }
+  ],
+  "Cat3": [
+    { "id": 18, "name": "Asia ex-Japan" },
+    { "id": 19, "name": "Cash, Equivalents & Other" },
+    { "id": 20, "name": "China" },
+    { "id": 21, "name": "Commodities" },
+    { "id": 22, "name": "Emerging Markets" },
+    { "id": 23, "name": "Europe ex-UK" },
+    { "id": 24, "name": "FX" },
+    { "id": 25, "name": "High Yield" },
+    { "id": 26, "name": "India" },
+    { "id": 27, "name": "Investment Grade" },
+    { "id": 28, "name": "Japan" },
+    { "id": 29, "name": "Multi Asset" },
+    { "id": 30, "name": "North America" },
+    { "id": 31, "name": "United States" },
+    { "id": 32, "name": "Other" },
+    { "id": 33, "name": "Sovereign" },
+    { "id": 34, "name": "Uncorrelated" },
+    { "id": 35, "name": "United Kingdom" }
+  ],
+  "Cat4": [
+    { "id": 36, "name": "Balanced" },
+    { "id": 37, "name": "Cash & Other" },
+    { "id": 38, "name": "Cash, Equivalents & Other" },
+    { "id": 39, "name": "Commodities" },
+    { "id": 40, "name": "FX" },
+    { "id": 41, "name": "Growth" },
+    { "id": 42, "name": "Value" },
+    { "id": 43, "name": "Long" },
+    { "id": 44, "name": "Medium" },
+    { "id": 45, "name": "Multi Asset" },
+    { "id": 46, "name": "Short" },
+    { "id": 47, "name": "Large" },
+    { "id": 48, "name": "Small" },
+    { "id": 49, "name": "Other" },
+    { "id": 50, "name": "Uncorrelated" }
+  ]
+}

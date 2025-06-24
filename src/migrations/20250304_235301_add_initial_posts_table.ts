@@ -1,4 +1,4 @@
-import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
+import { MigrateUpArgs, MigrateDownArgs, sql } from "@payloadcms/db-postgres";
 
 export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   await db.execute(sql`
@@ -21,15 +21,19 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
    WHEN duplicate_object THEN null;
   END $$;
   
-  CREATE INDEX IF NOT EXISTS "payload_locked_documents_rels_posts_id_idx" ON "payload_locked_documents_rels" USING btree ("posts_id");`)
+  CREATE INDEX IF NOT EXISTS "payload_locked_documents_rels_posts_id_idx" ON "payload_locked_documents_rels" USING btree ("posts_id");`);
 }
 
-export async function down({ db, payload, req }: MigrateDownArgs): Promise<void> {
+export async function down({
+  db,
+  payload,
+  req,
+}: MigrateDownArgs): Promise<void> {
   await db.execute(sql`
    ALTER TABLE "posts" DISABLE ROW LEVEL SECURITY;
   DROP TABLE "posts" CASCADE;
   ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT "payload_locked_documents_rels_posts_fk";
   
   DROP INDEX IF EXISTS "payload_locked_documents_rels_posts_id_idx";
-  ALTER TABLE "payload_locked_documents_rels" DROP COLUMN IF EXISTS "posts_id";`)
+  ALTER TABLE "payload_locked_documents_rels" DROP COLUMN IF EXISTS "posts_id";`);
 }

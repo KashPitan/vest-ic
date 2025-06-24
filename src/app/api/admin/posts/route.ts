@@ -1,90 +1,97 @@
 import { NextResponse } from "next/server";
-import { getPayload } from "payload";
-import config from "@payload-config";
 import { z } from "zod";
-import { put } from "@vercel/blob";
-// import sanitizeHtml from "sanitize-html";
-
-const payload = await getPayload({ config });
+import sanitizeHtml from "sanitize-html";
+import { uploadToBlob } from "@/lib/blob";
+import { db } from "@/db";
+import { posts, postTags } from "@/db/schema";
+import { desc } from "drizzle-orm";
 
 const CreatePostRequestSchema = z.object({
   title: z.string().min(1, "Title is required"),
   slug: z.string().min(1, "Slug is required"),
   content: z.string().min(1, "Content is required"),
   excerpt: z.string().min(1, "Excerpt is required"),
-  tags: z.array(z.number()).min(1, "At least one tag is required"),
-  images: z
-    .array(
-      z.object({
-        fileName: z.string(),
-        content: z.string(),
-        src: z.string(),
-      })
-    )
-    .default([]),
+  releaseDate: z.string().optional(),
+  displayImage: z.string().optional(),
+  tags: z.array(z.string().uuid()).min(1, "At least one tag is required"),
 });
 
 export async function POST(request: Request) {
-  const transactionID = (await payload.db.beginTransaction()) as string;
-
   try {
     const data = await request.json();
-    const { title, slug, content, excerpt, tags, images } =
+
+    const { title, slug, content, excerpt, tags, displayImage, releaseDate } =
       CreatePostRequestSchema.parse(data);
 
-    // TODO: stop this stripping out source
-    // const cleanContent = sanitizeHtml(content, {
-    //   allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
-    // allowedAttributes: {
-    //   ...sanitizeHtml.defaults.allowedAttributes,
-    //   img: ["src", "srcset", "alt", "title", "width", "height", "loading"],
-    // },
-    // allowedAttributes: false,
-    // });
+    let displayImageUrl: string | undefined;
 
-    const post = await payload.create({
-      collection: "posts",
-      data: {
-        title,
-        slug,
-        content, //clean content
-        excerpt,
-      },
-      req: { transactionID },
+    if (displayImage) {
+      const environment = process.env.ENVIRONMENT;
+      const environmentString = environment ? environment + "/" : "";
+      displayImageUrl = await uploadToBlob(
+        displayImage,
+        `posts/${slug}/${environmentString}display-image-${Date.now()}.jpg`,
+      );
+    }
+
+    const cleanContent = sanitizeHtml(content);
+
+    // Create the post and tags in a transaction
+    const result = await db.transaction(async (tx) => {
+      // Create the post
+      const [post] = await tx
+        .insert(posts)
+        .values({
+          title,
+          slug,
+          content: cleanContent,
+          excerpt,
+          releaseDate: releaseDate ? new Date(releaseDate) : undefined,
+          displayImageUrl,
+        })
+        .returning();
+
+      // Create the tags association
+      await Promise.all(
+        tags.map((tagId) =>
+          tx.insert(postTags).values({
+            postId: post.id,
+            tagId: tagId.toString(),
+          }),
+        ),
+      );
+
+      return post;
     });
 
-    // create the tags association
-    await Promise.all(
-      tags.map((value) =>
-        payload.create({
-          collection: "postTags",
-          data: {
-            post_id: post.id,
-            tag_id: value,
-          },
-          req: { transactionID },
-        })
-      )
-    );
-
-    await Promise.all(
-      images.map(({ fileName, content }) => {
-        const base64Data = content.split(",")[1] || content;
-        const blobData = Buffer.from(base64Data, "base64");
-        return put(`${slug}/${fileName}`, blobData, { access: "public" });
-      })
-    );
-
-    await payload.db.commitTransaction(transactionID);
-
-    return NextResponse.json({ success: true, post });
+    return NextResponse.json({ success: true, post: result });
   } catch (error) {
-    await payload.db.rollbackTransaction(transactionID);
-
     console.error("Error creating post:", error);
     return NextResponse.json(
       { error: "Failed to create post" },
-      { status: 500 }
+      { status: 500 },
+    );
+  }
+}
+
+export async function GET() {
+  try {
+    const fetchedPosts = await db.query.posts.findMany({
+      columns: {
+        id: true,
+        title: true,
+        slug: true,
+        releaseDate: true,
+      },
+      orderBy: [desc(posts.createdAt)],
+    });
+
+    return NextResponse.json(fetchedPosts);
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    return NextResponse.json(
+      { message: "Failed to fetch posts" },
+      { status: 500 },
     );
   }
 }

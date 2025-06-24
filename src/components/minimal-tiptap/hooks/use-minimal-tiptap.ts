@@ -201,11 +201,12 @@ export const useMinimalTiptapEditor = ({
     extensions: createExtensions(placeholder),
     editorProps: {
       attributes: {
-        autocomplete: "off",
-        autocorrect: "off",
-        autocapitalize: "off",
-        class: cn("focus:outline-none", editorClassName),
-      },
+        autocomplete: 'off',
+        autocorrect: 'off',
+        autocapitalize: 'off',
+        class: cn('focus:outline-none', editorClassName),
+        id: 'editor-content-input'
+      }
     },
     onUpdate: ({ editor }) => handleUpdate(editor),
     onCreate: ({ editor }) => handleCreate(editor),
