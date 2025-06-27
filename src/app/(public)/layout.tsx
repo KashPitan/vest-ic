@@ -29,7 +29,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="relative flex flex-col min-h-screen">
+          <div className="relative flex flex-col min-h-screen w-full">
             {/* Background graphic */}
             <div className="absolute inset-0 -z-10">
               <BackgroundGraphic />
@@ -37,7 +37,7 @@ export default function RootLayout({
 
             <Header />
 
-            <main className="flex-1 flex items-center justify-center py-8">
+            <main className="flex-1 flex justify-center py-8">
               {children}
             </main>
 
