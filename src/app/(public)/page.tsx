@@ -5,7 +5,7 @@ import { articulat } from "@/fonts";
 
 export default async function Home() {
   const highlightedPosts = await getHighlightedPosts();
-  console.log("highlightedPosts", highlightedPosts);
+  console.warn("highlightedPosts", highlightedPosts);
 
   // TODO: fix typing so we don't need bangs here
   const accordionItems = highlightedPosts.map(({ post }) => ({
