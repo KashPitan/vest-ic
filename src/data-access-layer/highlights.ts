@@ -14,12 +14,15 @@ export const getHighlightedPosts = async () => {
     .leftJoin(posts, eq(posts.id, highlights.postId))
     .limit(HIGHLIGHT_LIMIT);
 
+  console.log("initial highlightedPosts", highlightedPosts);
+
   const highlightedPostIds = highlightedPosts
     .filter((h) => h.post !== undefined && h.post !== null)
     .map((h) => h.post!.id);
 
   // If we don't have enough highlighted posts, get recent posts
   if (highlightedPosts.length < HIGHLIGHT_LIMIT) {
+    console.log("HIGHLIGHTED POSTS?");
     const recentPostsWithTags = await db
       .select({
         post: posts,
@@ -28,10 +31,14 @@ export const getHighlightedPosts = async () => {
       .limit(HIGHLIGHT_LIMIT - highlightedPosts.length)
       .orderBy(desc(posts.createdAt));
 
+    console.log("recentPostsWithTags", recentPostsWithTags);
+
     // Filter out recent posts that are already in highlightedPostsWithTagsIds
     const filteredRecentPosts = recentPostsWithTags.filter(
       (r) => !highlightedPostIds.includes(r.post.id),
     );
+
+    console.log(filteredRecentPosts);
 
     return [...highlightedPosts, ...filteredRecentPosts];
   }
