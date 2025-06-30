@@ -1,22 +1,17 @@
-import { getPayload } from "payload";
-import config from "@payload-config";
-import { TagsSchema, TagDropdownOption } from "@/schemas/tagsSchema";
-
-const payload = await getPayload({ config });
+import { db } from "@/db";
+import { tags } from "@/db/schema";
+import { TagsSchema, TagDropdownOption } from "@/types/schemas/tags";
 
 export const getTags = async () => {
-  const { docs } = await payload.find({
-    collection: "tags",
-    pagination: false,
-  });
-  return { data: docs };
+  const allTags = await db.select().from(tags).orderBy(tags.tagName);
+  return { data: allTags };
 };
 
 export const getTagDropdownOptions = async (): Promise<TagDropdownOption[]> => {
   try {
     const { data } = await getTags();
     const tagsData = TagsSchema.parse(data);
-    return tagsData.map(({ tag_name, id }) => ({ value: id, label: tag_name }));
+    return tagsData.map(({ tagName, id }) => ({ value: id, label: tagName }));
   } catch (error) {
     console.error("Error fetching tags:", error);
     return [];

@@ -1,11 +1,10 @@
 import { NextResponse } from "next/server";
-import { getPayload } from "payload";
-import config from "@payload-config";
 import { z } from "zod";
 import sanitizeHtml from "sanitize-html";
 import { uploadToBlob } from "@/lib/blob";
-
-const payload = await getPayload({ config });
+import { db } from "@/db";
+import { posts, postTags } from "@/db/schema";
+import { desc } from "drizzle-orm";
 
 const CreatePostRequestSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -14,12 +13,10 @@ const CreatePostRequestSchema = z.object({
   excerpt: z.string().min(1, "Excerpt is required"),
   releaseDate: z.string().optional(),
   displayImage: z.string().optional(),
-  tags: z.array(z.number()).min(1, "At least one tag is required"),
+  tags: z.array(z.string().uuid()).min(1, "At least one tag is required"),
 });
 
 export async function POST(request: Request) {
-  const transactionID = (await payload.db.beginTransaction()) as string;
-
   try {
     const data = await request.json();
 
@@ -39,42 +36,61 @@ export async function POST(request: Request) {
 
     const cleanContent = sanitizeHtml(content);
 
-    const post = await payload.create({
-      collection: "posts",
-      data: {
-        title,
-        slug,
-        content: cleanContent,
-        excerpt,
-        releaseDate: releaseDate || undefined,
-        displayImageUrl,
-      },
-      req: { transactionID },
+    // Create the post and tags in a transaction
+    const result = await db.transaction(async (tx) => {
+      // Create the post
+      const [post] = await tx
+        .insert(posts)
+        .values({
+          title,
+          slug,
+          content: cleanContent,
+          excerpt,
+          releaseDate: releaseDate ? new Date(releaseDate) : undefined,
+          displayImageUrl,
+        })
+        .returning();
+
+      // Create the tags association
+      await Promise.all(
+        tags.map((tagId) =>
+          tx.insert(postTags).values({
+            postId: post.id,
+            tagId: tagId.toString(),
+          }),
+        ),
+      );
+
+      return post;
     });
 
-    // create the tags association
-    await Promise.all(
-      tags.map((value) =>
-        payload.create({
-          collection: "postTags",
-          data: {
-            post_id: post.id,
-            tag_id: value,
-          },
-          req: { transactionID },
-        }),
-      ),
-    );
-
-    await payload.db.commitTransaction(transactionID);
-
-    return NextResponse.json({ success: true, post });
+    return NextResponse.json({ success: true, post: result });
   } catch (error) {
-    await payload.db.rollbackTransaction(transactionID);
-
     console.error("Error creating post:", error);
     return NextResponse.json(
       { error: "Failed to create post" },
+      { status: 500 },
+    );
+  }
+}
+
+export async function GET() {
+  try {
+    const fetchedPosts = await db.query.posts.findMany({
+      columns: {
+        id: true,
+        title: true,
+        slug: true,
+        releaseDate: true,
+      },
+      orderBy: [desc(posts.createdAt)],
+    });
+
+    return NextResponse.json(fetchedPosts);
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    return NextResponse.json(
+      { message: "Failed to fetch posts" },
       { status: 500 },
     );
   }

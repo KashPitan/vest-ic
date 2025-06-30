@@ -4,4 +4,3 @@ coverage
 .next
 src/components/minimal-tiptap
 src/components/ui
-payload-types.ts

@@ -6,12 +6,12 @@ import { Pagination } from "@/components/public/Pagination";
 import { SearchParams } from "@/lib/SearchParams";
 import Link from "next/link";
 import { useState } from "react";
-import { Post, Tag } from "../../../../payload-types";
 import {
   ReadonlyURLSearchParams,
   redirect,
   useSearchParams,
 } from "next/navigation";
+import { Post, Tag } from "@/db/schema";
 
 const TAGS_QUERY_PARAMETER = "tags";
 const PAGE_QUERY_PARAMETER = "page";
@@ -23,11 +23,11 @@ const getDefaultSelectedTags = (
   const defaultSelectedTags: Option[] = [];
   const searchParams = new SearchParams(currentSearchParams);
   const tagValues = searchParams.getQueryValue(TAGS_QUERY_PARAMETER);
+
   if (tagValues) {
-    const tagIds = tagValues.map((id) => Number.parseInt(id));
-    tagIds.forEach((id) => {
+    tagValues.forEach((id) => {
       const tag = tags.find((t) => t.id === id);
-      if (tag) defaultSelectedTags.push({ value: tag.id, label: tag.tag_name });
+      if (tag) defaultSelectedTags.push({ value: tag.id, label: tag.tagName });
     });
   }
   return defaultSelectedTags;
@@ -70,7 +70,7 @@ export const InsightsListView = ({
       <MultiSelect
         selected={selectedTags}
         onChange={setSelectedTags}
-        options={tags.map((t) => ({ value: t.id, label: t.tag_name }))}
+        options={tags.map((t) => ({ value: t.id, label: t.tagName }))}
         placeholder="Search by tags"
         className="text-pure-white"
       />
@@ -86,9 +86,12 @@ export const InsightsListView = ({
             >
               {title}
             </Link>
-            <h3 className="text-pure-white">
-              This insight was created on {createdAt}
-            </h3>
+            {createdAt && (
+              <h3 className="text-pure-white">
+                This insight was created on {createdAt.toDateString()}
+              </h3>
+            )}
+
             <Separator />
           </li>
         ))}

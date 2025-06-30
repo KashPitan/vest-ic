@@ -1,16 +1,15 @@
-import { getPayload, Where } from "payload";
-import config from "@payload-config";
-import { PaginatedData } from "@/types/PaginatedData";
-import { Post, Tag } from "../../payload-types";
+import { db } from "@/db";
+import { posts, postTags } from "@/db/schema";
+import { Post } from "@/db/schema";
 import { z } from "zod";
+import { inArray, sql, eq, desc } from "drizzle-orm";
+import { PaginatedData } from "@/types";
 
 interface SearchParams {
   page?: number;
   sort?: string;
   tags?: string;
 }
-
-const payload = await getPayload({ config });
 
 const PAGE_LIMIT = 3;
 
@@ -20,87 +19,60 @@ const SearchParamsSchema = z.object({
 });
 
 export const getPosts = async (searchParams?: SearchParams) => {
-  const { tags, page } = SearchParamsSchema.parse(searchParams || {});
-  const where: Where = {};
-  if (tags) {
-    const tagIds = tags.split(",");
-    const tagsQuery = {
-      in: tagIds,
-    };
-    const { docs, hasNextPage, hasPrevPage, totalDocs } = await payload.find({
-      collection: "postTags",
-      limit: PAGE_LIMIT,
-      where: {
-        tag_id: tagsQuery,
-      },
-      select: {
-        post_id: true,
-      },
-      page,
-      depth: 1,
-    });
-    const posts = docs.map((d) => d.post_id as Post);
-    const postIds = posts.map((p) => p.id);
+  const { tags: tagIds, page = 1 } = SearchParamsSchema.parse(
+    searchParams || {},
+  );
+  const offset = (page - 1) * PAGE_LIMIT;
+
+  if (tagIds) {
+    const tagIdArray = tagIds.split(",");
+
+    const postsWithTags = await db
+      .select()
+      .from(posts)
+      .leftJoin(postTags, eq(posts.id, postTags.postId))
+      .where(inArray(postTags.tagId, tagIdArray))
+      .limit(PAGE_LIMIT)
+      .offset(offset);
+
+    const postsData = postsWithTags.map((d) => d.posts);
+    const postIds = postsWithTags.map((p) => p.posts.id);
     const distinctPostsIds = new Set(postIds);
+
     const data: Post[] = [];
     distinctPostsIds.forEach((postId) => {
-      const post = posts.find((p) => p.id === postId);
+      const post = postsData.find((p) => p.id === postId);
       if (post) {
         data.push(post);
       }
     });
+
     const response: PaginatedData<Post> = {
       data,
-      hasNextPage: hasNextPage,
-      hasPrevPage: hasPrevPage,
-      totalDocs: totalDocs,
+      hasNextPage: offset + PAGE_LIMIT < data.length,
+      hasPrevPage: page > 1,
+      totalDocs: data.length,
     };
     return response;
   }
-  const { docs, hasNextPage, hasPrevPage, totalDocs } = await payload.find({
-    collection: "posts",
-    limit: PAGE_LIMIT,
-    sort: "-createdAt", // are these automatically indexed?
-    where,
-    select: {
-      id: true,
-      title: true,
-      slug: true,
-      createdAt: true,
-    },
-    page,
-  });
+
+  // Get all posts
+  const allPosts = await db
+    .select()
+    .from(posts)
+    .limit(PAGE_LIMIT)
+    .offset(offset)
+    .orderBy(desc(posts.createdAt));
+
+  const totalCount = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(posts);
+
   const response: PaginatedData<Post> = {
-    data: docs,
-    hasNextPage: hasNextPage,
-    hasPrevPage: hasPrevPage,
-    totalDocs: totalDocs,
+    data: allPosts,
+    hasNextPage: offset + PAGE_LIMIT < totalCount[0].count,
+    hasPrevPage: page > 1,
+    totalDocs: totalCount[0].count,
   };
   return response;
-};
-
-export const getPostBySlug = async (slug: string) => {
-  const result = await payload.find({
-    collection: "posts",
-    where: {
-      slug: { equals: slug },
-    },
-    limit: 1,
-  });
-  const [post] = result.docs;
-  const { docs: postTags } = await payload.find({
-    collection: "postTags",
-    where: {
-      post_id: { equals: post.id },
-    },
-    depth: 1,
-    select: {
-      post_id: false,
-    },
-  });
-  const postWithTags = {
-    ...post,
-    tags: postTags.map((t) => t.tag_id) as Tag[],
-  };
-  return postWithTags;
 };
