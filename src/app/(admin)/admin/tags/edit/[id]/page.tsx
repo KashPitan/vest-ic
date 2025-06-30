@@ -1,8 +1,10 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -21,7 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { CATEGORIES, categorySchema } from "@/types/schemas/tags";
 
 const formSchema = z.object({
@@ -36,9 +38,16 @@ const formSchema = z.object({
   category: categorySchema,
 });
 
-export default function CreateTagPage() {
+type FormValues = z.infer<typeof formSchema>;
+
+export default function EditTagPage() {
+  const params = useParams();
   const router = useRouter();
-  const form = useForm<z.infer<typeof formSchema>>({
+  const id = params?.id as string;
+  // eslint-disable-next-line no-unused-vars
+  const [isLoading, setIsLoading] = useState(true);
+
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       tagName: "",
@@ -46,10 +55,30 @@ export default function CreateTagPage() {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  useEffect(() => {
+    async function fetchTag() {
+      try {
+        const response = await fetch(`/api/admin/tags/${id}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch tag");
+        }
+        const data = await response.json();
+        form.reset({ tagName: data.tagName, category: data.category });
+      } catch (error) {
+        console.error("Error fetching tag:", error);
+        toast.error("Failed to fetch tag data");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchTag();
+  }, [id, form]);
+
+  async function onSubmit(values: FormValues) {
     try {
-      const response = await fetch("/api/admin/tags", {
-        method: "POST",
+      const response = await fetch(`/api/admin/tags/${id}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
@@ -62,8 +91,8 @@ export default function CreateTagPage() {
         throw new Error(data.message || "Something went wrong");
       }
 
-      toast.success("Tag created successfully");
-      router.push("/admin2/tags");
+      toast.success("Tag updated successfully");
+      router.push("/admin/tags");
       router.refresh();
     } catch (error) {
       toast.error(
@@ -72,9 +101,18 @@ export default function CreateTagPage() {
     }
   }
 
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <p className="text-muted-foreground">Loading tag data...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto py-10">
-      <h1 className="text-2xl font-bold mb-6">Create New Tag</h1>
+      <h1 className="text-2xl font-bold mb-6">Edit Tag</h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormField
@@ -84,7 +122,7 @@ export default function CreateTagPage() {
               <FormItem>
                 <FormLabel>Tag Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter tag name" {...field} />
+                  <Input {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -117,7 +155,10 @@ export default function CreateTagPage() {
               </FormItem>
             )}
           />
-          <Button type="submit">Create Tag</Button>
+          <Button type="submit" disabled={isLoading}>
+            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Save Changes
+          </Button>
         </form>
       </Form>
     </div>

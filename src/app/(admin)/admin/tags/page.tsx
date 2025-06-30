@@ -76,7 +76,7 @@ export default function TagsPage() {
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Tags</h1>
         {/* TODO: add create-tag page */}
-        <Link href="/admin2/tags/create">
+        <Link href="/admin/tags/create">
           <Button>Create New Tag</Button>
         </Link>
       </div>
@@ -94,7 +94,7 @@ export default function TagsPage() {
                   {tag.tagName}
                 </CardTitle>
                 <div className="flex gap-2">
-                  <Link href={`/admin2/tags/edit/${tag.id}`}>
+                  <Link href={`/admin/tags/edit/${tag.id}`}>
                     <Button variant="outline">Edit</Button>
                   </Link>
                   <DeleteTagDialog tag={tag} onDelete={deleteTag} />

@@ -75,7 +75,7 @@ export default function PostsPage() {
     <div className="container mx-auto py-8">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Posts</h1>
-        <Link href="/admin2/posts/create">
+        <Link href="/admin/posts/create">
           <Button>Create New Post</Button>
         </Link>
       </div>
@@ -93,7 +93,7 @@ export default function PostsPage() {
                   {post.title}
                 </CardTitle>
                 <div className="flex gap-2">
-                  <Link href={`/admin2/posts/edit/${post.id}`}>
+                  <Link href={`/admin/posts/edit/${post.id}`}>
                     <Button variant="outline">Edit</Button>
                   </Link>
                   <DeletePostDialog post={post} onDelete={deletePost} />

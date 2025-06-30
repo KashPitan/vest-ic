@@ -12,7 +12,7 @@ export default function AdminPage() {
 
       <div className="space-y-4">
         <Button
-          onClick={() => router.push("/admin2/tags")}
+          onClick={() => router.push("/admin/tags")}
           variant="default"
           className="w-full max-w-xs"
         >
@@ -20,7 +20,7 @@ export default function AdminPage() {
         </Button>
 
         <Button
-          onClick={() => router.push("/admin2/posts")}
+          onClick={() => router.push("/admin/posts")}
           variant="secondary"
           className="w-full max-w-xs"
         >
