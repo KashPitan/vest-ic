@@ -1,15 +1,25 @@
 import React from "react";
-import Image from "next/image";
 
 const BackgroundGraphic = () => {
   return (
-    <Image
-      src={`http://${process.env.BLOB_HOST}/assets/vest-ic-background-graphic.gif`}
-      alt="background-graphic"
-      fill
-      unoptimized
-      priority
-    />
+    <video
+      autoPlay
+      loop
+      muted
+      playsInline
+      style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        objectFit: "cover",
+        zIndex: -1,
+      }}
+    >
+      <source src="/background-graphic.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
   );
 };
 
