@@ -26,6 +26,14 @@ export default function AdminPage() {
         >
           Manage Posts
         </Button>
+
+        <Button
+          onClick={() => router.push("/admin/portfolio")}
+          variant="outline"
+          className="w-full max-w-xs"
+        >
+          Portfolio
+        </Button>
       </div>
     </div>
   );
