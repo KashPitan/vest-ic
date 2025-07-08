@@ -56,7 +56,7 @@ export default function PortfolioPage() {
       } else {
         setSuccess("File uploaded successfully!");
       }
-    } catch (e) {
+    } catch (_) {
       setError("Upload failed.");
     } finally {
       setUploading(false);
