@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import sanitizeHtml from "sanitize-html";
-import { uploadToBlob } from "@/lib/blob";
+import { uploadImageToBlob } from "@/lib/blob";
 import { db } from "@/db";
 import { posts, postTags } from "@/db/schema";
 import { desc } from "drizzle-orm";
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     if (displayImage) {
       const environment = process.env.ENVIRONMENT;
       const environmentString = environment ? environment + "/" : "";
-      displayImageUrl = await uploadToBlob(
+      displayImageUrl = await uploadImageToBlob(
         displayImage,
         `posts/${slug}/${environmentString}display-image-${Date.now()}.jpg`,
       );

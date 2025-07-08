@@ -1,6 +1,6 @@
-import { del, put } from "@vercel/blob";
+import { del, put, head } from "@vercel/blob";
 
-export async function uploadToBlob(
+export async function uploadImageToBlob(
   base64Image: string,
   filename: string,
 ): Promise<string> {
@@ -19,6 +19,28 @@ export async function uploadToBlob(
   });
 
   return url;
+}
+
+// Generic file upload for any file type, with folder support and existence check
+export async function uploadToBlob(
+  file: File,
+  folder: string = "",
+): Promise<{ url: string } | { error: string }> {
+  const filename = folder ? `${folder}/${file.name}` : file.name;
+  // Check if file exists
+  try {
+    await head(filename); // Throws if not found
+    return { error: "File with the same name already exists." };
+  } catch (e) {
+    // Not found, continue
+    console.log("File not found, continuing", e);
+  }
+  // Upload
+  const { url } = await put(filename, file, {
+    access: "public",
+    addRandomSuffix: false,
+  });
+  return { url };
 }
 
 export async function downloadFromBlob(url: string): Promise<string> {
