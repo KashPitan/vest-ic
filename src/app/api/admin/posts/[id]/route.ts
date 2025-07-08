@@ -4,7 +4,7 @@ import { db } from "@/db";
 import { posts, postTags } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import sanitizeHtml from "sanitize-html";
-import { deleteFromBlob, uploadToBlob } from "@/lib/blob";
+import { deleteFromBlob, uploadImageToBlob } from "@/lib/blob";
 
 const UpdatePostRequestSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -38,7 +38,7 @@ export async function PUT(
     if (displayImage) {
       const environment = process.env.ENVIRONMENT;
       const environmentString = environment ? environment + "/" : "";
-      displayImageUrl = await uploadToBlob(
+      displayImageUrl = await uploadImageToBlob(
         displayImage,
         `posts/${slug}/${environmentString}display-image-${Date.now()}.jpg`,
       );
