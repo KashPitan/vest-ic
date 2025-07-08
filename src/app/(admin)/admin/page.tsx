@@ -34,6 +34,14 @@ export default function AdminPage() {
         >
           Portfolio
         </Button>
+
+        <Button
+          onClick={() => router.push("/admin/portfolio/data-source")}
+          variant="outline"
+          className="w-full max-w-xs"
+        >
+          Set Portfolio Data Source
+        </Button>
       </div>
     </div>
   );
