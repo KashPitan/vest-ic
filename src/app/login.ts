@@ -32,7 +32,7 @@ export async function login(formData: FormData) {
       error: "Invalid password",
     };
   }
-  // db._.tableNamesMap
+
   const result = await db
     .select()
     .from(users)
