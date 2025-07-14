@@ -2,6 +2,7 @@ import { cookies as getCookies } from "next/headers";
 import { cache } from "react";
 import type { Session, User } from "lucia";
 import { lucia } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 export const validateRequest = cache(
   async (): Promise<
@@ -39,3 +40,13 @@ export const validateRequest = cache(
     return result;
   },
 );
+
+export const isLoggedIn = async () => {
+  const { session } = await validateRequest();
+  return Boolean(session);
+};
+
+export const isAdmin = async () => {
+  const { session } = await validateRequest();
+  if (!session) redirect("/");
+};
