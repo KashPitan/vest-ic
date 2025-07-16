@@ -68,7 +68,7 @@ export async function login(formData: FormData) {
   return redirect("/");
 }
 
-export const signup = async (formData: FormData) => {
+export const changePassword = async (formData: FormData) => {
   const username = formData.get("username");
   // username must be between 4 ~ 31 characters, and only consists of lowercase letters, 0-9, -, and _
   // keep in mind some database (e.g. mysql) are case insensitive
@@ -111,11 +111,11 @@ export const signup = async (formData: FormData) => {
     parallelism: 1,
   });
   const [{ id: userId }] = await db
-    .insert(users)
-    .values({
-      username: username.toLowerCase(),
+    .update(users)
+    .set({
       passwordHash: passwordHash,
     })
+    .where(eq(users.username, username.toLowerCase()))
     .returning({ id: users.id });
   const session = await lucia.createSession(userId, {});
   const sessionCookie = lucia.createSessionCookie(session.id);

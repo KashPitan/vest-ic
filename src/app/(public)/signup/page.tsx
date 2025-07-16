@@ -12,7 +12,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { signup } from "../../../lib/login";
+import { changePassword } from "../../../lib/login";
+
 const USERNAME_VALIDATION_MESSAGE = "username must be between 4 ~ 31 characters, and only consists of lowercase letters, 0-9, -, and _";
 const PASSWORD_VALIDATION_MESSAGE = "password must be between 6 ~ 255 characters"
 
@@ -36,7 +37,7 @@ const Page = () => {
       <Form {...form}>
         <form
           action={async (formData) => {
-            await signup(formData);
+            await changePassword(formData);
           }}
           className="space-y-6"
           title=""
