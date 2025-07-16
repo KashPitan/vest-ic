@@ -92,6 +92,17 @@ export const signup = async (formData: FormData) => {
       error: "Invalid password",
     };
   }
+  const result = await db
+    .select()
+    .from(users)
+    .limit(1)
+    .where(eq(users.username, username.toLowerCase()));
+  const [existingUser] = result;
+  if (!existingUser) {
+    return {
+      error: "User does not exist",
+    };
+  }
   const passwordHash = await hash(password, {
     // recommended minimum parameters
     memoryCost: 19456,

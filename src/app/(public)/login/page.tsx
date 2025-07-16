@@ -12,7 +12,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { login } from "../../login";
+import { login } from "../../../lib/login";
 
 const USERNAME_VALIDATION_MESSAGE = "username must be between 4 ~ 31 characters, and only consists of lowercase letters, 0-9, -, and _";
 const PASSWORD_VALIDATION_MESSAGE = "password must be between 6 ~ 255 characters"

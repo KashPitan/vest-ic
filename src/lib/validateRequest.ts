@@ -2,7 +2,12 @@ import { cookies as getCookies } from "next/headers";
 import { cache } from "react";
 import type { Session, User } from "lucia";
 import { lucia } from "@/lib/auth";
-import { redirect } from "next/navigation";
+
+class UserNotAuthenticatedError extends Error {
+  constructor() {
+    super("USER IS NOT AUTHENTICATED");
+  }
+}
 
 export const validateRequest = cache(
   async (): Promise<
@@ -47,6 +52,9 @@ export const isLoggedIn = async () => {
 };
 
 export const isAdmin = async () => {
-  const { session } = await validateRequest();
-  if (!session) redirect("/");
+  const userAndSession = await validateRequest();
+  if (!userAndSession.session) {
+    throw new UserNotAuthenticatedError();
+  }
+  return userAndSession;
 };
