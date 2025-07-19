@@ -4,6 +4,7 @@ import { tags } from "@/db/schema/tags";
 import { eq } from "drizzle-orm";
 import * as z from "zod";
 import { categorySchema } from "@/types/schemas/tags";
+import { isAdmin } from "@/lib/validateRequest";
 
 const updateTagSchema = z.object({
   tagName: z
@@ -24,6 +25,7 @@ export async function GET(
   const { id } = await params;
 
   try {
+    await isAdmin();
     const tag = await db.query.tags.findFirst({
       where: eq(tags.id, id),
     });
@@ -48,6 +50,7 @@ export async function PUT(
 ) {
   const { id } = await params;
   try {
+    await isAdmin();
     const body = await request.json();
     // Validate request body
     const result = updateTagSchema.safeParse(body);
