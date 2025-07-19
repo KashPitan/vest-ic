@@ -2,7 +2,7 @@
 import { hash, verify } from "@node-rs/argon2";
 import { eq } from "drizzle-orm";
 import { lucia } from "@/lib/auth";
-import db from "@/drizzle.server";
+import { db } from "@/db";
 import { redirect } from "next/navigation";
 import { cookies as getCookies } from "next/headers";
 import { users } from "@/db/schema/users";

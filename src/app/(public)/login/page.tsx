@@ -61,7 +61,7 @@ const Page = () => {
             <FormItem>
               <FormLabel className="text-pure-white">Password</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input type="password" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
