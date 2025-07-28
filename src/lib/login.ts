@@ -125,7 +125,7 @@ export const changePassword = async (formData: FormData) => {
     sessionCookie.value,
     sessionCookie.attributes,
   );
-  return redirect("/login");
+  return redirect("/");
 };
 
 export const logout = async () => {

@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/public/home-page/theme-provider";
 import Header from "@/components/public/home-page/header";
 import Footer from "@/components/public/home-page/footer";
 import BackgroundGraphic from "@/components/public/background-graphic/BackgroundGraphic";
+import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -36,6 +37,7 @@ export default function RootLayout({
             </div>
 
             <Header />
+            <Toaster />
 
             <main className="flex-1 flex justify-center py-8">
               {children}
