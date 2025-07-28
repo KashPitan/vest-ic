@@ -36,7 +36,10 @@ export async function POST(request: Request) {
       );
     }
 
-    const cleanContent = sanitizeHtml(content);
+    const cleanContent = sanitizeHtml(content, {
+      allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
+      allowedSchemes: ["data", "https"],
+    });
 
     // Create the post and tags in a transaction
     const result = await db.transaction(async (tx) => {
