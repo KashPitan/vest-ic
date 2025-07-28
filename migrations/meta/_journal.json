@@ -15,6 +15,13 @@
       "when": 1749332188008,
       "tag": "0001_fearless_zarek",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1752530543689,
+      "tag": "0002_worthless_energizer",
+      "breakpoints": true
     }
   ]
 }
