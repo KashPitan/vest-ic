@@ -1,5 +1,13 @@
 import { del, put, head } from "@vercel/blob";
 
+export async function uploadEditorImageToBlob(file: File): Promise<string> {
+  const filename = `images/${file.name}`;
+  const { url } = await put(filename, file.stream(), {
+    access: "public",
+  });
+  return url;
+}
+
 export async function uploadImageToBlob(
   base64Image: string,
   filename: string,
