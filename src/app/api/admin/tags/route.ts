@@ -4,6 +4,7 @@ import { tags } from "@/db/schema/tags";
 import { eq, desc } from "drizzle-orm";
 import * as z from "zod";
 import { categorySchema } from "@/types/schemas/tags";
+import { isAdmin } from "@/lib/validateRequest";
 
 const createTagSchema = z.object({
   tagName: z
@@ -19,6 +20,7 @@ const createTagSchema = z.object({
 
 export async function POST(request: Request) {
   try {
+    await isAdmin();
     const body = await request.json();
 
     // Validate request body
@@ -65,6 +67,7 @@ export async function POST(request: Request) {
 
 export async function DELETE(request: Request) {
   try {
+    await isAdmin();
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
 
@@ -97,6 +100,7 @@ export async function DELETE(request: Request) {
 
 export async function GET() {
   try {
+    await isAdmin();
     const fetchedTags = await db.query.tags.findMany({
       columns: {
         id: true,

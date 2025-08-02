@@ -5,6 +5,7 @@ import { posts, postTags } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import sanitizeHtml from "sanitize-html";
 import { deleteFromBlob, uploadImageToBlob } from "@/lib/blob";
+import { isAdmin } from "@/lib/validateRequest";
 
 const UpdatePostRequestSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -22,6 +23,7 @@ export async function PUT(
 ) {
   const { id } = await params;
   try {
+    await isAdmin();
     const data = await request.json();
     const {
       title,
@@ -100,6 +102,7 @@ export async function DELETE(
 ) {
   const { id } = await params;
   try {
+    await isAdmin();
     // Get the post first to check if it exists and get the display image URL
     const post = await db.query.posts.findFirst({
       where: eq(posts.id, id),
