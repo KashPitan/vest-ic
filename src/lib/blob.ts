@@ -1,11 +1,17 @@
+"use server";
 import { del, put, head } from "@vercel/blob";
 
 export async function uploadEditorImageToBlob(file: File): Promise<string> {
   const filename = `images/${file.name}`;
-  const { url } = await put(filename, file.stream(), {
-    access: "public",
-  });
-  return url;
+  try {
+    const { url } = await put(filename, file.stream(), {
+      access: "public",
+    });
+    return url;
+  } catch (e) {
+    console.error("ERROR UPLOADING BLOB TO VERCEL", e);
+    throw e;
+  }
 }
 
 export async function uploadImageToBlob(

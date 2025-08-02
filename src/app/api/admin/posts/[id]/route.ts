@@ -50,7 +50,9 @@ export async function PUT(
       await deleteFromBlob(oldDisplayImageUrl);
     }
 
-    const cleanContent = sanitizeHtml(content);
+    const cleanContent = sanitizeHtml(content, {
+      allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
+    });
 
     // Use Drizzle transaction
     const result = await db.transaction(async (tx) => {
