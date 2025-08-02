@@ -3,9 +3,9 @@ import { z } from "zod";
 import { db } from "@/db";
 import { posts, postTags } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import sanitizeHtml from "sanitize-html";
 import { deleteFromBlob, uploadImageToBlob } from "@/lib/blob";
 import { isAdmin } from "@/lib/validateRequest";
+import { sanitizePostContent } from "@/lib/utils";
 
 const UpdatePostRequestSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -50,9 +50,7 @@ export async function PUT(
       await deleteFromBlob(oldDisplayImageUrl);
     }
 
-    const cleanContent = sanitizeHtml(content, {
-      allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
-    });
+    const cleanContent = sanitizePostContent(content);
 
     // Use Drizzle transaction
     const result = await db.transaction(async (tx) => {
