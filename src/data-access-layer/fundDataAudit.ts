@@ -1,5 +1,6 @@
 import { db } from "@/db";
 import { fundDataAudit, type NewFundDataAudit } from "@/db/schema";
+import { desc } from "drizzle-orm";
 
 export async function createFundDataAuditRecord(data: NewFundDataAudit) {
   try {
@@ -21,5 +22,19 @@ export async function getFundDataAuditRecords() {
   } catch (error) {
     console.error("Error fetching fund data audit records:", error);
     return { success: false, error: "Failed to fetch audit records" };
+  }
+}
+
+export async function getLatestFundDataAuditRecord() {
+  try {
+    const record = await db
+      .select()
+      .from(fundDataAudit)
+      .orderBy(desc(fundDataAudit.uploadDate))
+      .limit(1);
+    return { success: true, data: record[0] || null };
+  } catch (error) {
+    console.error("Error fetching latest fund data audit record:", error);
+    return { success: false, error: "Failed to fetch latest audit record" };
   }
 }

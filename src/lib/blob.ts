@@ -80,3 +80,27 @@ export async function deleteFromBlob(url: string): Promise<void> {
     throw error;
   }
 }
+
+export async function downloadFileFromBlob(url: string): Promise<ArrayBuffer> {
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch file: ${response.statusText}`);
+    }
+
+    // Get the file data as an array buffer
+    const arrayBuffer = await response.arrayBuffer();
+    return arrayBuffer;
+  } catch (error) {
+    console.error("Error downloading file:", error);
+    throw error;
+  }
+}
+
+export function getBlobUrl(filename: string, folder: string = ""): string {
+  const blobHost =
+    process.env.BLOB_HOST || "https://your-project.blob.vercel-storage.com";
+  const fullPath = folder ? `${folder}/${filename}` : filename;
+  return `https://${blobHost}/${fullPath}`;
+}
