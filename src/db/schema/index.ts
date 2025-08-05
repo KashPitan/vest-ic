@@ -4,3 +4,4 @@ export * from "./postTags";
 export * from "./highlights";
 export * from "./users";
 export * from "./sessions";
+export * from "./fundDataAudit";
