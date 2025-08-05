@@ -7,7 +7,7 @@ interface SheetNamesProps {
 // This is a placeholder component
 export default function SheetNames({ workbook }: SheetNamesProps) {
   return (
-    <ul className="list-disc pl-5">
+    <ul className="list-disc pl-5 text-pure-white">
       {workbook.SheetNames.map((name) => (
         <li key={name}>{name}</li>
       ))}
