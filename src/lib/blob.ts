@@ -1,8 +1,13 @@
 "use server";
 import { del, put, head } from "@vercel/blob";
+import { parse } from "node:path";
 
 export async function uploadEditorImageToBlob(file: File): Promise<string> {
-  const filename = `images/${file.name}`;
+  const environment = process.env.ENVIRONMENT;
+  const environmentString = environment ? environment + "/" : "";
+  const { ext } = parse(file.name);
+  const fileNameWithoutExtension = file.name.replace(new RegExp(`${ext}$`), "");
+  const filename = `posts/editor-images/${environmentString}${fileNameWithoutExtension}-${Date.now()}${ext}`;
   try {
     const { url } = await put(filename, file.stream(), {
       access: "public",
