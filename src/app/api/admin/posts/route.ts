@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import sanitizeHtml from "sanitize-html";
 import { uploadImageToBlob } from "@/lib/blob";
 import { db } from "@/db";
 import { posts, postTags } from "@/db/schema";
 import { desc } from "drizzle-orm";
 import { isAdmin } from "@/lib/validateRequest";
+import { sanitizePostContent } from "@/lib/utils";
 
 const CreatePostRequestSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const cleanContent = sanitizeHtml(content);
+    const cleanContent = sanitizePostContent(content);
 
     // Create the post and tags in a transaction
     const result = await db.transaction(async (tx) => {
