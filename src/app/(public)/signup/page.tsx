@@ -12,7 +12,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { changePassword } from "../../../lib/login";
+import { signup } from "../../../lib/login";
 import { toast } from "sonner";
 
 const USERNAME_VALIDATION_MESSAGE =
@@ -45,7 +45,7 @@ const Page = () => {
     <Form {...form}>
       <form
         action={async (formData) => {
-          const response = await changePassword(formData);
+          const response = await signup(formData);
           if (response.error) {
             console.error(response.error);
             toast.error("FAILED TO SIGNUP");
