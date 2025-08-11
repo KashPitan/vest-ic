@@ -104,3 +104,28 @@ export async function deleteFromBlob(url: string): Promise<void> {
     throw error;
   }
 }
+
+export async function downloadFileFromBlob(url: string): Promise<ArrayBuffer> {
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch file: ${response.statusText}`);
+    }
+
+    // Get the file data as an array buffer
+    const arrayBuffer = await response.arrayBuffer();
+    return arrayBuffer;
+  } catch (error) {
+    console.error("Error downloading file:", error);
+    throw error;
+  }
+}
+
+export async function getBlobUrl(filePath: string): Promise<string> {
+  const blobHost = process.env.BLOB_HOST;
+  if (!blobHost) {
+    throw new Error(`Could not get blobUrl - blob host not set`);
+  }
+  return `https://${blobHost}/${filePath}`;
+}

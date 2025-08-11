@@ -6,6 +6,7 @@ import PdfPreview from "@/components/admin/PdfPreview";
 import PortfolioComponentsPreview from "@/components/admin/PortfolioComponentsPreview";
 import { Button } from "@/components/ui/button";
 import PortfolioUploadConfirmDialog from "@/components/admin/PortfolioUploadConfirmDialog";
+import LiveSourceConfirmDialog from "@/components/admin/LiveSourceConfirmDialog";
 
 export default function PortfolioPage() {
   const [file, setFile] = useState<File | null>(null);
@@ -14,6 +15,8 @@ export default function PortfolioPage() {
   const [uploading, setUploading] = useState(false);
   const [workbook, setWorkbook] = useState<XLSX.WorkBook | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [liveSourceDialogOpen, setLiveSourceDialogOpen] = useState(false);
+  const [settingLiveSource, setSettingLiveSource] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setError("");
@@ -63,6 +66,32 @@ export default function PortfolioPage() {
     }
   };
 
+  const handleSetAsLiveSource = async () => {
+    if (!file) return;
+    setError("");
+    setSuccess("");
+    setSettingLiveSource(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch("/api/admin/fund-data", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Failed to set as live source.");
+      } else {
+        setSuccess("File set as live data source successfully!");
+      }
+    } catch {
+      setError("Failed to set as live source.");
+    } finally {
+      setSettingLiveSource(false);
+      setLiveSourceDialogOpen(false);
+    }
+  };
+
   return (
     <div className="w-full mx-auto p-8">
       <h1 className="text-2xl font-bold mb-6">Portfolio Upload</h1>
@@ -77,6 +106,22 @@ export default function PortfolioPage() {
           trigger={
             <Button disabled={!file || uploading}>
               {uploading ? "Uploading..." : "Upload"}
+            </Button>
+          }
+        />
+        <LiveSourceConfirmDialog
+          open={liveSourceDialogOpen}
+          onOpenChange={setLiveSourceDialogOpen}
+          onConfirm={handleSetAsLiveSource}
+          loading={settingLiveSource}
+          disabled={!file || settingLiveSource}
+          trigger={
+            <Button
+              variant="outline"
+              disabled={!file || settingLiveSource}
+              className="ml-2"
+            >
+              {settingLiveSource ? "Setting..." : "Set this as live source"}
             </Button>
           }
         />
