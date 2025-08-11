@@ -22,7 +22,7 @@ async function FundInfoContent() {
     }
 
     // Get the blob URL for the file
-    const blobUrl = getBlobUrl(`fund-data/${auditResult.data.filename}`);
+    const blobUrl = await getBlobUrl(`fund-data/${auditResult.data.filename}`);
 
     // Download the file from blob storage
     const fileBuffer = await downloadFileFromBlob(blobUrl);
