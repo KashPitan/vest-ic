@@ -22,6 +22,7 @@ import { cn } from '@/lib/utils'
 import { fileToBase64, getOutput, randomId } from '../utils'
 import { useThrottle } from '../hooks/use-throttle'
 import { toast } from 'sonner'
+import { uploadEditorImageToBlob } from '@/lib/blob'
 
 export interface UseMinimalTiptapEditorProps extends UseEditorOptions {
   value?: Content
@@ -51,19 +52,7 @@ const createExtensions = (placeholder: string) => [
     allowedMimeTypes: ['image/*'],
     maxFileSize: 5 * 1024 * 1024,
     allowBase64: true,
-    uploadFn: async file => {
-      // NOTE: This is a fake upload function. Replace this with your own upload logic.
-      // This function should return the uploaded image URL.
-
-      // wait 3s to simulate upload
-      await new Promise(resolve => setTimeout(resolve, 3000))
-
-      const src = await fileToBase64(file)
-
-      // either return { id: string | number, src: string } or just src
-      // return src;
-      return { id: randomId(), src }
-    },
+    uploadFn: uploadEditorImageToBlob,
     onToggle(editor, files, pos) {
       editor.commands.insertContentAt(
         pos,

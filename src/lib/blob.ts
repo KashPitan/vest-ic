@@ -1,4 +1,28 @@
+"use server";
 import { del, put, head } from "@vercel/blob";
+
+const getExtension = (filename: string) => {
+  const filenameSplit = filename.split(".");
+  const extension = filenameSplit.slice(-1)[0];
+  const filenameWithoutExtension = filenameSplit.slice(0, -1).join(".");
+  return { extension, filenameWithoutExtension };
+};
+
+export async function uploadEditorImageToBlob(file: File): Promise<string> {
+  const environment = process.env.ENVIRONMENT;
+  const environmentString = environment ? environment + "/" : "";
+  const { extension, filenameWithoutExtension } = getExtension(file.name);
+  const filename = `posts/editor-images/${environmentString}${filenameWithoutExtension}-${Date.now()}${extension}`;
+  try {
+    const { url } = await put(filename, file.stream(), {
+      access: "public",
+    });
+    return url;
+  } catch (e) {
+    console.error("ERROR UPLOADING BLOB TO VERCEL", e);
+    throw e;
+  }
+}
 
 export async function uploadImageToBlob(
   base64Image: string,
