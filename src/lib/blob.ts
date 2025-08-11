@@ -98,9 +98,10 @@ export async function downloadFileFromBlob(url: string): Promise<ArrayBuffer> {
   }
 }
 
-export function getBlobUrl(filename: string, folder: string = ""): string {
-  const blobHost =
-    process.env.BLOB_HOST || "https://your-project.blob.vercel-storage.com";
-  const fullPath = folder ? `${folder}/${filename}` : filename;
-  return `https://${blobHost}/${fullPath}`;
+export function getBlobUrl(filePath: string): string {
+  const blobHost = process.env.BLOB_HOST;
+  if (!blobHost) {
+    throw new Error(`Could not get blobUrl - blob host not set`);
+  }
+  return `https://${blobHost}/${filePath}`;
 }
