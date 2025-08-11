@@ -122,7 +122,7 @@ export async function downloadFileFromBlob(url: string): Promise<ArrayBuffer> {
   }
 }
 
-export function getBlobUrl(filePath: string): string {
+export async function getBlobUrl(filePath: string): Promise<string> {
   const blobHost = process.env.BLOB_HOST;
   if (!blobHost) {
     throw new Error(`Could not get blobUrl - blob host not set`);
