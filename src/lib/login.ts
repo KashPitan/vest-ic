@@ -5,7 +5,7 @@ import { lucia } from "@/lib/auth";
 import { db } from "@/db";
 import { redirect } from "next/navigation";
 import { cookies as getCookies } from "next/headers";
-import { users } from "@/db/schema/users";
+import { UserRole, users } from "@/db/schema/users";
 import { validateRequest } from "./validateRequest";
 
 export async function login(formData: FormData) {
@@ -104,6 +104,7 @@ export const signup = async (formData: FormData) => {
     .values({
       username,
       passwordHash: passwordHash,
+      role: UserRole.User,
     })
     .returning({ id: users.id });
   const session = await lucia.createSession(userId, {});

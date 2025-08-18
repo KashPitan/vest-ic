@@ -2,6 +2,7 @@ import { cookies as getCookies } from "next/headers";
 import { cache } from "react";
 import type { Session, User } from "lucia";
 import { lucia } from "@/lib/auth";
+import { UserRole } from "@/db/schema";
 
 class UserNotAuthenticatedError extends Error {
   constructor() {
@@ -52,9 +53,11 @@ export const isLoggedIn = async () => {
 };
 
 export const isAdmin = async () => {
-  const userAndSession = await validateRequest();
-  if (!userAndSession.session) {
+  const { user, session } = await validateRequest();
+  if (!session) {
     throw new UserNotAuthenticatedError();
   }
-  return userAndSession;
+  if (user.role !== UserRole.Admin) {
+    throw new Error(`USER IS NOT ADMIN`);
+  }
 };
