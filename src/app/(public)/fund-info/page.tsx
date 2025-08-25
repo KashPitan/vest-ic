@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { getLatestFundDataAuditRecord } from "@/data-access-layer/fundDataAudit";
 import { downloadFileFromBlob, getBlobUrl } from "@/lib/blob";
 import * as XLSX from "xlsx";
-import PortfolioComponentsPreview from "@/components/admin/PortfolioComponentsPreview";
+import FundData from "@/components/admin/FundData";
 
 async function FundInfoContent() {
   try {
@@ -43,7 +43,7 @@ async function FundInfoContent() {
           <h2 className="text-lg text-pure-white font-semibold mb-2">
             Portfolio Components
           </h2>
-          <PortfolioComponentsPreview workbook={workbook} />
+          <FundData workbook={workbook} />
         </div>
       </div>
     );
