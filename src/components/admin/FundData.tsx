@@ -8,11 +8,17 @@ interface PortfolioComponentsPreview {
 }
 
 const FundData = ({ workbook }: PortfolioComponentsPreview) => {
-  const { topThreeContributors } = getAllChartData(workbook);
+  const { topThreeContributors, bottomThreeContributors } =
+    getAllChartData(workbook);
   return (
     <div>
       <div className="mt-4">
         {topThreeContributors && <TwoColumnTable data={topThreeContributors} />}
+      </div>
+      <div className="mt-4">
+        {bottomThreeContributors && (
+          <TwoColumnTable data={bottomThreeContributors} />
+        )}
       </div>
     </div>
   );
