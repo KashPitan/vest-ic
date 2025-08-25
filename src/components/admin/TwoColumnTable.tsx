@@ -1,5 +1,5 @@
 import React from "react";
-import { TwoColumnThreeRowData } from "@/app/(admin)/admin/excel/utils";
+import { TwoColumnData } from "@/app/(admin)/admin/excel/utils";
 import {
   Table,
   TableBody,
@@ -11,7 +11,7 @@ import {
 import { articulat } from "@/fonts";
 
 interface TwoColumnTableProps {
-  data: TwoColumnThreeRowData;
+  data: TwoColumnData;
 }
 
 export default function TwoColumnTable({ data }: TwoColumnTableProps) {
