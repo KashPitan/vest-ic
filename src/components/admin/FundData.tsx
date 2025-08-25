@@ -3,6 +3,7 @@ import * as XLSX from "xlsx";
 import TwoColumnTable from "@/components/admin/TwoColumnTable";
 import { getAllChartData } from "@/app/(admin)/admin/excel/utils";
 import HorizontalTable from "./HorizontalTable";
+import { InceptionPerformanceChart } from "./InceptionPerformanceChart";
 
 interface PortfolioComponentsPreview {
   workbook: XLSX.WorkBook;
@@ -34,6 +35,9 @@ const FundData = ({ workbook }: PortfolioComponentsPreview) => {
         {twelveMonthCumulativePerformance && (
           <HorizontalTable data={twelveMonthCumulativePerformance} />
         )}
+      </div>
+      <div className="mt-4">
+        <InceptionPerformanceChart workbook={workbook} />
       </div>
     </div>
   );

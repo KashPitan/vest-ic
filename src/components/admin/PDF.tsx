@@ -2,6 +2,7 @@ import TwoColumnTable from "./TwoColumnTable";
 import * as XLSX from "xlsx";
 import { getAllChartData } from "@/app/(admin)/admin/excel/utils";
 import HorizontalTable from "./HorizontalTable";
+import { InceptionPerformanceChart } from "./InceptionPerformanceChart";
 
 export default function PDF({ workbook }: { workbook: XLSX.WorkBook }) {
   const {
@@ -24,6 +25,9 @@ export default function PDF({ workbook }: { workbook: XLSX.WorkBook }) {
       </div>
       <div className="col-span-2">
         <HorizontalTable data={twelveMonthCumulativePerformance} />
+      </div>
+      <div className="col-span-2 max-w-full max-h-full">
+        <InceptionPerformanceChart workbook={workbook} />
       </div>
     </div>
   );
