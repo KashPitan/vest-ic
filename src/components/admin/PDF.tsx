@@ -8,6 +8,7 @@ export default function PDF({ workbook }: { workbook: XLSX.WorkBook }) {
     topThreeContributors,
     bottomThreeContributors,
     cumulativePerformance,
+    twelveMonthCumulativePerformance,
   } = getAllChartData(workbook);
 
   return (
@@ -20,6 +21,9 @@ export default function PDF({ workbook }: { workbook: XLSX.WorkBook }) {
       </div>
       <div className="col-span-2">
         <HorizontalTable data={cumulativePerformance} />
+      </div>
+      <div className="col-span-2">
+        <HorizontalTable data={twelveMonthCumulativePerformance} />
       </div>
     </div>
   );

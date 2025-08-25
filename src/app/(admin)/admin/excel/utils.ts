@@ -20,6 +20,11 @@ export const getAllChartData = (workbook: XLSX.WorkBook) => {
     "8.CumulativePerfDiscrete",
   );
 
+  const twelveMonthCumulativePerformanceSheet = getWorksheetByName(
+    workbook,
+    "9.12mPerfDiscrete",
+  );
+
   return {
     topThreeContributors: extractTwoColumnThreeRows(
       topThreeContributorsSheet,
@@ -37,6 +42,12 @@ export const getAllChartData = (workbook: XLSX.WorkBook) => {
       cumulativePerformanceSheet,
       1,
       "A",
+    ),
+    twelveMonthCumulativePerformance: extractTwoColumnThreeRows(
+      twelveMonthCumulativePerformanceSheet,
+      1,
+      "A",
+      4,
     ),
   };
 };
