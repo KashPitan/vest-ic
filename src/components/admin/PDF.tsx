@@ -3,11 +3,13 @@ import * as XLSX from "xlsx";
 import { getAllChartData } from "@/app/(admin)/admin/excel/utils";
 
 export default function PDF({ workbook }: { workbook: XLSX.WorkBook }) {
-  const { topThreeContributors } = getAllChartData(workbook);
+  const { topThreeContributors, bottomThreeContributors } =
+    getAllChartData(workbook);
 
   return (
-    <div>
+    <div className="grid grid-cols-2 gap-6">
       <TwoColumnTable data={topThreeContributors} />
+      <TwoColumnTable data={bottomThreeContributors} />
     </div>
   );
 }

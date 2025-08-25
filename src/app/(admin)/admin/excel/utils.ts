@@ -10,9 +10,20 @@ export const getAllChartData = (workbook: XLSX.WorkBook) => {
     "6.TopThreeContr",
   );
 
+  const bottomThreeContributorsSheet = getWorksheetByName(
+    workbook,
+    "7.BottomThreeContr",
+  );
+
   return {
     topThreeContributors: extractTwoColumnThreeRows(
       topThreeContributorsSheet,
+      1,
+      "A",
+      4,
+    ),
+    bottomThreeContributors: extractTwoColumnThreeRows(
+      bottomThreeContributorsSheet,
       1,
       "A",
       4,
