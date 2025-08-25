@@ -15,6 +15,11 @@ export const getAllChartData = (workbook: XLSX.WorkBook) => {
     "7.BottomThreeContr",
   );
 
+  const cumulativePerformanceSheet = getWorksheetByName(
+    workbook,
+    "8.CumulativePerfDiscrete",
+  );
+
   return {
     topThreeContributors: extractTwoColumnThreeRows(
       topThreeContributorsSheet,
@@ -28,10 +33,15 @@ export const getAllChartData = (workbook: XLSX.WorkBook) => {
       "A",
       4,
     ),
+    cumulativePerformance: extractTwoColumnThreeRows(
+      cumulativePerformanceSheet,
+      1,
+      "A",
+    ),
   };
 };
 
-export type TwoColumnThreeRowData = [string, string][];
+export type TwoColumnData = [string, string][];
 
 /**
  * Extracts a two-column, three-row data structure from a given worksheet.
@@ -40,7 +50,7 @@ export type TwoColumnThreeRowData = [string, string][];
  * @param {number} [startRow=1] - The starting row number (1-based).
  * @param {string} [startCol="A"] - The starting column letter.
  * @param {number} [numRows] - Optional. The number of rows to extract including header row. If not provided, extraction continues until two consecutive empty rows are found.
- * @returns {TwoColumnThreeRowData} An array of [string, string] pairs representing the extracted rows.
+ * @returns {TwoColumnData} An array of [string, string] pairs representing the extracted rows.
  */
 
 export function extractTwoColumnThreeRows(
@@ -48,8 +58,8 @@ export function extractTwoColumnThreeRows(
   startRow: number = 1,
   startCol: string = "A",
   numRows?: number,
-): TwoColumnThreeRowData {
-  const rows: TwoColumnThreeRowData = [];
+): TwoColumnData {
+  const rows: TwoColumnData = [];
   const colB = String.fromCharCode(startCol.charCodeAt(0) + 1); // Next column
 
   // Helper function to extract cell values for a given row
