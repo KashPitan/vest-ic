@@ -13,6 +13,7 @@ const FundData = ({ workbook }: PortfolioComponentsPreview) => {
     topThreeContributors,
     bottomThreeContributors,
     cumulativePerformance,
+    twelveMonthCumulativePerformance,
   } = getAllChartData(workbook);
   return (
     <div>
@@ -27,6 +28,11 @@ const FundData = ({ workbook }: PortfolioComponentsPreview) => {
       <div className="mt-4">
         {cumulativePerformance && (
           <HorizontalTable data={cumulativePerformance} />
+        )}
+      </div>
+      <div className="mt-4">
+        {twelveMonthCumulativePerformance && (
+          <HorizontalTable data={twelveMonthCumulativePerformance} />
         )}
       </div>
     </div>
