@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import * as XLSX from "xlsx";
 import PdfPreview from "@/components/admin/PdfPreview";
-import PortfolioComponentsPreview from "@/components/admin/PortfolioComponentsPreview";
+import FundData from "@/components/admin/FundData";
 import { Button } from "@/components/ui/button";
 import PortfolioUploadConfirmDialog from "@/components/admin/PortfolioUploadConfirmDialog";
 import LiveSourceConfirmDialog from "@/components/admin/LiveSourceConfirmDialog";
@@ -133,7 +133,7 @@ export default function PortfolioPage() {
         <div className="mt-6">
           <h2 className="text-lg font-semibold mb-2">Sheet Names Preview</h2>
           {workbook ? (
-            <PortfolioComponentsPreview workbook={workbook} />
+            <FundData workbook={workbook} />
           ) : (
             <div className="text-gray-400">No file uploaded.</div>
           )}
