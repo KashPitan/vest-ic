@@ -128,6 +128,9 @@ export const getInceptionPerformanceData = (
       dateString = String(dateValue);
     }
 
+    // these are percentage values in the spreadsheet, when pulled from excel
+    // they're converted e.g. 2% -> 0.02. We want this to show as 2 instead so
+    // converting back using the decimalToPercentage function
     const series1Value =
       series1Cell && !isNaN(series1Cell.v)
         ? decimalToPercentage(series1Cell.v)
