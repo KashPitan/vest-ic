@@ -1,4 +1,5 @@
 import * as XLSX from "xlsx";
+import { toPercentNumber, toPercentStringIfNumeric } from "./formatters";
 
 export function getWorksheetByName(workbook: XLSX.WorkBook, sheetName: string) {
   return workbook.Sheets[sheetName];
@@ -64,8 +65,6 @@ export const getAllChartData = (
   };
 };
 
-const decimalToPercentage = (value: number) => Number((value * 100).toFixed(2));
-
 export type InceptionPerformanceData = {
   dates: string[];
   series1: number[];
@@ -100,6 +99,7 @@ export const getInceptionPerformanceData = (
   // y axes
   const series1Col = options?.series1Col ?? "H";
   const series2Col = options?.series2Col ?? "I";
+
   const startRow = options?.startRow ?? 2; // assuming row 1 is header
   const headingRow = options?.headingRow ?? 1;
 
@@ -131,14 +131,8 @@ export const getInceptionPerformanceData = (
     // these are percentage values in the spreadsheet, when pulled from excel
     // they're converted e.g. 2% -> 0.02. We want this to show as 2 instead so
     // converting back using the decimalToPercentage function
-    const series1Value =
-      series1Cell && !isNaN(series1Cell.v)
-        ? decimalToPercentage(series1Cell.v)
-        : 0;
-    const series2Value =
-      series2Cell && !isNaN(series2Cell.v)
-        ? decimalToPercentage(series2Cell.v)
-        : 0;
+    const series1Value = toPercentNumber(series1Cell?.v, 0);
+    const series2Value = toPercentNumber(series2Cell?.v, 0);
 
     dates.push(dateString);
     series1.push(series1Value);
@@ -184,9 +178,13 @@ export function extractTwoColumnThreeRows(
   const extractRowValues = (rowNum: number): [string, string] => {
     const cellA = sheet[`${startCol}${rowNum}`];
     const cellB = sheet[`${colB}${rowNum}`];
-    const valueA = cellA ? String(cellA.v).trim() : "";
-    const valueB = cellB ? String(cellB.v).trim() : "";
-    return [valueA, valueB];
+    const valueA = cellA ? cellA.v : "";
+    const valueB = cellB ? cellB.v : "";
+
+    const formattedA = toPercentStringIfNumeric(valueA);
+    const formattedB = toPercentStringIfNumeric(valueB);
+
+    return [formattedA, formattedB];
   };
 
   if (numRows !== undefined) {
@@ -194,6 +192,7 @@ export function extractTwoColumnThreeRows(
     for (let i = 0; i < numRows; i++) {
       const rowNum = startRow + i;
       const [valueA, valueB] = extractRowValues(rowNum);
+
       rows.push([valueA, valueB]);
     }
   } else {
@@ -219,6 +218,5 @@ export function extractTwoColumnThreeRows(
       currentRow++;
     }
   }
-
   return rows;
 }
