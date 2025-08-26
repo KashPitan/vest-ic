@@ -4,7 +4,10 @@ export function getWorksheetByName(workbook: XLSX.WorkBook, sheetName: string) {
   return workbook.Sheets[sheetName];
 }
 
-export const getAllChartData = (workbook: XLSX.WorkBook) => {
+export const getAllChartData = (
+  workbook: XLSX.WorkBook,
+  options?: { inceptionPerformance?: InceptionPerformanceDataOptions },
+) => {
   const topThreeContributorsSheet = getWorksheetByName(
     workbook,
     "6.TopThreeContr",
@@ -54,12 +57,14 @@ export const getAllChartData = (workbook: XLSX.WorkBook) => {
       "A",
       4,
     ),
-    cumulativeStrategyPerformance:
-      getInceptionPerformanceData(inceptionPerfSheet),
+    cumulativeStrategyPerformance: getInceptionPerformanceData(
+      inceptionPerfSheet,
+      options?.inceptionPerformance,
+    ),
   };
 };
 
-export type TwoColumnData = [string, string][];
+const decimalToPercentage = (value: number) => Number((value * 100).toFixed(2));
 
 export type InceptionPerformanceData = {
   dates: string[];
@@ -69,48 +74,60 @@ export type InceptionPerformanceData = {
   series2Heading: string;
 };
 
-const decimalToPercentage = (value: number) => Number((value * 100).toFixed(2));
+export type InceptionPerformanceDataOptions = {
+  dateCol?: string;
+  series1Col?: string;
+  series2Col?: string;
+  startRow?: number;
+  headingRow?: number;
+};
 
 /**
- * Extracts inception performance data from the 12.InceptionPerfData sheet.
- * Retrieves data from columns I and K using column D as the x-axis (dates).
+ * Extracts inception performance data from a worksheet with configurable columns.
+ * Defaults to dates in column D, series1 in H, and series2 in K.
  *
- * @param {XLSX.WorkBook} workbook - The workbook containing the data
+ * @param {XLSX.WorkSheet} sheet - The worksheet containing the data
+ * @param {{dateCol?: string, series1Col?: string, series2Col?: string, startRow?: number, headingRow?: number}} [options]
  * @returns {InceptionPerformanceData} Object containing dates and two data series
  */
 export const getInceptionPerformanceData = (
   sheet: XLSX.WorkSheet,
+  options?: InceptionPerformanceDataOptions,
 ): InceptionPerformanceData => {
+  // x axis
+  const dateCol = options?.dateCol ?? "D";
+
+  // y axes
+  const series1Col = options?.series1Col ?? "H";
+  const series2Col = options?.series2Col ?? "I";
+  const startRow = options?.startRow ?? 2; // assuming row 1 is header
+  const headingRow = options?.headingRow ?? 1;
+
   const dates: string[] = [];
   const series1: number[] = [];
   const series2: number[] = [];
 
-  // Start from row 2 (assuming row 1 is header)
-  let row = 2;
+  let row = startRow;
 
   while (true) {
-    const dateCell = sheet[`D${row}`];
-    const series1Cell = sheet[`I${row}`];
-    const series2Cell = sheet[`K${row}`];
+    const dateCell = sheet[`${dateCol}${row}`];
+    const series1Cell = sheet[`${series1Col}${row}`];
+    const series2Cell = sheet[`${series2Col}${row}`];
 
-    // Stop if we reach an empty date cell
     if (!dateCell || !dateCell.v) {
       break;
     }
 
-    // Extract date value
     const dateValue = dateCell.v;
     let dateString: string;
 
     if (typeof dateValue === "number") {
-      // Excel date number - convert to date string
       const excelDate = new Date((dateValue - 25569) * 86400 * 1000);
       dateString = excelDate.toISOString().split("T")[0];
     } else {
       dateString = String(dateValue);
     }
 
-    // Extract series values
     const series1Value =
       series1Cell && !isNaN(series1Cell.v)
         ? decimalToPercentage(series1Cell.v)
@@ -127,14 +144,19 @@ export const getInceptionPerformanceData = (
     row++;
   }
 
+  const series1HeadingCell = sheet[`${series1Col}${headingRow}`];
+  const series2HeadingCell = sheet[`${series2Col}${headingRow}`];
+
   return {
     dates,
     series1,
     series2,
-    series1Heading: sheet[`I${1}`].v,
-    series2Heading: sheet[`K${1}`].v,
+    series1Heading: series1HeadingCell ? series1HeadingCell.v : "",
+    series2Heading: series2HeadingCell ? series2HeadingCell.v : "",
   };
 };
+
+export type TwoColumnData = [string, string][];
 
 /**
  * Extracts a two-column, three-row data structure from a given worksheet.

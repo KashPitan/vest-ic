@@ -37,7 +37,7 @@ export default function PdfPreview({ workbook }: PdfPreviewProps) {
   };
 
   return (
-    <div className="w-full h-full">
+    <div>
       <div className="flex justify-between items-center mb-2">
         <h2 className="text-lg font-semibold">PDF Preview</h2>
         <button
@@ -49,7 +49,7 @@ export default function PdfPreview({ workbook }: PdfPreviewProps) {
       </div>
       <div
         ref={contentRef}
-        className="w-full h-[600px] border border-gray-300 rounded-lg overflow-hidden p-4 bg-white"
+        className="w-full h-full border border-gray-300 rounded-lg overflow-hidden p-4 bg-white"
       >
         <PDF workbook={workbook} />
       </div>
