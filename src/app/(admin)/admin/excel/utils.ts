@@ -25,6 +25,11 @@ export const getAllChartData = (workbook: XLSX.WorkBook) => {
     "9.12mPerfDiscrete",
   );
 
+  const inceptionPerfSheet = getWorksheetByName(
+    workbook,
+    "12.InceptionPerfData",
+  );
+
   return {
     topThreeContributors: extractTwoColumnThreeRows(
       topThreeContributorsSheet,
@@ -49,6 +54,8 @@ export const getAllChartData = (workbook: XLSX.WorkBook) => {
       "A",
       4,
     ),
+    cumulativeStrategyPerformance:
+      getInceptionPerformanceData(inceptionPerfSheet),
   };
 };
 
@@ -58,7 +65,11 @@ export type InceptionPerformanceData = {
   dates: string[];
   series1: number[];
   series2: number[];
+  series1Heading: string;
+  series2Heading: string;
 };
+
+const decimalToPercentage = (value: number) => Number((value * 100).toFixed(2));
 
 /**
  * Extracts inception performance data from the 12.InceptionPerfData sheet.
@@ -68,15 +79,8 @@ export type InceptionPerformanceData = {
  * @returns {InceptionPerformanceData} Object containing dates and two data series
  */
 export const getInceptionPerformanceData = (
-  workbook: XLSX.WorkBook,
+  sheet: XLSX.WorkSheet,
 ): InceptionPerformanceData => {
-  const sheet = getWorksheetByName(workbook, "12.InceptionPerfData");
-
-  if (!sheet) {
-    console.warn("Sheet '12.InceptionPerfData' not found");
-    return { dates: [], series1: [], series2: [] };
-  }
-
   const dates: string[] = [];
   const series1: number[] = [];
   const series2: number[] = [];
@@ -106,11 +110,15 @@ export const getInceptionPerformanceData = (
       dateString = String(dateValue);
     }
 
-    // Extract series values (convert to numbers, default to 0 if invalid)
+    // Extract series values
     const series1Value =
-      series1Cell && !isNaN(Number(series1Cell.v)) ? Number(series1Cell.v) : 0;
+      series1Cell && !isNaN(series1Cell.v)
+        ? decimalToPercentage(series1Cell.v)
+        : 0;
     const series2Value =
-      series2Cell && !isNaN(Number(series2Cell.v)) ? Number(series2Cell.v) : 0;
+      series2Cell && !isNaN(series2Cell.v)
+        ? decimalToPercentage(series2Cell.v)
+        : 0;
 
     dates.push(dateString);
     series1.push(series1Value);
@@ -119,7 +127,13 @@ export const getInceptionPerformanceData = (
     row++;
   }
 
-  return { dates, series1, series2 };
+  return {
+    dates,
+    series1,
+    series2,
+    series1Heading: sheet[`I${1}`].v,
+    series2Heading: sheet[`K${1}`].v,
+  };
 };
 
 /**

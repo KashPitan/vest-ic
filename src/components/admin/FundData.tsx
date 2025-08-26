@@ -15,6 +15,7 @@ const FundData = ({ workbook }: PortfolioComponentsPreview) => {
     bottomThreeContributors,
     cumulativePerformance,
     twelveMonthCumulativePerformance,
+    cumulativeStrategyPerformance,
   } = getAllChartData(workbook);
   return (
     <div>
@@ -37,7 +38,7 @@ const FundData = ({ workbook }: PortfolioComponentsPreview) => {
         )}
       </div>
       <div className="mt-4">
-        <InceptionPerformanceChart workbook={workbook} />
+        <InceptionPerformanceChart data={cumulativeStrategyPerformance} />
       </div>
     </div>
   );
