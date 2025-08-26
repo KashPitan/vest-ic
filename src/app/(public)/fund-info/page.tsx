@@ -3,6 +3,7 @@ import { getLatestFundDataAuditRecord } from "@/data-access-layer/fundDataAudit"
 import { downloadFileFromBlob, getBlobUrl } from "@/lib/blob";
 import * as XLSX from "xlsx";
 import FundData from "@/components/admin/FundData";
+import DownloadFactsheetButton from "./DownloadFactsheetButton";
 
 async function FundInfoContent() {
   try {
@@ -32,9 +33,12 @@ async function FundInfoContent() {
 
     return (
       <div className="w-full mx-auto p-8">
-        <h1 className="text-2xl text-pure-white font-bold mb-6">
-          Fund Information
-        </h1>
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl text-pure-white font-bold">
+            Fund Information
+          </h1>
+          <DownloadFactsheetButton workbook={workbook} />
+        </div>
         <div className="mb-4 text-sm text-pure-white">
           Last updated:{" "}
           {new Date(auditResult.data.uploadDate ?? "").toLocaleDateString()}
