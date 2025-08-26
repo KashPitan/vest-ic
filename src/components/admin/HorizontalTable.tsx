@@ -10,17 +10,30 @@ import {
 } from "@/components/ui/table";
 import { articulat } from "@/fonts";
 
+type FontSize2 = "xs" | "xl";
+
+const fontSize: Record<FontSize2, string> = {
+  xs: "text-xs",
+  xl: "text-xl",
+};
+
 interface HorizontalTableProps {
   data: TwoColumnData;
+  textSize?: FontSize2;
 }
 
-export default function HorizontalTable({ data }: HorizontalTableProps) {
+export default function HorizontalTable({
+  data,
+  textSize,
+}: HorizontalTableProps) {
   // Transpose the data so columns become rows
   const transposedData =
     data[0]?.map((_, colIndex) => data.map((row) => row[colIndex])) || [];
 
   return (
-    <Table className={`${articulat.className}`}>
+    <Table
+      className={`${articulat.className} ${textSize && fontSize[textSize]}`}
+    >
       <TableHeader>
         <TableRow>
           {data.map((row, idx) => (

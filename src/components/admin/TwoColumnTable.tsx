@@ -10,13 +10,26 @@ import {
 } from "@/components/ui/table";
 import { articulat } from "@/fonts";
 
+type FontSize2 = "xs" | "xl";
+
+const fontSize: Record<FontSize2, string> = {
+  xs: "text-xs",
+  xl: "text-xl",
+};
+
 interface TwoColumnTableProps {
   data: TwoColumnData;
+  textSize?: FontSize2;
 }
 
-export default function TwoColumnTable({ data }: TwoColumnTableProps) {
+export default function TwoColumnTable({
+  data,
+  textSize,
+}: TwoColumnTableProps) {
   return (
-    <Table className={`${articulat.className}`}>
+    <Table
+      className={`${articulat.className} ${textSize && fontSize[textSize]} `}
+    >
       <TableHeader>
         <TableRow>
           <TableHead>{data[0][0]}</TableHead>

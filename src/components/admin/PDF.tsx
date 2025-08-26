@@ -16,16 +16,19 @@ export default function PDF({ workbook }: { workbook: XLSX.WorkBook }) {
   return (
     <div className="grid grid-cols-2 gap-6">
       <div className="col-span-1">
-        <TwoColumnTable data={topThreeContributors} />
+        <TwoColumnTable data={topThreeContributors} textSize="xs" />
       </div>
       <div className="col-span-1">
-        <TwoColumnTable data={bottomThreeContributors} />
+        <TwoColumnTable data={bottomThreeContributors} textSize="xs" />
       </div>
       <div className="col-span-2">
-        <HorizontalTable data={cumulativePerformance} />
+        <HorizontalTable data={cumulativePerformance} textSize="xs" />
       </div>
       <div className="col-span-2">
-        <HorizontalTable data={twelveMonthCumulativePerformance} />
+        <HorizontalTable
+          data={twelveMonthCumulativePerformance}
+          textSize="xs"
+        />
       </div>
       <div className="col-span-2">
         <InceptionPerformanceChart data={cumulativeStrategyPerformance} />
