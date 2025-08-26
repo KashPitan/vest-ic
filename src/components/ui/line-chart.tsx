@@ -26,7 +26,6 @@ export function DualAxisLineChart({
     !isNaN(item.series1) && !isNaN(item.series2) && 
     item.date instanceof Date && !isNaN(item.date.getTime())
   );
-  console.log(validData)
 
   if (validData.length === 0) {
     return (

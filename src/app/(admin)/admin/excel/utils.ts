@@ -74,7 +74,7 @@ export type InceptionPerformanceData = {
   series2Heading: string;
 };
 
-export type InceptionPerformanceDataOptions = {
+type InceptionPerformanceDataOptions = {
   dateCol?: string;
   series1Col?: string;
   series2Col?: string;
