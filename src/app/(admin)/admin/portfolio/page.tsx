@@ -131,7 +131,6 @@ export default function PortfolioPage() {
           <div className="text-sm text-gray-700">Uploaded: {file.name}</div>
         )}
         <div className="mt-6">
-          <h2 className="text-lg font-semibold mb-2">Sheet Names Preview</h2>
           {workbook ? (
             <FundData workbook={workbook} />
           ) : (
