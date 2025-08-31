@@ -12,7 +12,7 @@ export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
   username: text("username").unique().notNull(),
   passwordHash: text("password_hash").notNull(),
-  role: text({ enum: Object.values(UserRole) as [UserRoleValues] }).notNull(),
+  role: text({ enum: Object.values(UserRole) as [UserRoleValues] }),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
