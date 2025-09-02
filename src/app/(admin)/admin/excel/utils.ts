@@ -96,7 +96,7 @@ export const getInceptionPerformanceData = (
   // x axis
   const dateCol = options?.dateCol ?? "D";
 
-  // y axes
+  // y axes - these will vary per product
   const series1Col = options?.series1Col ?? "H";
   const series2Col = options?.series2Col ?? "I";
 

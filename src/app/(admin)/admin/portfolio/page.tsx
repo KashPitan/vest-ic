@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import PortfolioUploadConfirmDialog from "@/components/admin/PortfolioUploadConfirmDialog";
 import LiveSourceConfirmDialog from "@/components/admin/LiveSourceConfirmDialog";
 
+const acceptedFileTypes = [".xlsm", ".xlsx"];
+
 export default function PortfolioPage() {
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState<string>("");
@@ -23,8 +25,11 @@ export default function PortfolioPage() {
     setSuccess("");
     const f = e.target.files?.[0];
     if (!f) return;
-    if (!f.name.endsWith(".xlsm")) {
-      setError("Only .xlsm files are allowed.");
+    const isValidFileType = acceptedFileTypes.some((ext) =>
+      f.name.endsWith(ext),
+    );
+    if (!isValidFileType) {
+      setError(`Only ${acceptedFileTypes.join(" and ")} files are allowed.`);
       setFile(null);
       setWorkbook(null);
       return;
@@ -96,7 +101,11 @@ export default function PortfolioPage() {
     <div className="w-full mx-auto p-8">
       <h1 className="text-2xl font-bold mb-6">Portfolio Upload</h1>
       <div className="space-y-4">
-        <Input type="file" accept=".xlsm" onChange={handleFileChange} />
+        <Input
+          type="file"
+          accept={acceptedFileTypes.join(",")}
+          onChange={handleFileChange}
+        />
         <PortfolioUploadConfirmDialog
           open={dialogOpen}
           onOpenChange={setDialogOpen}
