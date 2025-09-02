@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { TagButton } from "@/components/ui/tag-button";
 import { format } from "date-fns";
 import { elza, elzaNormal, articulatThin } from "@/fonts";
 
@@ -50,29 +51,29 @@ const Insight = async ({ params }: { params: Promise<{ slug: string }> }) => {
 
   // TODO: add tags to the post
   return (
-    <Card className="w-full h-full bg-racing-green px-4 py-2 max-w-[1000px] outline-none">
+    <Card className="w-full h-full bg-racing-green px-4 py-2 max-w-[1200px] outline-none">
       <CardHeader>
         <div className="flex justify-between">
-          <div>
+          <div className="max-h-[35px] ">
             {post.postTags.map((postTag: PostTag & { tag?: Tag }, index) => (
-              <button
+              // TODO: on click redirect to insights search with tag in query
+              <TagButton
                 key={postTag.id}
-                // add margin right on all elements except last if there are more than 1 items
-                className={`bg-pure-white bg-opacity-30 text-[15px] text-amber-500 px-5 py-1 rounded-xl ${elzaNormal.className} ${post.postTags.length > 1 && index != post.postTags.length - 1 ? "mr-2" : ""}`}
+                className={`text-[15px] text-amber-500 ${elzaNormal.className} ${post.postTags.length > 1 && index != post.postTags.length - 1 ? "mr-2" : ""}`}
               >
                 {postTag.tag?.tagName}
-              </button>
+              </TagButton>
             ))}
-            <button className="bg-pure-white bg-opacity-30 px-5 py-1 pb-2 ml-2 rounded-xl">
+            <TagButton className="ml-2">
               <Image
-                className="h-[19.25px] w-[18.75px] text-pure-white-50"
+                className="h-[19.25px] w-[18.75px]"
                 src={"../icons/file.svg"}
                 alt="file icon"
                 width={100}
                 height={100}
               />
-            </button>
-            <button className="bg-pure-white bg-opacity-30 px-5 py-1 pb-2 ml-2 rounded-xl">
+            </TagButton>
+            <TagButton className="ml-2">
               <Image
                 className="h-[19.25px] w-[18.75px]"
                 src={"../icons/linkedin.svg"}
@@ -80,19 +81,38 @@ const Insight = async ({ params }: { params: Promise<{ slug: string }> }) => {
                 width={100}
                 height={100}
               />
-            </button>
+            </TagButton>
           </div>
           <CardDescription className="text-pure-white text-xl">
             {formatedReleaseDate}
           </CardDescription>
         </div>
 
-        <div className="flex justify-between">
-          <CardTitle
-            className={`pt-6 scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-4xl text-pure-white ${elza.className}`}
-          >
-            {post.title}
-          </CardTitle>
+        <div className="flex justify-between ">
+          <div className="text-wrap whitespace-pre-line w-1/2 wrap-normal">
+            <CardTitle
+              className={`pt-6 text-4xl wrap-normal whitespace-pre-line font-extrabold tracking-tight lg:text-4xl text-pure-white ${elza.className}`}
+            >
+              {post.title}
+              <div className="flex text-pure-white text-[20px] pt-12">
+                {/* hardcoded for now */}
+                <Image
+                  className="h-[68px] w-[68px] mr-10 rounded-lg"
+                  src={"../landscape-placeholder.svg"}
+                  alt="Post display image"
+                  width={100}
+                  height={100}
+                />
+                <div>
+                  <p>Anshu Prakash</p>
+                  <p>
+                    <i>Portfolio Manager</i>
+                  </p>
+                </div>
+              </div>
+            </CardTitle>
+          </div>
+
           {post.displayImageUrl && (
             <Image
               className="h-60 w-[432px] pl-8 pt-8 rounded-xl"
@@ -102,22 +122,6 @@ const Insight = async ({ params }: { params: Promise<{ slug: string }> }) => {
               height={100}
             />
           )}
-        </div>
-        <div className="flex text-pure-white text-[20px]">
-          {/* hardcoded for now */}
-          <Image
-            className="h-[68px] w-[68px] mr-10 rounded-lg"
-            src={"../landscape-placeholder.svg"}
-            alt="Post display image"
-            width={100}
-            height={100}
-          />
-          <div>
-            <p>Anshu Prakash</p>
-            <p>
-              <i>Portfolio Manager</i>
-            </p>
-          </div>
         </div>
       </CardHeader>
       <CardContent className={`${articulatThin.className}`}>
