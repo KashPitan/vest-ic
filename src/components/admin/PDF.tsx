@@ -11,7 +11,7 @@ export default function PDF({ workbook }: { workbook: XLSX.WorkBook }) {
     cumulativePerformance,
     twelveMonthCumulativePerformance,
     cumulativeStrategyPerformance,
-  } = getAllChartData(workbook, { inceptionPerformance: { series2Col: "K" } });
+  } = getAllChartData(workbook);
 
   return (
     <div className="grid grid-cols-2 gap-6">
