@@ -5,12 +5,15 @@ import { elza } from "@/fonts";
 import NavLink from "./nav-link";
 import { usePathname } from "next/navigation";
 
-export default function Header() {
-  const pathname = usePathname();
-  const isHomePage = pathname === "/";
 
-  return <>{isHomePage ? <HomePageHeader /> : <NonHomePageHeader />}</>;
-}
+const NavItems = () => (
+  <div className="flex gap-8 text-2xl">
+    <NavLink href="/insights">Insights</NavLink>
+    <NavLink href="/about">About</NavLink>
+    <NavLink href="/contact">Contact</NavLink>
+    <NavLink href="/login">Login</NavLink>
+  </div>
+);
 
 const NonHomePageHeader = () => (
   <header
@@ -51,10 +54,11 @@ const HomePageHeader = () => (
   </header>
 );
 
-const NavItems = () => (
-  <div className="flex gap-8 text-2xl">
-    <NavLink href="/insights">Insights</NavLink>
-    <NavLink href="/about">About</NavLink>
-    <NavLink href="/contact">Contact</NavLink>
-  </div>
-);
+export default function Header() {
+  const pathname = usePathname();
+  const isHomePage = pathname === "/";
+
+  return <>{isHomePage ? <HomePageHeader /> : <NonHomePageHeader />}</>;
+}
+
+
