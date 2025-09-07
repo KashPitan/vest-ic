@@ -9,6 +9,7 @@ export const getAllChartData = (
   workbook: XLSX.WorkBook,
   options?: { inceptionPerformance?: InceptionPerformanceDataOptions },
 ) => {
+  const topTenHoldingsSheet = getWorksheetByName(workbook, "1.TopHoldings");
   const topThreeContributorsSheet = getWorksheetByName(
     workbook,
     "6.TopThreeContr",
@@ -34,7 +35,19 @@ export const getAllChartData = (
     "12.InceptionPerfData",
   );
 
+  const topTenRows = topTenHoldingsSheet
+    ? extractTwoColumnThreeRows(topTenHoldingsSheet, 2, "F", 2)
+    : [];
+
+  const topTenSplit = topTenRows
+    .map(([label, rawVal]) => ({
+      label: String(label).trim(),
+      value: normalizePercent(rawVal),
+    }))
+    .filter((x) => x.label && Number.isFinite(x.value));
+
   return {
+    topTenSplit,
     topThreeContributors: extractTwoColumnThreeRows(
       topThreeContributorsSheet,
       1,
@@ -79,6 +92,25 @@ type InceptionPerformanceDataOptions = {
   series2Col?: string;
   startRow?: number;
   headingRow?: number;
+};
+
+export type LabelValue = { label: string; value: number };
+
+// Normalize decimals/percent numbers/strings to a percent number (e.g., 17.3)
+const normalizePercent = (raw: unknown, def = NaN): number => {
+  if (raw === null || raw === undefined) return def;
+
+  if (typeof raw === "number")
+    return raw <= 1 ? Number((raw * 100).toFixed(2)) : Number(raw.toFixed(2));
+
+  const s = String(raw).trim();
+  if (!s || s.startsWith("#")) return def; // #REF!, #N/A, etc.
+
+  const stripped = s.endsWith("%") ? s.slice(0, -1) : s;
+  const num = Number(stripped);
+  if (!Number.isFinite(num)) return def;
+
+  return num <= 1 ? Number((num * 100).toFixed(2)) : Number(num.toFixed(2));
 };
 
 /**

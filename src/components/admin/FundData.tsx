@@ -4,6 +4,7 @@ import TwoColumnTable from "@/components/admin/TwoColumnTable";
 import { getAllChartData } from "@/app/(admin)/admin/excel/utils";
 import HorizontalTable from "./HorizontalTable";
 import { InceptionPerformanceChart } from "./InceptionPerformanceChart";
+import TopHoldingsChart from "./TopHoldingsChart";
 
 interface PortfolioComponentsPreview {
   workbook: XLSX.WorkBook;
@@ -11,6 +12,7 @@ interface PortfolioComponentsPreview {
 
 const FundData = ({ workbook }: PortfolioComponentsPreview) => {
   const {
+    topTenSplit,
     topThreeContributors,
     bottomThreeContributors,
     cumulativePerformance,
@@ -19,6 +21,7 @@ const FundData = ({ workbook }: PortfolioComponentsPreview) => {
   } = getAllChartData(workbook);
   return (
     <div>
+      {topTenSplit?.length ? <TopHoldingsChart holdings={topTenSplit} /> : null}
       <div className="mt-4">
         {topThreeContributors && <TwoColumnTable data={topThreeContributors} />}
       </div>
