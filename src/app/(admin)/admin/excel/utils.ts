@@ -10,6 +10,17 @@ export const getAllChartData = (
   options?: { inceptionPerformance?: InceptionPerformanceDataOptions },
 ) => {
   const topTenHoldingsSheet = getWorksheetByName(workbook, "1.TopHoldings");
+
+  const assetAllocationSheet = getWorksheetByName(
+    workbook,
+    "2.AssetAllocation",
+  );
+
+  const equitiesBreakdownSheet = getWorksheetByName(
+    workbook,
+    "3.EquitiesBreakdown",
+  );
+
   const topThreeContributorsSheet = getWorksheetByName(
     workbook,
     "6.TopThreeContr",
@@ -38,8 +49,41 @@ export const getAllChartData = (
   const topTenRows = topTenHoldingsSheet
     ? extractTwoColumnThreeRows(topTenHoldingsSheet, 2, "F", 2)
     : [];
-
   const topTenSplit = topTenRows
+    .map(([label, rawVal]) => ({
+      label: String(label).trim(),
+      value: normalizePercent(rawVal),
+    }))
+    .filter((x) => x.label && Number.isFinite(x.value));
+
+  const assetAllocationRows = assetAllocationSheet
+    ? extractTwoColumnThreeRows(assetAllocationSheet, 2, "A")
+    : [];
+  const assetAllocation = assetAllocationRows
+    .map(([label, rawVal]) => ({
+      label: String(label).trim(),
+      value: normalizePercent(rawVal),
+    }))
+    .filter((x) => x.label && Number.isFinite(x.value));
+
+  const equitiesBreakdownRows = equitiesBreakdownSheet
+    ? extractTwoColumnThreeRows(equitiesBreakdownSheet, 2, "A")
+    : [];
+  const equitiesBreakdown = equitiesBreakdownRows
+    .map(([label, rawVal]) => ({
+      label: String(label).trim(),
+      value: normalizePercent(rawVal),
+    }))
+    .filter((x) => x.label && Number.isFinite(x.value));
+
+  const fixedIncomeBreakdownSheet = getWorksheetByName(
+    workbook,
+    "4.FixedIncomeBreakdown",
+  );
+  const fixedIncomeBreakdownRows = fixedIncomeBreakdownSheet
+    ? extractTwoColumnThreeRows(fixedIncomeBreakdownSheet, 2, "A")
+    : [];
+  const fixedIncomeBreakdown = fixedIncomeBreakdownRows
     .map(([label, rawVal]) => ({
       label: String(label).trim(),
       value: normalizePercent(rawVal),
@@ -48,6 +92,9 @@ export const getAllChartData = (
 
   return {
     topTenSplit,
+    assetAllocation,
+    equitiesBreakdown,
+    fixedIncomeBreakdown,
     topThreeContributors: extractTwoColumnThreeRows(
       topThreeContributorsSheet,
       1,
