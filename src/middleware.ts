@@ -1,17 +1,11 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { verifyRequestOrigin } from "lucia";
-import { cookies as getCookies, headers } from "next/headers";
-import { lucia } from "@/lib/auth";
+import { headers } from "next/headers";
+import { isAdminFromSession } from "./lib/validateRequest";
 
 const admin_ips: string[] =
   process.env.ADMIN_IPS?.split(",").map((id) => id.trim()) || [];
-
-const isLoggedIn = async () => {
-  const cookies = await getCookies();
-  const sessionId = cookies.get(lucia.sessionCookieName)?.value ?? null;
-  return Boolean(sessionId);
-};
 
 const handleCSRF = (request: NextRequest) => {
   if (request.method === "GET") {
@@ -34,11 +28,15 @@ const handleCSRF = (request: NextRequest) => {
 
 export async function middleware(request: NextRequest) {
   const res = handleCSRF(request);
+
   if (res) return res;
-  const isAuthenticated = await isLoggedIn();
-  if (!isAuthenticated) {
+
+  const isAdmin = await isAdminFromSession();
+
+  if (!isAdmin) {
     return NextResponse.redirect(new URL("/", request.url));
   }
+
   if (process.env.ENVIRONMENT === "dev") {
     return;
   }
