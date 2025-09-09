@@ -7,6 +7,7 @@ import Header from "@/components/public/home-page/header";
 import Footer from "@/components/public/home-page/footer";
 import BackgroundGraphic from "@/components/public/background-graphic/BackgroundGraphic";
 import { Toaster } from "sonner";
+import { isLoggedIn } from "@/lib/validateRequest";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,11 +17,12 @@ export const metadata: Metadata = {
     "Vest IC is revolutionizing the protein industry with cutting-edge AI technology.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const loggedIn = await isLoggedIn();
   return (
     <html lang="en">
       <body className={`${inter.className} min-h-screen flex flex-col`}>
@@ -36,7 +38,7 @@ export default function RootLayout({
               <BackgroundGraphic />
             </div>
 
-            <Header />
+            <Header loggedIn={loggedIn}/>
             <Toaster />
 
             <main className="flex-1 flex justify-center py-8">

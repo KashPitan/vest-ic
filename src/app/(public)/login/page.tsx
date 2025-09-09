@@ -1,91 +1,25 @@
-"use client";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import { isLoggedIn } from "@/lib/validateRequest";
+import { LoginForm } from "./LoginForm";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { login } from "../../../lib/login";
-import { toast } from "sonner";
+import { logout } from "@/lib/login";
 
-const USERNAME_VALIDATION_MESSAGE =
-  "username must be between 4 ~ 31 characters, and only consists of lowercase letters, 0-9, -, and _";
-const PASSWORD_VALIDATION_MESSAGE =
-  "password must be between 6 ~ 255 characters";
-
-const LoginSchema = z.object({
-  username: z
-    .string()
-    .min(4, USERNAME_VALIDATION_MESSAGE)
-    .max(31, USERNAME_VALIDATION_MESSAGE),
-  password: z
-    .string()
-    .min(6, PASSWORD_VALIDATION_MESSAGE)
-    .max(255, PASSWORD_VALIDATION_MESSAGE),
-});
-
-type FormValues = z.infer<typeof LoginSchema>;
-
-const Page = () => {
-  const form = useForm<FormValues>({
-    resolver: zodResolver(LoginSchema),
-    defaultValues: {
-      username: "",
-      password: "",
-    },
-  });
+const Page = async () => {
+  const loggedIn = await isLoggedIn();
 
   return (
     <>
-      <Form {...form}>
-        <form
-          action={async (formData) => {
-            const response = await login(formData);
-            if (response.error) {
-              console.error(response.error);
-              toast.error(response.error);
-            }
-          }}
-          className="space-y-6"
-        >
-          <FormField
-            control={form.control}
-            name="username"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-pure-white">Username</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-pure-white">Password</FormLabel>
-                <FormControl>
-                  <Input type="password" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button className="text-pure-white" type="submit">
-            Log in
+      {loggedIn ? (
+        <>
+          <Button
+            onClick={logout}
+            className="text-2xl font-medium transition-colors text-pure-white hover:text-flat-gold active:text-highlight-yellow"
+          >
+            Log out
           </Button>
-        </form>
-      </Form>
+        </>
+      ) : (
+        <LoginForm />
+      )}
     </>
   );
 };
