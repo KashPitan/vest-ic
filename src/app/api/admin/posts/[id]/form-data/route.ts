@@ -4,7 +4,6 @@ import { posts } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { downloadFromBlob } from "@/lib/blob";
 import type { PostTag, Tag } from "@/db/schema";
-import { isAdmin } from "@/lib/validateRequest";
 
 interface TagOption {
   value: string;
@@ -32,7 +31,6 @@ export async function GET(
   const { id } = await params;
 
   try {
-    await isAdmin();
     // get post with all tags
     const result = await db.query.posts.findFirst({
       with: {

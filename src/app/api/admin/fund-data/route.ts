@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { uploadToBlob } from "@/lib/blob";
-import { isAdmin } from "@/lib/validateRequest";
 import { createFundDataAuditRecord } from "@/data-access-layer/fundDataAudit";
 
 export const runtime = "edge";
 
 export async function POST(req: NextRequest) {
   try {
-    await isAdmin();
     const formData = await req.formData();
     const file = formData.get("file");
 

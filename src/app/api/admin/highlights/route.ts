@@ -4,7 +4,6 @@ import { db } from "@/db";
 import { highlights, posts } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { isPostHighlighted } from "@/data-access-layer/highlights";
-import { isAdmin } from "@/lib/validateRequest";
 
 const CreateHighlightSchema = z.object({
   post_id: z.string().uuid(),
@@ -12,7 +11,6 @@ const CreateHighlightSchema = z.object({
 
 export async function PUT(request: Request) {
   try {
-    await isAdmin();
     const data = await request.json();
     const { post_id } = CreateHighlightSchema.parse(data);
 
@@ -55,7 +53,6 @@ const DeleteHighlightSchema = z.object({
 
 export async function DELETE(request: Request) {
   try {
-    await isAdmin();
     const data = await request.json();
     const { post_id } = DeleteHighlightSchema.parse(data);
 
@@ -85,7 +82,6 @@ const GetHighlightStatusSchema = z.object({
 // gets highlight data for a post
 export async function GET(request: Request) {
   try {
-    await isAdmin();
     const { searchParams } = new URL(request.url);
     const post_id = searchParams.get("post_id");
 

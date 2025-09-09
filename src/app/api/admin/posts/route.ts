@@ -4,7 +4,6 @@ import { uploadImageToBlob } from "@/lib/blob";
 import { db } from "@/db";
 import { posts, postTags } from "@/db/schema";
 import { desc } from "drizzle-orm";
-import { isAdmin } from "@/lib/validateRequest";
 import { sanitizePostContent } from "@/lib/utils";
 
 const CreatePostRequestSchema = z.object({
@@ -19,7 +18,6 @@ const CreatePostRequestSchema = z.object({
 
 export async function POST(request: Request) {
   try {
-    await isAdmin();
     const data = await request.json();
 
     const { title, slug, content, excerpt, tags, displayImage, releaseDate } =
@@ -78,7 +76,6 @@ export async function POST(request: Request) {
 
 export async function GET() {
   try {
-    await isAdmin();
     const fetchedPosts = await db.query.posts.findMany({
       columns: {
         id: true,
