@@ -7,12 +7,6 @@ import { isAdminFromSession } from "./lib/validateRequest";
 const admin_ips: string[] =
   process.env.ADMIN_IPS?.split(",").map((id) => id.trim()) || [];
 
-// const isLoggedIn = async () => {
-//   const cookies = await getCookies();
-//   const sessionId = cookies.get(lucia.sessionCookieName)?.value ?? null;
-//   return Boolean(sessionId);
-// };
-
 const handleCSRF = (request: NextRequest) => {
   if (request.method === "GET") {
     return;
