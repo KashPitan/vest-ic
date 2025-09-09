@@ -76,4 +76,6 @@ export const isAdminFromSession = async () => {
   if (!isAdminRole) {
     return false;
   }
+
+  return true;
 };
