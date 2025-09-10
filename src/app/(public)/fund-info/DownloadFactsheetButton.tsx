@@ -9,10 +9,12 @@ import PDF from "@/components/admin/PDF";
 
 interface DownloadFactsheetButtonProps {
   workbook: XLSX.WorkBook;
+  fileName: string;
 }
 
 export default function DownloadFactsheetButton({
   workbook,
+  fileName,
 }: DownloadFactsheetButtonProps) {
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -27,7 +29,11 @@ export default function DownloadFactsheetButton({
 
         const imgData = canvas.toDataURL("image/png");
         const pdf = new jsPDF("p", "mm", "a4");
+        // TODO: adjust image dimension so logo is not distorted
         const imgWidth = 210;
+
+        // 295mm - standard a4 size
+        // pdf page height is set to be the pixel equivalent so that we can create page components
         const pageHeight = 295;
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
         let heightLeft = imgHeight;
@@ -71,15 +77,10 @@ export default function DownloadFactsheetButton({
       {/* Hidden div for PDF generation using the existing PDF component */}
       <div
         ref={contentRef}
-        className="fixed left-[-9999px] top-[-9999px] w-[800px] bg-white p-8"
+        className="fixed left-[-9999px] top-[-9999px] w-[800px] bg-white"
         style={{ zIndex: -1 }}
       >
-        <div className="text-black">
-          <PDF workbook={workbook} />
-          <div className="text-sm text-gray-600 text-center mt-8">
-            Generated on {new Date().toLocaleDateString()}
-          </div>
-        </div>
+        <PDF workbook={workbook} fileName={fileName} />
       </div>
     </>
   );

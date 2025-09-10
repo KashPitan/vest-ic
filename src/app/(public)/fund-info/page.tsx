@@ -37,7 +37,10 @@ async function FundInfoContent() {
           <h1 className="text-2xl text-pure-white font-bold">
             Fund Information
           </h1>
-          <DownloadFactsheetButton workbook={workbook} />
+          <DownloadFactsheetButton
+            workbook={workbook}
+            fileName={auditResult.data.filename}
+          />
         </div>
         <div className="mb-4 text-sm text-pure-white">
           Last updated:{" "}
