@@ -58,10 +58,6 @@ export default function PDF({
           </div>
         </div>
       </Page>
-
-      <Page headerDate={headerDate} footerDate={footerDate}>
-        <></>
-      </Page>
     </>
   );
 }
