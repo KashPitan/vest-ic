@@ -23,7 +23,7 @@ export default function DownloadFactsheetButton({
       try {
         const pdf = new jsPDF("p", "mm", "a4");
         const imgWidth = 210;
-        const pageHeight = 295; // A4 height in mm
+        // const pageHeight = 295; // A4 height in mm
 
         // Find all page elements
         const pageElements = contentRef.current.querySelectorAll(".pdf-page");
