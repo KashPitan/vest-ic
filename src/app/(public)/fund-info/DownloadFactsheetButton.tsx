@@ -21,32 +21,40 @@ export default function DownloadFactsheetButton({
   const generatePDF = async () => {
     if (contentRef.current) {
       try {
-        const canvas = await html2canvas(contentRef.current, {
-          scale: 2,
-          useCORS: true,
-          allowTaint: true,
-        });
-
-        const imgData = canvas.toDataURL("image/png");
         const pdf = new jsPDF("p", "mm", "a4");
-        // TODO: adjust image dimension so logo is not distorted
         const imgWidth = 210;
+        const pageHeight = 295; // A4 height in mm
 
-        // 295mm - standard a4 size
-        // pdf page height is set to be the pixel equivalent so that we can create page components
-        const pageHeight = 295;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        let heightLeft = imgHeight;
+        // Find all page elements
+        const pageElements = contentRef.current.querySelectorAll(".pdf-page");
 
-        let position = 0;
-        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
+        if (pageElements.length === 0) {
+          throw new Error("No page elements found");
+        }
 
-        while (heightLeft >= 0) {
-          position = heightLeft - imgHeight;
-          pdf.addPage();
-          pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-          heightLeft -= pageHeight;
+        // Process each page separately
+        for (let i = 0; i < pageElements.length; i++) {
+          const pageElement = pageElements[i] as HTMLElement;
+
+          // Add new page for each page element (except the first one)
+          if (i > 0) {
+            pdf.addPage();
+          }
+
+          // Capture this specific page element
+          const canvas = await html2canvas(pageElement, {
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+            height: pageElement.offsetHeight,
+            width: pageElement.offsetWidth,
+          });
+
+          const imgData = canvas.toDataURL("image/png");
+          const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+          // Add the image to the current page
+          pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
         }
 
         // Open PDF in new tab
