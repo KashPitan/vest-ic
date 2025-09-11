@@ -146,7 +146,9 @@ export default function PortfolioPage() {
             <div className="text-gray-400">No file uploaded.</div>
           )}
         </div>
-        {workbook && <PdfPreview workbook={workbook} />}
+        {workbook && file && (
+          <PdfPreview workbook={workbook} fileName={file.name} />
+        )}
       </div>
     </div>
   );

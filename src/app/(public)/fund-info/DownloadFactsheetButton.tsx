@@ -9,38 +9,52 @@ import PDF from "@/components/admin/PDF";
 
 interface DownloadFactsheetButtonProps {
   workbook: XLSX.WorkBook;
+  fileName: string;
 }
 
 export default function DownloadFactsheetButton({
   workbook,
+  fileName,
 }: DownloadFactsheetButtonProps) {
   const contentRef = useRef<HTMLDivElement>(null);
 
   const generatePDF = async () => {
     if (contentRef.current) {
       try {
-        const canvas = await html2canvas(contentRef.current, {
-          scale: 2,
-          useCORS: true,
-          allowTaint: true,
-        });
-
-        const imgData = canvas.toDataURL("image/png");
         const pdf = new jsPDF("p", "mm", "a4");
         const imgWidth = 210;
-        const pageHeight = 295;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        let heightLeft = imgHeight;
+        // const pageHeight = 295; // A4 height in mm
 
-        let position = 0;
-        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
+        // Find all page elements
+        const pageElements = contentRef.current.querySelectorAll(".pdf-page");
 
-        while (heightLeft >= 0) {
-          position = heightLeft - imgHeight;
-          pdf.addPage();
-          pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-          heightLeft -= pageHeight;
+        if (pageElements.length === 0) {
+          throw new Error("No page elements found");
+        }
+
+        // Process each page separately
+        for (let i = 0; i < pageElements.length; i++) {
+          const pageElement = pageElements[i] as HTMLElement;
+
+          // Add new page for each page element (except the first one)
+          if (i > 0) {
+            pdf.addPage();
+          }
+
+          // Capture this specific page element
+          const canvas = await html2canvas(pageElement, {
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+            height: pageElement.offsetHeight,
+            width: pageElement.offsetWidth,
+          });
+
+          const imgData = canvas.toDataURL("image/png");
+          const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+          // Add the image to the current page
+          pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
         }
 
         // Open PDF in new tab
@@ -71,15 +85,10 @@ export default function DownloadFactsheetButton({
       {/* Hidden div for PDF generation using the existing PDF component */}
       <div
         ref={contentRef}
-        className="fixed left-[-9999px] top-[-9999px] w-[800px] bg-white p-8"
+        className="fixed left-[-9999px] top-[-9999px] w-[800px] bg-white"
         style={{ zIndex: -1 }}
       >
-        <div className="text-black">
-          <PDF workbook={workbook} />
-          <div className="text-sm text-gray-600 text-center mt-8">
-            Generated on {new Date().toLocaleDateString()}
-          </div>
-        </div>
+        <PDF workbook={workbook} fileName={fileName} />
       </div>
     </>
   );

@@ -12,6 +12,7 @@ interface DualAxisLineChartProps {
 
 export function DualAxisLineChart({
   data,
+  height
 }: DualAxisLineChartProps) {
 
   // Transform data for MUI X Charts
@@ -39,7 +40,7 @@ export function DualAxisLineChart({
     <div className="w-full h-full">
         <LineChart
         dataset={validData}
-        height={400}
+        height={height ?? 400}
         xAxis={[
             {
             dataKey: 'date',
