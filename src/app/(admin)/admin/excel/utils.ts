@@ -34,25 +34,27 @@ export const getAllChartData = (
     "12.InceptionPerfData",
   );
 
+  const fundInfoSheet = getWorksheetByName(workbook, "14.FundInfo");
+
   return {
-    topThreeContributors: extractTwoColumnThreeRows(
+    topThreeContributors: extractTwoColumnData(
       topThreeContributorsSheet,
       1,
       "A",
       4,
     ),
-    bottomThreeContributors: extractTwoColumnThreeRows(
+    bottomThreeContributors: extractTwoColumnData(
       bottomThreeContributorsSheet,
       1,
       "A",
       4,
     ),
-    cumulativePerformance: extractTwoColumnThreeRows(
+    cumulativePerformance: extractTwoColumnData(
       cumulativePerformanceSheet,
       1,
       "A",
     ),
-    twelveMonthCumulativePerformance: extractTwoColumnThreeRows(
+    twelveMonthCumulativePerformance: extractTwoColumnData(
       twelveMonthCumulativePerformanceSheet,
       1,
       "A",
@@ -62,6 +64,7 @@ export const getAllChartData = (
       inceptionPerfSheet,
       options?.inceptionPerformance,
     ),
+    fundInfo: extractTwoColumnData(fundInfoSheet),
   };
 };
 
@@ -165,7 +168,7 @@ export type TwoColumnData = [string, string][];
  * @returns {TwoColumnData} An array of [string, string] pairs representing the extracted rows.
  */
 
-export function extractTwoColumnThreeRows(
+export function extractTwoColumnData(
   sheet: XLSX.WorkSheet,
   startRow: number = 1,
   startCol: string = "A",
