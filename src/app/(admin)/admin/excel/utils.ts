@@ -13,28 +13,25 @@ export const getAllChartData = (
     workbook,
     "6.TopThreeContr",
   );
-
   const bottomThreeContributorsSheet = getWorksheetByName(
     workbook,
     "7.BottomThreeContr",
   );
-
   const cumulativePerformanceSheet = getWorksheetByName(
     workbook,
     "8.CumulativePerfDiscrete",
   );
-
   const twelveMonthCumulativePerformanceSheet = getWorksheetByName(
     workbook,
     "9.12mPerfDiscrete",
   );
-
   const inceptionPerfSheet = getWorksheetByName(
     workbook,
     "12.InceptionPerfData",
   );
-
   const fundInfoSheet = getWorksheetByName(workbook, "14.FundInfo");
+  const keyBuysSheet = getWorksheetByName(workbook, "10.KeyBuys");
+  const keySellsSheet = getWorksheetByName(workbook, "11.KeySells");
 
   return {
     topThreeContributors: extractTwoColumnData(
@@ -65,6 +62,8 @@ export const getAllChartData = (
       options?.inceptionPerformance,
     ),
     fundInfo: extractTwoColumnData(fundInfoSheet),
+    keyBuys: extractRowsData(keyBuysSheet, ["A", "B", "C", "D"], 1),
+    keySells: extractRowsData(keySellsSheet, ["A", "B", "C", "D"], 1),
   };
 };
 
@@ -156,7 +155,7 @@ export const getInceptionPerformanceData = (
   };
 };
 
-export type TwoColumnData = [string, string][];
+export type KeyValuePairData = [string, string][];
 
 /**
  * Extracts a two-column, three-row data structure from a given worksheet.
@@ -165,7 +164,7 @@ export type TwoColumnData = [string, string][];
  * @param {number} [startRow=1] - The starting row number (1-based).
  * @param {string} [startCol="A"] - The starting column letter.
  * @param {number} [numRows] - Optional. The number of rows to extract including header row. If not provided, extraction continues until two consecutive empty rows are found.
- * @returns {TwoColumnData} An array of [string, string] pairs representing the extracted rows.
+ * @returns {KeyValuePairData} An array of [string, string] pairs representing the extracted rows.
  */
 
 export function extractTwoColumnData(
@@ -173,8 +172,8 @@ export function extractTwoColumnData(
   startRow: number = 1,
   startCol: string = "A",
   numRows?: number,
-): TwoColumnData {
-  const rows: TwoColumnData = [];
+): KeyValuePairData {
+  const rows: KeyValuePairData = [];
   const colB = String.fromCharCode(startCol.charCodeAt(0) + 1); // Next column
 
   // Helper function to extract cell values for a given row
@@ -222,4 +221,40 @@ export function extractTwoColumnData(
     }
   }
   return rows;
+}
+
+/**
+ * Extracts 2 rows from an Excel worksheet, where the first row contains keys
+ * and the second row contains corresponding values, from the specified columns.
+ *
+ * @param {XLSX.WorkSheet} sheet - The worksheet to extract data from
+ * @param {string[]} columns - Array of column letters (e.g., ['A', 'B', 'C'])
+ * @param {number} startRow - Starting row number (1-based) for the keys
+ * @returns {KeyValuePairData} Array of key-value pairs, where each pair is a [string, string]
+ */
+export function extractRowsData(
+  sheet: XLSX.WorkSheet,
+  columns: string[],
+  startRow: number,
+): KeyValuePairData {
+  const keyRow = startRow;
+  const valueRow = startRow + 1;
+  const pairs: KeyValuePairData = [];
+
+  for (const col of columns) {
+    // Get the key from the first row of the specified column
+    const keyCellRef = `${col}${keyRow}`;
+    const keyCell = sheet[keyCellRef];
+    const key = keyCell ? toPercentStringIfNumeric(keyCell.v) : "";
+
+    // Get the value from the second row of the specified column
+    const valueCellRef = `${col}${valueRow}`;
+    const valueCell = sheet[valueCellRef];
+    const value = valueCell ? toPercentStringIfNumeric(valueCell.v) : "";
+
+    // Push the key-value pair to the result array
+    pairs.push([key, value]);
+  }
+
+  return pairs;
 }
