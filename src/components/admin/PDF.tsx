@@ -6,6 +6,9 @@ import { InceptionPerformanceChart } from "./InceptionPerformanceChart";
 import { getDateFromFileName } from "@/lib/utils";
 import Page from "./pdf/Page";
 import FundCommentary from "./pdf/FundCommentary";
+import SidePanel from "./pdf/Sidebar";
+import ImportantInformation from "./pdf/ImportantInformation";
+import SectionTitle from "./pdf/SectionTitle";
 
 export default function PDF({
   workbook,
@@ -20,6 +23,7 @@ export default function PDF({
     cumulativePerformance,
     twelveMonthCumulativePerformance,
     cumulativeStrategyPerformance,
+    fundInfo,
   } = getAllChartData(workbook);
 
   const headerDate = getDateFromFileName(fileName, "MMMM YYY");
@@ -32,19 +36,26 @@ export default function PDF({
     <>
       {/* page 1? */}
       <Page headerDate={headerDate} footerDate={footerDate}>
-        <FundCommentary />
-        <hr className="my-2 mx-4" />
+        <div className="grid grid-cols-7">
+          <SidePanel />
 
-        <div className="p-4 w-full">
-          <HorizontalTable data={cumulativePerformance} textSize="xs" />
-          <InceptionPerformanceChart
-            data={cumulativeStrategyPerformance}
-            height={250}
-          />
-          <HorizontalTable
-            data={twelveMonthCumulativePerformance}
-            textSize="xs"
-          />
+          <div className="col-span-5">
+            <div className="p-4 pb-0 h-3/5 min-h-3/5 max-h-3/5 flex flex-col">
+              <FundCommentary />
+            </div>
+
+            <div className="p-4 w-full space-y-4">
+              <HorizontalTable data={cumulativePerformance} textSize="xs" />
+              <InceptionPerformanceChart
+                data={cumulativeStrategyPerformance}
+                height={180}
+              />
+              <HorizontalTable
+                data={twelveMonthCumulativePerformance}
+                textSize="xs"
+              />
+            </div>
+          </div>
         </div>
       </Page>
 
@@ -57,6 +68,17 @@ export default function PDF({
             <TwoColumnTable data={bottomThreeContributors} textSize="xs" />
           </div>
         </div>
+      </Page>
+
+      <Page headerDate={headerDate} footerDate={footerDate}>
+        <div className="p-4">
+          <HorizontalTable data={fundInfo} textSize="xs" />
+          <SectionTitle>Portfolio Highlights</SectionTitle>
+        </div>
+      </Page>
+
+      <Page headerDate={headerDate} footerDate={footerDate}>
+        <ImportantInformation />
       </Page>
     </>
   );
