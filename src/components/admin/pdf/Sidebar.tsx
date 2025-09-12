@@ -28,7 +28,7 @@ export default function SidePanel() {
 
       <SectionTitle>Administration / Dealing</SectionTitle>
       <p className="text-xs pt-2">
-        Dealing via platform, on an "agent-asclient" basis.
+        Dealing via platform, on an &quot;agent-asclient&quot; basis.
       </p>
     </div>
   );
