@@ -1,5 +1,5 @@
 import React from "react";
-import { TwoColumnData } from "@/app/(admin)/admin/excel/utils";
+import { KeyValuePairData } from "@/app/(admin)/admin/excel/utils";
 import {
   Table,
   TableBody,
@@ -18,22 +18,36 @@ const fontSize: Record<FontSize2, string> = {
 };
 
 interface HorizontalTableProps {
-  data: TwoColumnData;
+  data: KeyValuePairData;
   textSize?: FontSize2;
+  secondHeaderText?: string;
+  emptyStateText?: string;
+  classNames?: string;
 }
 
 export default function HorizontalTable({
   data,
   textSize,
+  secondHeaderText,
+  emptyStateText,
+  classNames = "",
 }: HorizontalTableProps) {
   // Transpose the data so columns become rows
   const transposedData =
     data[0]?.map((_, colIndex) => data.map((row) => row[colIndex])) || [];
 
+  const isEmptyValues = data.every((pair) => pair[1] === "");
+  const showEmptyState = isEmptyValues && emptyStateText;
+
   return (
     <Table
-      className={`${articulat.className} ${textSize && fontSize[textSize]}`}
+      className={`${articulat.className} ${textSize && fontSize[textSize]} ${classNames}`}
     >
+      {secondHeaderText && (
+        <TableHeader className="border-b">
+          <TableHead>{secondHeaderText}</TableHead>
+        </TableHeader>
+      )}
       <TableHeader>
         <TableRow>
           {data.map((row, idx) => (
@@ -41,15 +55,22 @@ export default function HorizontalTable({
           ))}
         </TableRow>
       </TableHeader>
-      <TableBody>
-        {transposedData.slice(1, 2).map((column, colIdx) => (
-          <TableRow key={colIdx}>
-            {column.map((value, rowIdx) => (
-              <TableCell key={rowIdx}>{value}</TableCell>
-            ))}
-          </TableRow>
-        ))}
-      </TableBody>
+
+      {showEmptyState ? (
+        <TableHeader className="border-b">
+          <TableHead>{emptyStateText}</TableHead>
+        </TableHeader>
+      ) : (
+        <TableBody>
+          {transposedData.slice(1, 2).map((column, colIdx) => (
+            <TableRow key={colIdx}>
+              {column.map((value, rowIdx) => (
+                <TableCell key={rowIdx}>{value}</TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      )}
     </Table>
   );
 }

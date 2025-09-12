@@ -1,5 +1,5 @@
 import React from "react";
-import { TwoColumnData } from "@/app/(admin)/admin/excel/utils";
+import { KeyValuePairData } from "@/app/(admin)/admin/excel/utils";
 import {
   Table,
   TableBody,
@@ -18,7 +18,7 @@ const fontSize: Record<FontSize2, string> = {
 };
 
 interface TwoColumnTableProps {
-  data: TwoColumnData;
+  data: KeyValuePairData;
   textSize?: FontSize2;
 }
 

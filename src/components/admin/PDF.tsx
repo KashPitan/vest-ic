@@ -24,6 +24,8 @@ export default function PDF({
     twelveMonthCumulativePerformance,
     cumulativeStrategyPerformance,
     fundInfo,
+    keyBuys,
+    keySells,
   } = getAllChartData(workbook);
 
   const headerDate = getDateFromFileName(fileName, "MMMM YYY");
@@ -73,7 +75,23 @@ export default function PDF({
       <Page headerDate={headerDate} footerDate={footerDate}>
         <div className="p-4">
           <HorizontalTable data={fundInfo} textSize="xs" />
+
           <SectionTitle>Portfolio Highlights</SectionTitle>
+
+          <HorizontalTable
+            data={keyBuys}
+            textSize="xs"
+            secondHeaderText="Key Buys"
+            emptyStateText="There were no key buys this month"
+          />
+
+          <HorizontalTable
+            classNames="mt-4"
+            data={keySells}
+            textSize="xs"
+            secondHeaderText="Key Sells"
+            emptyStateText="There were no key sells this month"
+          />
         </div>
       </Page>
 
