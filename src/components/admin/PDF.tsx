@@ -28,8 +28,8 @@ export default function PDF({
     keySells,
   } = getAllChartData(workbook);
 
-  const headerDate = getDateFromFileName(fileName, "MMMM YYY");
-  const footerDate = getDateFromFileName(fileName, "dd/MM/YYY");
+  const headerDate = getDateFromFileName(fileName, "MMMM yyy");
+  const footerDate = getDateFromFileName(fileName, "dd/MM/yyy");
 
   if (!headerDate) return <div>error: could not get header date</div>;
   if (!footerDate) return <div>error: could not get footer date</div>;

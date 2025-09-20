@@ -1,4 +1,4 @@
-const decimalToPercentage = (value: number) => Number((value * 100).toFixed(2));
+const decimalToPercentage = (value: number) => (value * 100).toFixed(2);
 
 // Converts a cell-like value to a percentage number if numeric; otherwise returns defaultValue.
 export const toPercentNumber = (
@@ -13,7 +13,7 @@ export const toPercentNumber = (
         : Number(value);
 
   return Number.isFinite(numericValue)
-    ? decimalToPercentage(numericValue)
+    ? Number(decimalToPercentage(numericValue))
     : defaultValue;
 };
 
@@ -27,6 +27,6 @@ export const toPercentStringIfNumeric = (value: unknown): string => {
   const numericValue = Number(stringValue);
 
   return Number.isFinite(numericValue)
-    ? decimalToPercentage(numericValue).toString()
+    ? `${decimalToPercentage(numericValue).toString()}%`
     : stringValue;
 };

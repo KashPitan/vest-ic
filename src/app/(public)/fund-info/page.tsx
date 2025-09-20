@@ -47,9 +47,6 @@ async function FundInfoContent() {
           {new Date(auditResult.data.uploadDate ?? "").toLocaleDateString()}
         </div>
         <div className="mt-6">
-          <h2 className="text-lg text-pure-white font-semibold mb-2">
-            Portfolio Components
-          </h2>
           <FundData workbook={workbook} />
         </div>
       </div>

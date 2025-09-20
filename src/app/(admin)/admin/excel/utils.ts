@@ -32,6 +32,10 @@ export const getAllChartData = (
   const fundInfoSheet = getWorksheetByName(workbook, "14.FundInfo");
   const keyBuysSheet = getWorksheetByName(workbook, "10.KeyBuys");
   const keySellsSheet = getWorksheetByName(workbook, "11.KeySells");
+  const monthlyPerformanceSheet = getWorksheetByName(
+    workbook,
+    "13.MonthlyPerf",
+  );
 
   return {
     topThreeContributors: extractTwoColumnData(
@@ -64,6 +68,7 @@ export const getAllChartData = (
     fundInfo: extractTwoColumnData(fundInfoSheet),
     keyBuys: extractRowsData(keyBuysSheet, ["A", "B", "C", "D"], 1),
     keySells: extractRowsData(keySellsSheet, ["A", "B", "C", "D"], 1),
+    monthlyPerformance: extractTableData(monthlyPerformanceSheet, "J", 3, 14),
   };
 };
 
@@ -257,4 +262,64 @@ export function extractRowsData(
   }
 
   return pairs;
+}
+
+/**
+ * Extracts table data starting from a specified header cell (default I3).
+ * Reads 14 columns across and continues down until an empty row is found.
+ *
+ * @param {XLSX.WorkSheet} sheet - The worksheet to extract data from
+ * @param {string} [headerCol="I"] - The starting column letter for headers
+ * @param {number} [headerRow=3] - The row number containing headers
+ * @param {number} [numColumns=14] - Number of columns to read
+ * @returns {{headerCellValue: string, headers: string[], data: string[][]}} Object containing header cell value, headers array and data rows array
+ */
+export function extractTableData(
+  sheet: XLSX.WorkSheet,
+  headerCol: string = "J",
+  headerRow: number = 3,
+  numColumns: number = 14,
+): { headerCellValue: string; data: string[][] } {
+  const data: string[][] = [];
+  const startColCode = headerCol.charCodeAt(0);
+
+  // Extract the header cell value (the cell at the starting position)
+  const headerCellRef = `${headerCol}${headerRow}`;
+  const headerCell = sheet[headerCellRef];
+  const headerCellValue = headerCell ? String(headerCell.v) : "";
+
+  // Start from the row after the header
+  let currentRow = headerRow + 1;
+
+  while (true) {
+    const row: string[] = [];
+    let hasData = false;
+
+    // Read the specified number of columns for this row and check if any cell has data
+    for (let colOffset = 0; colOffset < numColumns; colOffset++) {
+      const colLetter = String.fromCharCode(startColCode + colOffset);
+      const cellRef = `${colLetter}${currentRow}`;
+      const cell = sheet[cellRef];
+
+      if (cell) {
+        // First column (row header) uses raw value, others get percentage formatting
+        const cellValue =
+          colOffset === 0 ? cell.v : toPercentStringIfNumeric(cell.v);
+        row.push(cellValue);
+        hasData = true;
+      } else {
+        row.push("");
+      }
+    }
+
+    // If the entire row is empty, stop processing
+    if (!hasData) {
+      break;
+    }
+
+    data.push(row);
+    currentRow++;
+  }
+
+  return { headerCellValue, data };
 }
