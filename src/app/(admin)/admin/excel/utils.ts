@@ -269,10 +269,10 @@ export function extractRowsData(
  * Reads 14 columns across and continues down until an empty row is found.
  *
  * @param {XLSX.WorkSheet} sheet - The worksheet to extract data from
- * @param {string} [headerCol="I"] - The starting column letter for headers
+ * @param {string} [headerCol="J"] - The starting column letter for headers
  * @param {number} [headerRow=3] - The row number containing headers
  * @param {number} [numColumns=14] - Number of columns to read
- * @returns {{headerCellValue: string, headers: string[], data: string[][]}} Object containing header cell value, headers array and data rows array
+ * @returns {{headerCellValue: string, data: string[][]}} Object containing header cell value and data rows array
  */
 export function extractTableData(
   sheet: XLSX.WorkSheet,
