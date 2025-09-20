@@ -25,6 +25,14 @@ interface HorizontalTableProps {
   classNames?: string;
 }
 
+interface HorizontalTableRowsProps {
+  data: string[][];
+  textSize?: FontSize2;
+  headerText?: string;
+  emptyStateText?: string;
+  classNames?: string;
+}
+
 export default function HorizontalTable({
   data,
   textSize,
@@ -72,5 +80,46 @@ export default function HorizontalTable({
         </TableBody>
       )}
     </Table>
+  );
+}
+
+export function HorizontalTableRows({
+  data,
+  textSize,
+  headerText,
+  emptyStateText,
+  classNames = "",
+}: HorizontalTableRowsProps) {
+  const isEmpty =
+    data.length === 0 || data.every((row) => row.every((cell) => cell === ""));
+  const showEmptyState = isEmpty && emptyStateText;
+
+  return (
+    <>
+      {headerText && (
+        <TableHeader className="border-b">
+          <TableHead>{headerText}</TableHead>
+        </TableHeader>
+      )}
+      <Table
+        className={`${articulat.className} ${textSize && fontSize[textSize]} ${classNames}`}
+      >
+        {showEmptyState ? (
+          <TableHeader className="border-b">
+            <TableHead>{emptyStateText}</TableHead>
+          </TableHeader>
+        ) : (
+          <TableBody>
+            {data.map((row, rowIdx) => (
+              <TableRow key={rowIdx}>
+                {row.map((cell, cellIdx) => (
+                  <TableCell key={cellIdx}>{cell}</TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        )}
+      </Table>
+    </>
   );
 }
