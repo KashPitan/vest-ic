@@ -1,10 +1,9 @@
 "use client";
 import MultiSelect, { Option } from "@/components/admin/MultiSelect";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { Pagination } from "@/components/public/Pagination";
+import { InsightSearchItem } from "@/components/public/InsightSearchItem";
 import { SearchParams } from "@/lib/SearchParams";
-import Link from "next/link";
 import { useState } from "react";
 import {
   ReadonlyURLSearchParams,
@@ -75,7 +74,7 @@ export const InsightsListView = ({
 
   return (
     <>
-      <div className="flex mb-8">
+      <div className="flex mb-8 max-w-[1100px] mx-auto">
         <MultiSelect
           selected={selectedTags}
           onChange={setSelectedTags}
@@ -101,24 +100,12 @@ export const InsightsListView = ({
         </div>
       </div>
 
-      <ul className="mb-8">
-        {posts.map(({ id, title, slug, createdAt }) => (
-          <li key={id}>
-            <Link
-              href={`/insights/${slug}`}
-              className="text-orange-500 hover:text-orange-700"
-            >
-              {title}
-            </Link>
-            {createdAt && (
-              <h3 className="text-pure-white">
-                This insight was created on {createdAt.toDateString()}
-              </h3>
-            )}
-
-            <Separator />
-          </li>
-        ))}
+      <ul className="mb-8 px-8">
+        <div className="grid grid-cols-2 gap-8">
+          {posts.map((post) => (
+            <InsightSearchItem key={post.id} post={post} />
+          ))}
+        </div>
       </ul>
       <Pagination hasNext={hasNext} hasPrevious={hasPrevious} />
     </>

@@ -11,7 +11,7 @@ interface SearchParams {
   tags?: string;
 }
 
-const PAGE_LIMIT = 3;
+const PAGE_LIMIT = 4;
 
 const SearchParamsSchema = z.object({
   page: z.coerce.number().min(1, "Page must be non zero").optional(),
