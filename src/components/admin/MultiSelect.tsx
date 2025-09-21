@@ -57,9 +57,11 @@ const MultiSelect = ({
   return (
     <Command
       onKeyDown={handleKeyDown}
-      className={`overflow-visible bg-transparent ${className}`}
+      className="overflow-visible bg-transparent text-pure-white"
     >
-      <div className="group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+      <div
+        className={`group rounded-md bg-pure-white/10 backdrop-blur-[10px] bg-oborder-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2  ${className}`}
+      >
         <div className="flex flex-wrap gap-1">
           {selected.map((option) => (
             <Badge key={option.value} variant="secondary">
@@ -95,7 +97,7 @@ const MultiSelect = ({
       <div className="relative mt-2">
         {open && selectables?.length > 0 && (
           <div className="absolute top-0 z-10 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">
-            <CommandGroup className="h-full overflow-auto">
+            <CommandGroup className="max-h-36 overflow-auto">
               <CommandList>
                 {selectables.map((option) => (
                   <CommandItem
