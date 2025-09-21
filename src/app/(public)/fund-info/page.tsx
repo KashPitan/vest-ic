@@ -50,8 +50,8 @@ async function FundInfoContent() {
           Montly data as at:{" "}
           {new Date(auditResult.data.uploadDate ?? "").toLocaleDateString()}
         </div>
-        <div className="mt-6">
-          <Card className="w-full h-full bg-racing-green px-6 py-4 max-w-[1200px] outline-none self-center">
+        <div className="mt-6 flex justify-center">
+          <Card className="w-full h-full bg-racing-green px-6 py-4 max-w-[1200px] outline-none">
             <FundData workbook={workbook} white={true} />
           </Card>
         </div>
