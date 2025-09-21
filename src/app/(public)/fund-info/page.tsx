@@ -4,6 +4,8 @@ import { downloadFileFromBlob, getBlobUrl } from "@/lib/blob";
 import * as XLSX from "xlsx";
 import FundData from "@/components/admin/FundData";
 import DownloadFactsheetButton from "./DownloadFactsheetButton";
+import { Card } from "@/components/ui/card";
+import { articulat, elza } from "@/fonts";
 
 async function FundInfoContent() {
   try {
@@ -33,8 +35,10 @@ async function FundInfoContent() {
 
     return (
       <div className="w-full mx-auto p-8">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl text-pure-white font-bold">
+        <div className="flex justify-between items-center">
+          <h1
+            className={`text-3xl text-pure-white font-bold ${elza.className}`}
+          >
             Fund Information
           </h1>
           <DownloadFactsheetButton
@@ -42,12 +46,14 @@ async function FundInfoContent() {
             fileName={auditResult.data.filename}
           />
         </div>
-        <div className="mb-4 text-sm text-pure-white">
-          Last updated:{" "}
+        <div className={`mb-4 text-sm text-pure-white ${articulat.className}`}>
+          Montly data as at:{" "}
           {new Date(auditResult.data.uploadDate ?? "").toLocaleDateString()}
         </div>
-        <div className="mt-6">
-          <FundData workbook={workbook} />
+        <div className="mt-6 flex justify-center">
+          <Card className="w-full h-full bg-racing-green px-6 py-4 max-w-[1200px] outline-none">
+            <FundData workbook={workbook} white={true} />
+          </Card>
         </div>
       </div>
     );
@@ -55,7 +61,9 @@ async function FundInfoContent() {
     console.error("Error loading fund info:", error);
     return (
       <div className="w-full mx-auto p-8">
-        <h1 className="text-2xl font-bold mb-6">Fund Information</h1>
+        <h1 className={`text-3xl font-bold mb-6 ${elza.className}`}>
+          Fund Information
+        </h1>
         <div className="text-red-500">
           Error loading fund data. Please try again later.
         </div>
@@ -69,7 +77,9 @@ export default function FundInfoPage() {
     <Suspense
       fallback={
         <div className="w-full mx-auto p-8">
-          <h1 className="text-2xl font-bold mb-6">Fund Information</h1>
+          <h1 className={`text-3xl font-bold mb-6 ${elza.className}`}>
+            Fund Information
+          </h1>
           <div className="flex items-center justify-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
           </div>

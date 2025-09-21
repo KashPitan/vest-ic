@@ -23,6 +23,7 @@ interface HorizontalTableProps {
   secondHeaderText?: string;
   emptyStateText?: string;
   classNames?: string;
+  white?: boolean;
 }
 
 interface HorizontalTableRowsProps {
@@ -31,6 +32,7 @@ interface HorizontalTableRowsProps {
   headerText?: string;
   emptyStateText?: string;
   classNames?: string;
+  white?: boolean;
 }
 
 export default function HorizontalTable({
@@ -39,6 +41,7 @@ export default function HorizontalTable({
   secondHeaderText,
   emptyStateText,
   classNames = "",
+  white = false,
 }: HorizontalTableProps) {
   // Transpose the data so columns become rows
   const transposedData =
@@ -49,11 +52,13 @@ export default function HorizontalTable({
 
   return (
     <Table
-      className={`${articulat.className} ${textSize && fontSize[textSize]} ${classNames}`}
+      className={`${articulat.className} ${textSize && fontSize[textSize]} ${white ? "text-white" : ""} ${classNames}`}
     >
       {secondHeaderText && (
         <TableHeader className="border-b">
-          <TableHead>{secondHeaderText}</TableHead>
+          <TableHead className={` ${white ? "text-white" : ""}`}>
+            {secondHeaderText}
+          </TableHead>
         </TableHeader>
       )}
       <TableHeader>
@@ -89,6 +94,7 @@ export function HorizontalTableRows({
   headerText,
   emptyStateText,
   classNames = "",
+  white = false,
 }: HorizontalTableRowsProps) {
   const isEmpty =
     data.length === 0 || data.every((row) => row.every((cell) => cell === ""));
@@ -102,11 +108,13 @@ export function HorizontalTableRows({
         </TableHeader>
       )}
       <Table
-        className={`${articulat.className} ${textSize && fontSize[textSize]} ${classNames}`}
+        className={`${articulat.className} ${textSize && fontSize[textSize]} ${white ? "text-white" : ""} ${classNames}`}
       >
         {showEmptyState ? (
           <TableHeader className="border-b">
-            <TableHead>{emptyStateText}</TableHead>
+            <TableHead className={` ${white ? "text-white" : ""}`}>
+              {emptyStateText}
+            </TableHead>
           </TableHeader>
         ) : (
           <TableBody>

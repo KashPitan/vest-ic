@@ -5,7 +5,7 @@ export default function SidePanel() {
   return (
     <div className="col-span-2 h-full p-4">
       <SectionTitle>Investment Objective</SectionTitle>
-      <p className="text-xs pt-2">
+      <p className="text-xs mt-2">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod,
         urna eu tincidunt consectetur, nisi nisl aliquam enim, nec facilisis
         massa mauris ac dolor. Pellentesque habitant morbi tristique senectus et

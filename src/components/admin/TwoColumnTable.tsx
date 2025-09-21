@@ -20,15 +20,17 @@ const fontSize: Record<FontSize2, string> = {
 interface TwoColumnTableProps {
   data: KeyValuePairData;
   textSize?: FontSize2;
+  white?: boolean;
 }
 
 export default function TwoColumnTable({
   data,
   textSize,
+  white = false,
 }: TwoColumnTableProps) {
   return (
     <Table
-      className={`${articulat.className} ${textSize && fontSize[textSize]} `}
+      className={`${articulat.className} ${textSize && fontSize[textSize]} ${white ? "text-white" : ""}`}
     >
       <TableHeader>
         <TableRow>
