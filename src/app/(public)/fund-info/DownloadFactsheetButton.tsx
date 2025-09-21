@@ -62,6 +62,14 @@ export default function DownloadFactsheetButton({
         const pdfUrl = URL.createObjectURL(pdfBlob);
         window.open(pdfUrl, "_blank");
 
+        // Download the PDF file
+        const link = document.createElement("a");
+        link.href = pdfUrl;
+        link.download = `${fileName || "factsheet"}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
         // Clean up the URL object after a delay
         setTimeout(() => {
           URL.revokeObjectURL(pdfUrl);
