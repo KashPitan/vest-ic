@@ -1,7 +1,7 @@
 import SectionTitle from "./SectionTitle";
 
-const FundCommentaryText = () => (
-  <p>
+export const FundCommentaryText = ({ white }: { white?: boolean }) => (
+  <p className={` ${white ? "text-white" : "text-black"}`}>
     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, urna
     eu tincidunt consectetur, nisi nisl aliquam nunc, eget aliquam massa erat at
     dui. Pellentesque habitant morbi tristique senectus et netus et malesuada
@@ -38,6 +38,11 @@ const FundCommentaryText = () => (
     netus et malesuada fames ac turpis egestas. Mauris accumsan eros eget libero
     posuere vulputate. Etiam elit elit, elementum sed varius at, adipiscing
     vitae est. Sed nec felis pellentesque, lacinia dui sed, ultricies sapien.
+    Mauris accumsan eros eget libero posuere vulputate. Etiam elit elit,
+    elementum sed varius at, adipiscing vitae est. Sed nec felis pellentesque,
+    lacinia dui sed, ultricies sapien.Mauris accumsan eros eget libero posuere
+    vulputate. Etiam elit elit, elementum sed varius at, adipiscing vitae est.
+    Sed nec felis pellentesque, lacinia dui sed, ultricies sapien.
   </p>
 );
 
