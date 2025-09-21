@@ -65,19 +65,43 @@ export const InsightsListView = ({
     const url = searchParams ? `/insights?${searchParams}` : "/insights";
     redirect(url);
   };
+
+  const handleClearAll = () => {
+    setSelectedTags([]);
+    const urlSearchParams = new SearchParams(currentSearchParams.toString());
+    urlSearchParams.removeParam(TAGS_QUERY_PARAMETER);
+    urlSearchParams.removeParam(PAGE_QUERY_PARAMETER);
+  };
+
   return (
     <>
-      <MultiSelect
-        selected={selectedTags}
-        onChange={setSelectedTags}
-        options={tags.map((t) => ({ value: t.id, label: t.tagName }))}
-        placeholder="Search by tags"
-        className="text-pure-white"
-      />
-      <Button className="mb-8" onClick={searchByTags}>
-        Search by Tag
-      </Button>
-      <ul>
+      <div className="flex mb-8">
+        <MultiSelect
+          selected={selectedTags}
+          onChange={setSelectedTags}
+          options={tags.map((t) => ({ value: t.id, label: t.tagName }))}
+          placeholder="Type here..."
+          className="mr-4 h-[58px]"
+        />
+        <div className="flex  gap-4">
+          <Button
+            className=" bg-flat-gold hover:bg-opacity-75 text-black h-[58px] w-[150px]"
+            onClick={searchByTags}
+          >
+            Search
+          </Button>
+          <Button
+            size="sm"
+            onClick={handleClearAll}
+            className="p-1 text-xs bg-pure-white/10 backdrop-blur-[10px] hover:bg-pure-white/30 h-[58px] w-[150px]"
+            disabled={selectedTags.length === 0}
+          >
+            Clear
+          </Button>
+        </div>
+      </div>
+
+      <ul className="mb-8">
         {posts.map(({ id, title, slug, createdAt }) => (
           <li key={id}>
             <Link
