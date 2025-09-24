@@ -13,20 +13,23 @@ export const InsightSearchItem = ({ post }: InsightSearchItemProps) => {
   return (
     <li key={post.id}>
       <Card className="bg-pure-white/10 backdrop-blur-[10px] p-4 h-full md:min-h-[300px] rounded-2xl">
-        <div className="flex gap-6">
-          <Image
-            className="rounded-xl min-h-[256px] min-w-[313px] max-h-[300px]"
-            src={post.displayImageUrl || "../landscape-placeholder.svg"}
-            alt="file icon"
-            width={313}
-            height={256}
-          />
-          <div>
+        <article className="flex flex-col md:flex-row gap-4 md:gap-6">
+          <div className="flex-shrink-0">
+            <Image
+              className="rounded-xl w-full md:w-[313px] h-[200px] md:h-[256px] object-cover"
+              src={post.displayImageUrl || "../landscape-placeholder.svg"}
+              alt={`Cover image for ${post.title}`}
+              width={313}
+              height={256}
+            />
+          </div>
+          <div className="flex-1 min-w-0">
+            {/* min-w-0 prevents flex item overflow */}
             <Link
               href={`/insights/${post.slug}`}
               className="text-pure-white text-xl font-semibold "
             >
-              {post.title}
+              <h2>{post.title}</h2>
             </Link>
             {post.createdAt && (
               <h3 className="text-pure-white mb-3">
@@ -34,12 +37,12 @@ export const InsightSearchItem = ({ post }: InsightSearchItemProps) => {
               </h3>
             )}
             <p
-              className={`text-pure-white mb-4 ${articulat.className} max-h-[120px] max-w-1/3 overflow-hidden text-ellipsis`}
+              className={`text-pure-white mb-4 ${articulat.className} max-h-[120px] max-w-2/3 overflow-hidden text-ellipsis`}
             >
               {post.excerpt}
             </p>
           </div>
-        </div>
+        </article>
       </Card>
     </li>
   );
