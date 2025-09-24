@@ -11,7 +11,7 @@ const Insights = async ({
   const { data: posts, hasNextPage, hasPrevPage } = await getPosts(query);
   const { data: tags } = await getTags();
   return (
-    <div>
+    <div className="w-full">
       <InsightsListView
         posts={posts}
         tags={tags}
