@@ -6,7 +6,13 @@ import { PieChart as MuiPieChar, pieArcLabelClasses } from "@mui/x-charts/PieCha
 export type PieSlice = { label: string; value: number; color?: string };
 
 type Props = {
+  /**
+   * Data slices, each with label, value, and optional color
+   */
   data: PieSlice[];
+  /**
+   * Optional title above the chart
+   */
   title?: string;
   /**
    * Optional palette to apply if slices don't carry their own `color`
@@ -20,12 +26,15 @@ type Props = {
    * Hide legend if you want. Default true (shows)
    */
   legend?: boolean;
+  /**
+   * Optional additional class names for the container
+   */
   className?: string;
 };
 
 // Shared defaults for all pies in the app
 const DEFAULT_SIZE = 420;
-const DEFAULT_INNER_RATIO = 0.55;   // consistent hole size
+const DEFAULT_INNER_RATIO = 0.55;   // hole size
 const DEFAULT_GAP_DEGREES = 0.5;    // thin separators
 const formatPct = (n: number) =>
   new Intl.NumberFormat("en-GB", { maximumFractionDigits: 1 }).format(n) + "%";
