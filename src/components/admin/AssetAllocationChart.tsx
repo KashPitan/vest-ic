@@ -4,11 +4,12 @@ import React, { useMemo } from "react";
 import PieChart, { type PieSlice } from "@/components/ui/pie-chart";
 
 type Props = {
-  /** From getAllChartData().assetAllocation */
+  /**
+   * Asset allocation breakdown (% NAV)
+   */
   allocation: { label: string; value: number }[];
 };
 
-// Simple palette (customize to your brand if needed)
 const PALETTE = [
   "#1A1549",
   "#99103B",
