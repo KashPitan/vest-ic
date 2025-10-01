@@ -1,24 +1,13 @@
-// src/components/admin/EquitiesBreakdownDonut.tsx
-import React, { useMemo } from "react";
-import DonutChart, { DonutSlice } from "../ui/donut-chart";
+"use client";
 
-type EquitiesBreakdownDonutProps = {
-  /** Slices from the Equities Breakdown tab (already normalized to %). */
+import React, { useMemo } from "react";
+import PieDonut, { type DonutSlice } from "@/components/ui/pie-chart";
+
+type Props = {
   equitiesBreakdown: { label: string; value: number }[];
-  /** Asset Allocation rows, used only to detect label overlaps. */
   assetAllocation: { label: string; value: number }[];
-  title?: string;
 };
 
-const formatPct = (n: number) =>
-  new Intl.NumberFormat("en-GB", { maximumFractionDigits: 1 }).format(n) + "%";
-
-/**
- * FIXED palettes (TODO: use brand colors)
- * 
- * Colors are assigned by the ORDER EB rows appear in the spreadsheet,
- * walking each bank (overlap vs non-overlap) independently.
- */
 const OVERLAP_PALETTE = [
   "#1E3A8A", // blue-800
   "#2563EB", // blue-600
@@ -60,44 +49,28 @@ const NON_OVERLAP_PALETTE = [
 export default function EquitiesBreakdownDonut({
   equitiesBreakdown,
   assetAllocation,
-  title = "Equities Breakdown (% NAV)",
-}: EquitiesBreakdownDonutProps) {
+}: Props) {
   const items = equitiesBreakdown ?? [];
   if (!items.length) return null;
 
-  // Build a case-insensitive set of AA labels for overlap detection
-  const overlapSet = useMemo(() => {
-    const s = new Set<string>();
-    (assetAllocation ?? []).forEach((a) => s.add(a.label.toLowerCase()));
-    return s;
-  }, [assetAllocation]);
-
-  // Assign colors strictly by EB row order, choosing the next color
-  // from the appropriate bank. If more slices than colors, cycle.
+  const overlapSet = new Set(assetAllocation.map((a) => a.label.toLowerCase()));
   let iOverlap = 0;
   let iNon = 0;
 
-  const slices: DonutSlice[] = items.map((e) => {
-    const isOverlap = overlapSet.has(e.label.toLowerCase());
-    const color = isOverlap
-      ? OVERLAP_PALETTE[iOverlap++ % OVERLAP_PALETTE.length]
-      : NON_OVERLAP_PALETTE[iNon++ % NON_OVERLAP_PALETTE.length];
-
-    return { label: e.label, value: e.value, color };
-  });
-
-  return (
-    <DonutChart
-      data={slices}
-      width={420}
-      innerRatio={0.55}
-      gapDegrees={0.5}
-      strokeSeparator="#ffffff"
-      title={title}
-      ariaLabel="Equities breakdown as a share of NAV"
-      showArcLabels={true}
-      labelFormatter={formatPct}
-      showLegend={true}
-    />
+  const slices: DonutSlice[] = useMemo(
+    () =>
+      items.map((e) => {
+        const isOverlap = overlapSet.has(e.label.toLowerCase());
+        return {
+          label: e.label,
+          value: e.value,
+          color: isOverlap
+            ? OVERLAP_PALETTE[iOverlap++ % OVERLAP_PALETTE.length]
+            : NON_OVERLAP_PALETTE[iNon++ % NON_OVERLAP_PALETTE.length],
+        };
+      }),
+    [items, assetAllocation],
   );
+
+  return <PieDonut title="Equities Breakdown (% NAV)" data={slices} />;
 }
