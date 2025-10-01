@@ -5,9 +5,9 @@ import { getAllChartData } from "@/app/(admin)/admin/excel/utils";
 import HorizontalTable, { HorizontalTableRows } from "./HorizontalTable";
 import { InceptionPerformanceChart } from "./InceptionPerformanceChart";
 import TopHoldingsChart from "./TopHoldingsChart";
-import AssetAllocationDonut from "./AssetAllocationDonut";
-import EquitiesBreakdownDonut from "./EquitiesBreakdownDonut";
-import FixedIncomeBreakdownDonut from "./FixedIncomeBreakdownDonut";
+import AssetAllocationChart from "./AssetAllocationChart";
+import EquitiesBreakdownChart from "./EquitiesBreakdownChart";
+import FixedIncomeBreakdownChart from "./FixedIncomeBreakdownChart";
 import { FundCommentaryText } from "./pdf/FundCommentary";
 import { elza, articulat } from "@/fonts";
 
@@ -47,13 +47,13 @@ const FundData = ({ workbook, white }: PortfolioComponentsPreview) => {
 
           {assetAllocation && (
             <div className={"bg-neutral-100 rounded-xl p-4 md:p-6"}>
-              <AssetAllocationDonut allocation={assetAllocation} />
+              <AssetAllocationChart allocation={assetAllocation} />
             </div>
           )}
 
           {equitiesBreakdown && (
             <div className={"bg-neutral-100 rounded-xl p-4 md:p-6"}>
-              <EquitiesBreakdownDonut
+              <EquitiesBreakdownChart
                 equitiesBreakdown={equitiesBreakdown}
                 assetAllocation={assetAllocation}
               />
@@ -62,7 +62,7 @@ const FundData = ({ workbook, white }: PortfolioComponentsPreview) => {
 
           {fixedIncomeBreakdown && (
             <div className={"bg-neutral-100 rounded-xl p-4 md:p-6"}>
-              <FixedIncomeBreakdownDonut
+              <FixedIncomeBreakdownChart
                 fixedIncomeBreakdown={fixedIncomeBreakdown}
               />
             </div>

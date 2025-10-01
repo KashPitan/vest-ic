@@ -16,13 +16,10 @@ const PALETTES_BY_COUNT: Record<number, string[]> = {
   6: ["#1A1549", "#2563EB", "#16A34A", "#F59E0B", "#EF4444", "#8B5CF6"],
 };
 
-function pickPalette(count: number): string[] {
-  return PALETTES_BY_COUNT[count] ?? PALETTES_BY_COUNT[6]!;
-}
+const pickPalette = (count: number): string[] =>
+  PALETTES_BY_COUNT[count] ?? PALETTES_BY_COUNT[6]!;
 
-export default function FixedIncomeBreakdownDonut({
-  fixedIncomeBreakdown,
-}: Props) {
+const FixedIncomeBreakdownChart = ({ fixedIncomeBreakdown }: Props) => {
   const items = fixedIncomeBreakdown ?? [];
   if (!items.length) return null;
 
@@ -39,4 +36,6 @@ export default function FixedIncomeBreakdownDonut({
   );
 
   return <PieChart title="Fixed Income Breakdown (% NAV)" data={slices} />;
-}
+};
+
+export default FixedIncomeBreakdownChart;

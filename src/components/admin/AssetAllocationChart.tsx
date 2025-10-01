@@ -22,7 +22,7 @@ const PALETTE = [
   "#F43F5E",
 ];
 
-export default function AssetAllocationDonut({ allocation }: Props) {
+const AssetAllocationChart = ({ allocation }: Props) => {
   const slices: PieSlice[] = useMemo(
     () =>
       (allocation ?? []).map((a, i) => ({
@@ -36,4 +36,6 @@ export default function AssetAllocationDonut({ allocation }: Props) {
   if (!slices.length) return null;
 
   return <PieChart title="Asset Allocation (% NAV)" data={slices} />;
-}
+};
+
+export default AssetAllocationChart;

@@ -46,10 +46,10 @@ const NON_OVERLAP_PALETTE = [
   "#F87171", // red-400
 ];
 
-export default function EquitiesBreakdownDonut({
+const EquitiesBreakdownChart = ({
   equitiesBreakdown,
   assetAllocation,
-}: Props) {
+}: Props) => {
   const items = equitiesBreakdown ?? [];
   if (!items.length) return null;
 
@@ -73,4 +73,6 @@ export default function EquitiesBreakdownDonut({
   );
 
   return <PieChart title="Equities Breakdown (% NAV)" data={slices} />;
-}
+};
+
+export default EquitiesBreakdownChart;

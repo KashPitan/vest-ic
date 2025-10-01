@@ -10,7 +10,7 @@ type Props = {
 const NAVY = "#1A1549";
 const BURGUNDY = "#99103B";
 
-export default function TopHoldingsChart({ holdings }: Props) {
+const TopHoldingsChart = ({ holdings }: Props) => {
   const slices: PieSlice[] = useMemo(
     () =>
       (holdings ?? []).map((h) => ({
@@ -24,4 +24,6 @@ export default function TopHoldingsChart({ holdings }: Props) {
   if (!slices.length) return null;
 
   return <PieChart title="Top 10 Holdings (% NAV)" data={slices} />;
-}
+};
+
+export default TopHoldingsChart;

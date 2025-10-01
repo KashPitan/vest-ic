@@ -1,8 +1,8 @@
 import TwoColumnTable from "./TwoColumnTable";
 import TopHoldingsChart from "./TopHoldingsChart";
-import AssetAllocationDonut from "./AssetAllocationDonut";
-import EquitiesBreakdownDonut from "./EquitiesBreakdownDonut";
-import FixedIncomeBreakdownDonut from "./FixedIncomeBreakdownDonut";
+import AssetAllocationChart from "./AssetAllocationChart";
+import EquitiesBreakdownChart from "./EquitiesBreakdownChart";
+import FixedIncomeBreakdownChart from "./FixedIncomeBreakdownChart";
 import * as XLSX from "xlsx";
 import { getAllChartData } from "@/app/(admin)/admin/excel/utils";
 import HorizontalTable from "./HorizontalTable";
@@ -51,16 +51,16 @@ export default function PDF({
             <TopHoldingsChart holdings={topTenSplit} />
           ) : null}
           {assetAllocation?.length ? (
-            <AssetAllocationDonut allocation={assetAllocation} />
+            <AssetAllocationChart allocation={assetAllocation} />
           ) : null}
           {equitiesBreakdown?.length ? (
-            <EquitiesBreakdownDonut
+            <EquitiesBreakdownChart
               equitiesBreakdown={equitiesBreakdown}
               assetAllocation={assetAllocation}
             />
           ) : null}
           {fixedIncomeBreakdown?.length ? (
-            <FixedIncomeBreakdownDonut
+            <FixedIncomeBreakdownChart
               fixedIncomeBreakdown={fixedIncomeBreakdown}
             />
           ) : null}
