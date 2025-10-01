@@ -36,7 +36,7 @@ export const Pagination = ({
     [pathname, searchParams],
   );
   return (
-    <ShadCnPagination>
+    <ShadCnPagination className="text-pure-white">
       <PaginationContent>
         {hasPrevious && (
           <>
@@ -53,7 +53,11 @@ export const Pagination = ({
           </>
         )}
         <PaginationItem>
-          <PaginationLink href={createQueryString(pageParamNumber)} isActive>
+          <PaginationLink
+            href={createQueryString(pageParamNumber)}
+            isActive
+            className="bg-racing-green"
+          >
             {pageParamNumber}
           </PaginationLink>
         </PaginationItem>

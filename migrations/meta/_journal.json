@@ -29,6 +29,13 @@
       "when": 1754429709340,
       "tag": "0003_clean_kronos",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1756672637104,
+      "tag": "0004_add_role_column_to_users",
+      "breakpoints": true
     }
   ]
 }

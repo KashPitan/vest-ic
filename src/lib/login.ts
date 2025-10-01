@@ -5,7 +5,7 @@ import { lucia } from "@/lib/auth";
 import { db } from "@/db";
 import { redirect } from "next/navigation";
 import { cookies as getCookies } from "next/headers";
-import { users } from "@/db/schema/users";
+import { UserRole, users } from "@/db/schema/users";
 import { validateRequest } from "./validateRequest";
 
 export async function login(formData: FormData) {
@@ -68,7 +68,7 @@ export async function login(formData: FormData) {
   return redirect("/");
 }
 
-export const changePassword = async (formData: FormData) => {
+export const signup = async (formData: FormData) => {
   const username = formData.get("username");
   // username must be between 4 ~ 31 characters, and only consists of lowercase letters, 0-9, -, and _
   // keep in mind some database (e.g. mysql) are case insensitive
@@ -92,17 +92,6 @@ export const changePassword = async (formData: FormData) => {
       error: "Invalid password",
     };
   }
-  const result = await db
-    .select()
-    .from(users)
-    .limit(1)
-    .where(eq(users.username, username.toLowerCase()));
-  const [existingUser] = result;
-  if (!existingUser) {
-    return {
-      error: "User does not exist",
-    };
-  }
   const passwordHash = await hash(password, {
     // recommended minimum parameters
     memoryCost: 19456,
@@ -111,11 +100,12 @@ export const changePassword = async (formData: FormData) => {
     parallelism: 1,
   });
   const [{ id: userId }] = await db
-    .update(users)
-    .set({
+    .insert(users)
+    .values({
+      username,
       passwordHash: passwordHash,
+      role: UserRole.User,
     })
-    .where(eq(users.username, username.toLowerCase()))
     .returning({ id: users.id });
   const session = await lucia.createSession(userId, {});
   const sessionCookie = lucia.createSessionCookie(session.id);

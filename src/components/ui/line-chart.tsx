@@ -1,6 +1,8 @@
 "use client";
 
 import { LineChart } from '@mui/x-charts/LineChart';
+import { axisClasses, } from '@mui/x-charts/ChartsAxis';
+
 import { InceptionPerformanceData } from '@/app/(admin)/admin/excel/utils';
 
 interface DualAxisLineChartProps {
@@ -8,10 +10,13 @@ interface DualAxisLineChartProps {
   title?: string;
   height?: number;
   width?: number;
+  white?: boolean;
 }
 
 export function DualAxisLineChart({
   data,
+  height,
+  white = false,
 }: DualAxisLineChartProps) {
 
   // Transform data for MUI X Charts
@@ -29,17 +34,17 @@ export function DualAxisLineChart({
 
   if (validData.length === 0) {
     return (
-        <div className="flex items-center justify-center h-64 text-muted-foreground">
+        <div className={`flex items-center justify-center h-64 text-muted-foreground ${white ? 'text-white' : ''}`}>
         No valid data available for chart
         </div>
     );
   }
 
   return (
-    <div className="w-full h-full">
+    <div className={`w-full h-full ${white ? 'text-white' : ''}`}>
         <LineChart
         dataset={validData}
-        height={400}
+        height={height ?? 400}
         xAxis={[
             {
             dataKey: 'date',
@@ -52,6 +57,7 @@ export function DualAxisLineChart({
             },
             tickLabelStyle: {
                 fontSize: 12,
+                fill: white ? '#ffffff' : undefined,
             },
             },
         ]}
@@ -61,6 +67,7 @@ export function DualAxisLineChart({
             scaleType: 'linear',
             tickLabelStyle: {
                 fontSize: 12,
+                fill: white ? '#ffffff' : undefined,
             },
             },
             {
@@ -70,6 +77,7 @@ export function DualAxisLineChart({
             data: data.series2,
             tickLabelStyle: {
                 fontSize: 12,
+                fill: white ? '#ffffff' : undefined,
             },
             },
         ]}
@@ -93,9 +101,25 @@ export function DualAxisLineChart({
         ]}
         slotProps={{
             legend: {
+            className: white ? 'text-white' : '',
             direction: 'horizontal',
             position: { vertical: 'bottom', horizontal: 'center' },
             },
+        }}
+        sx={{
+          [`.${axisClasses.root}`]: {
+            // axis line and tick colour
+            [`.${axisClasses.tick}, .${axisClasses.line}`]: {
+              stroke: white ? '#ffffff' : undefined,
+            },
+            [`.${axisClasses.tickLabel}`]: {
+              fill: white ? '#ffffff' : undefined
+            },
+          },
+          // legend text colour
+          [`.MuiChartsLegend-label`]: {
+            color: white ? '#ffffff' : undefined,
+          },
         }}
         />
     </div>

@@ -1,10 +1,9 @@
 "use client";
 import MultiSelect, { Option } from "@/components/admin/MultiSelect";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { Pagination } from "@/components/public/Pagination";
+import { InsightSearchItem } from "@/components/public/InsightSearchItem";
 import { SearchParams } from "@/lib/SearchParams";
-import Link from "next/link";
 import { useState } from "react";
 import {
   ReadonlyURLSearchParams,
@@ -65,36 +64,48 @@ export const InsightsListView = ({
     const url = searchParams ? `/insights?${searchParams}` : "/insights";
     redirect(url);
   };
+
+  const handleClearAll = () => {
+    setSelectedTags([]);
+    const urlSearchParams = new SearchParams(currentSearchParams.toString());
+    urlSearchParams.removeParam(TAGS_QUERY_PARAMETER);
+    urlSearchParams.removeParam(PAGE_QUERY_PARAMETER);
+  };
+
   return (
     <>
-      <MultiSelect
-        selected={selectedTags}
-        onChange={setSelectedTags}
-        options={tags.map((t) => ({ value: t.id, label: t.tagName }))}
-        placeholder="Search by tags"
-        className="text-pure-white"
-      />
-      <Button className="mb-8" onClick={searchByTags}>
-        Search by Tag
-      </Button>
-      <ul>
-        {posts.map(({ id, title, slug, createdAt }) => (
-          <li key={id}>
-            <Link
-              href={`/insights/${slug}`}
-              className="text-orange-500 hover:text-orange-700"
-            >
-              {title}
-            </Link>
-            {createdAt && (
-              <h3 className="text-pure-white">
-                This insight was created on {createdAt.toDateString()}
-              </h3>
-            )}
+      <div className="flex mb-8 max-w-[1100px] mx-auto">
+        <MultiSelect
+          selected={selectedTags}
+          onChange={setSelectedTags}
+          options={tags.map((t) => ({ value: t.id, label: t.tagName }))}
+          placeholder="Type here..."
+          className="mr-4 h-[58px]"
+        />
+        <div className="flex  gap-4">
+          <Button
+            className=" bg-flat-gold hover:bg-opacity-75 text-black h-[58px] w-[150px]"
+            onClick={searchByTags}
+          >
+            Search
+          </Button>
+          <Button
+            size="sm"
+            onClick={handleClearAll}
+            className="p-1 text-xs bg-pure-white/10 backdrop-blur-[10px] hover:bg-pure-white/30 h-[58px] w-[150px]"
+            disabled={selectedTags.length === 0}
+          >
+            Clear
+          </Button>
+        </div>
+      </div>
 
-            <Separator />
-          </li>
-        ))}
+      <ul className="mb-8 px-8">
+        <div className="grid grid-cols-2 gap-8">
+          {posts.map((post) => (
+            <InsightSearchItem key={post.id} post={post} />
+          ))}
+        </div>
       </ul>
       <Pagination hasNext={hasNext} hasPrevious={hasPrevious} />
     </>

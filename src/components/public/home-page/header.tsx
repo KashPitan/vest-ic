@@ -5,14 +5,31 @@ import { elza } from "@/fonts";
 import NavLink from "./nav-link";
 import { usePathname } from "next/navigation";
 
-export default function Header() {
-  const pathname = usePathname();
-  const isHomePage = pathname === "/";
-
-  return <>{isHomePage ? <HomePageHeader /> : <NonHomePageHeader />}</>;
+interface HeaderProps {
+  loggedIn: boolean;
 }
 
-const NonHomePageHeader = () => (
+const NavItems = ({ loggedIn }: HeaderProps) => {
+  const pathname = usePathname();
+  const isLoginPage = pathname === "/login";
+  return (
+    <div className="flex gap-8 text-2xl">
+      <NavLink href="/insights">Insights</NavLink>
+      <NavLink href="/about">About</NavLink>
+      <NavLink href="/contact">Contact</NavLink>
+      {loggedIn ? (
+        !isLoginPage && <NavLink href="/login">Logout</NavLink>
+      ) : (
+        <>
+          {!isLoginPage && <NavLink href="/login">Login</NavLink>}
+          <NavLink href="/signup">Sign up</NavLink>
+        </>
+      )}
+    </div>
+  );
+};
+
+const NonHomePageHeader = ({ loggedIn }: HeaderProps) => (
   <header
     className={`bg-racing-green/80 py-6 px-6 shadow-md backdrop-blur-md ${elza.className}`}
   >
@@ -29,12 +46,12 @@ const NonHomePageHeader = () => (
         </div>
       </div>
 
-      <NavItems />
+      <NavItems loggedIn={loggedIn} />
     </nav>
   </header>
 );
 
-const HomePageHeader = () => (
+const HomePageHeader = ({ loggedIn }: HeaderProps) => (
   <header
     className={`bg-racing-green/80 py-6 px-6 h-[120px] shadow-md backdrop-blur-md relative content-center ${elza.className}`}
   >
@@ -46,15 +63,22 @@ const HomePageHeader = () => (
       className="absolute top-[50px]"
     />
     <nav className="container mx-auto flex justify-end">
-      <NavItems />
+      <NavItems loggedIn={loggedIn} />
     </nav>
   </header>
 );
 
-const NavItems = () => (
-  <div className="flex gap-8 text-2xl">
-    <NavLink href="/insights">Insights</NavLink>
-    <NavLink href="/about">About</NavLink>
-    <NavLink href="/contact">Contact</NavLink>
-  </div>
-);
+export default function Header({ loggedIn }: HeaderProps) {
+  const pathname = usePathname();
+  const isHomePage = pathname === "/";
+
+  return (
+    <>
+      {isHomePage ? (
+        <HomePageHeader loggedIn={loggedIn} />
+      ) : (
+        <NonHomePageHeader loggedIn={loggedIn} />
+      )}
+    </>
+  );
+}
