@@ -1,38 +1,43 @@
 "use client";
 
 import * as React from "react";
-import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
+import { PieChart as MuiPieChar, pieArcLabelClasses } from "@mui/x-charts/PieChart";
 
-export type DonutSlice = { label: string; value: number; color?: string };
+export type PieSlice = { label: string; value: number; color?: string };
 
 type Props = {
-  data: DonutSlice[];
+  data: PieSlice[];
   title?: string;
-  /** Optional palette to apply if slices don't carry their own `color`. */
+  /**
+   * Optional palette to apply if slices don't carry their own `color`
+   */
   colors?: string[];
-  /** Optional size override (px). Default 420. */
+  /**
+   * Optional size override (px). Default 420
+   */
   size?: number;
-  /** Hide legend if you want. Default true (shows). */
+  /**
+   * Hide legend if you want. Default true (shows)
+   */
   legend?: boolean;
   className?: string;
 };
 
-/** Shared defaults for all pies in the app */
+// Shared defaults for all pies in the app
 const DEFAULT_SIZE = 420;
 const DEFAULT_INNER_RATIO = 0.55;   // consistent hole size
 const DEFAULT_GAP_DEGREES = 0.5;    // thin separators
 const formatPct = (n: number) =>
   new Intl.NumberFormat("en-GB", { maximumFractionDigits: 1 }).format(n) + "%";
 
-export default function PieDonut({
+const PieChart = ({
   data,
   title,
   colors,
   size = DEFAULT_SIZE,
   legend = true,
   className,
-}: Props) {
-  // MUI expects radii in px; we keep the same “visual language” everywhere
+}: Props) => {
   const innerRadius = Math.round(size * DEFAULT_INNER_RATIO * 0.45);
   const outerRadius = Math.round(size * 0.45);
 
@@ -42,7 +47,7 @@ export default function PieDonut({
         id: i,
         value: d.value,
         label: d.label,
-        color: d.color, // if provided by caller, MUI uses it
+        color: d.color,
       })),
       innerRadius,
       outerRadius,
@@ -50,14 +55,14 @@ export default function PieDonut({
       cornerRadius: 0,
       arcLabel: (item: { value: number }) => formatPct(item.value),
       valueFormatter: (item: { value: number }) => formatPct(item.value),
-    } as any,
+    },
   ];
 
   return (
     <div className={["flex items-start gap-6", className].filter(Boolean).join(" ")}>
       <div className="shrink-0">
         {title && <div className="mb-2 font-medium">{title}</div>}
-        <PieChart
+        <MuiPieChar
           width={size}
           height={size}
           series={series}
@@ -77,9 +82,11 @@ export default function PieDonut({
               fontWeight: 600,
             },
           }}
-          aria-label={title ?? "Donut chart"}
+          aria-label={title ?? "Pie chart"}
         />
       </div>
     </div>
   );
 }
+
+export default PieChart;

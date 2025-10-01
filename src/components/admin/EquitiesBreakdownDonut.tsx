@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo } from "react";
-import PieDonut, { type DonutSlice } from "@/components/ui/pie-chart";
+import PieChart, { type PieSlice } from "@/components/ui/pie-chart";
 
 type Props = {
   equitiesBreakdown: { label: string; value: number }[];
@@ -57,7 +57,7 @@ export default function EquitiesBreakdownDonut({
   let iOverlap = 0;
   let iNon = 0;
 
-  const slices: DonutSlice[] = useMemo(
+  const slices: PieSlice[] = useMemo(
     () =>
       items.map((e) => {
         const isOverlap = overlapSet.has(e.label.toLowerCase());
@@ -72,5 +72,5 @@ export default function EquitiesBreakdownDonut({
     [items, assetAllocation],
   );
 
-  return <PieDonut title="Equities Breakdown (% NAV)" data={slices} />;
+  return <PieChart title="Equities Breakdown (% NAV)" data={slices} />;
 }

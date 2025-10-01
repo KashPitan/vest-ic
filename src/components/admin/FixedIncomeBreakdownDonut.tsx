@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo } from "react";
-import PieDonut, { type DonutSlice } from "@/components/ui/pie-chart";
+import PieChart, { type PieSlice } from "@/components/ui/pie-chart";
 
 type Props = {
   fixedIncomeBreakdown: { label: string; value: number }[];
@@ -28,7 +28,7 @@ export default function FixedIncomeBreakdownDonut({
 
   const palette = pickPalette(items.length);
 
-  const slices: DonutSlice[] = useMemo(
+  const slices: PieSlice[] = useMemo(
     () =>
       items.map((e, i) => ({
         label: e.label,
@@ -38,5 +38,5 @@ export default function FixedIncomeBreakdownDonut({
     [items, palette],
   );
 
-  return <PieDonut title="Fixed Income Breakdown (% NAV)" data={slices} />;
+  return <PieChart title="Fixed Income Breakdown (% NAV)" data={slices} />;
 }
