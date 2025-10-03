@@ -9,6 +9,18 @@ export const getAllChartData = (
   workbook: XLSX.WorkBook,
   options?: { inceptionPerformance?: InceptionPerformanceDataOptions },
 ) => {
+  const topTenHoldingsSheet = getWorksheetByName(workbook, "1.TopHoldings");
+
+  const assetAllocationSheet = getWorksheetByName(
+    workbook,
+    "2.AssetAllocation",
+  );
+
+  const equitiesBreakdownSheet = getWorksheetByName(
+    workbook,
+    "3.EquitiesBreakdown",
+  );
+
   const topThreeContributorsSheet = getWorksheetByName(
     workbook,
     "6.TopThreeContr",
@@ -37,7 +49,55 @@ export const getAllChartData = (
     "13.MonthlyPerf",
   );
 
+  const topTenRows = topTenHoldingsSheet
+    ? extractTwoColumnData(topTenHoldingsSheet, 2, "F", 2)
+    : [];
+  const topTenSplit = topTenRows
+    .map(([label, rawVal]) => ({
+      label: String(label).trim(),
+      value: normalizePercent(rawVal),
+    }))
+    .filter((x) => x.label && Number.isFinite(x.value));
+
+  const assetAllocationRows = assetAllocationSheet
+    ? extractTwoColumnData(assetAllocationSheet, 2, "A")
+    : [];
+  const assetAllocation = assetAllocationRows
+    .map(([label, rawVal]) => ({
+      label: String(label).trim(),
+      value: normalizePercent(rawVal),
+    }))
+    .filter((x) => x.label && Number.isFinite(x.value));
+
+  const equitiesBreakdownRows = equitiesBreakdownSheet
+    ? extractTwoColumnData(equitiesBreakdownSheet, 2, "A")
+    : [];
+  const equitiesBreakdown = equitiesBreakdownRows
+    .map(([label, rawVal]) => ({
+      label: String(label).trim(),
+      value: normalizePercent(rawVal),
+    }))
+    .filter((x) => x.label && Number.isFinite(x.value));
+
+  const fixedIncomeBreakdownSheet = getWorksheetByName(
+    workbook,
+    "4.FixedIncomeBreakdown",
+  );
+  const fixedIncomeBreakdownRows = fixedIncomeBreakdownSheet
+    ? extractTwoColumnData(fixedIncomeBreakdownSheet, 2, "A")
+    : [];
+  const fixedIncomeBreakdown = fixedIncomeBreakdownRows
+    .map(([label, rawVal]) => ({
+      label: String(label).trim(),
+      value: normalizePercent(rawVal),
+    }))
+    .filter((x) => x.label && Number.isFinite(x.value));
+
   return {
+    topTenSplit,
+    assetAllocation,
+    equitiesBreakdown,
+    fixedIncomeBreakdown,
     topThreeContributors: extractTwoColumnData(
       topThreeContributorsSheet,
       1,
@@ -86,6 +146,25 @@ type InceptionPerformanceDataOptions = {
   series2Col?: string;
   startRow?: number;
   headingRow?: number;
+};
+
+export type LabelValue = { label: string; value: number };
+
+// Normalize decimals/percent numbers/strings to a percent number (e.g., 17.3)
+const normalizePercent = (raw: unknown, def = NaN): number => {
+  if (raw === null || raw === undefined) return def;
+
+  if (typeof raw === "number")
+    return raw <= 1 ? Number((raw * 100).toFixed(2)) : Number(raw.toFixed(2));
+
+  const s = String(raw).trim();
+  if (!s || s.startsWith("#")) return def; // #REF!, #N/A, etc.
+
+  const stripped = s.endsWith("%") ? s.slice(0, -1) : s;
+  const num = Number(stripped);
+  if (!Number.isFinite(num)) return def;
+
+  return num <= 1 ? Number((num * 100).toFixed(2)) : Number(num.toFixed(2));
 };
 
 /**

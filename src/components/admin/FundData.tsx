@@ -4,6 +4,10 @@ import TwoColumnTable from "@/components/admin/TwoColumnTable";
 import { getAllChartData } from "@/app/(admin)/admin/excel/utils";
 import HorizontalTable, { HorizontalTableRows } from "./HorizontalTable";
 import { InceptionPerformanceChart } from "./InceptionPerformanceChart";
+import TopHoldingsChart from "./TopHoldingsChart";
+import AssetAllocationChart from "./AssetAllocationChart";
+import EquitiesBreakdownChart from "./EquitiesBreakdownChart";
+import FixedIncomeBreakdownChart from "./FixedIncomeBreakdownChart";
 import { FundCommentaryText } from "./pdf/FundCommentary";
 import { elza, articulat } from "@/fonts";
 
@@ -14,7 +18,11 @@ interface PortfolioComponentsPreview {
 
 const FundData = ({ workbook, white }: PortfolioComponentsPreview) => {
   const {
+    topTenSplit,
+    assetAllocation,
+    equitiesBreakdown,
     topThreeContributors,
+    fixedIncomeBreakdown,
     bottomThreeContributors,
     cumulativePerformance,
     twelveMonthCumulativePerformance,
@@ -23,6 +31,46 @@ const FundData = ({ workbook, white }: PortfolioComponentsPreview) => {
   } = getAllChartData(workbook);
   return (
     <div>
+      {/* Pie charts section */}
+      <section id="charts" className="mb-8">
+        <h2
+          className={`text-2xl ${white ? "text-pure-white" : "text-black"} font-bold mb-4 ${elza.className}`}
+        >
+          Portfolio Charts
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {topTenSplit && (
+            <div className={"bg-neutral-100 rounded-xl p-4 md:p-6"}>
+              <TopHoldingsChart holdings={topTenSplit} />
+            </div>
+          )}
+
+          {assetAllocation && (
+            <div className={"bg-neutral-100 rounded-xl p-4 md:p-6"}>
+              <AssetAllocationChart allocation={assetAllocation} />
+            </div>
+          )}
+
+          {equitiesBreakdown && (
+            <div className={"bg-neutral-100 rounded-xl p-4 md:p-6"}>
+              <EquitiesBreakdownChart
+                equitiesBreakdown={equitiesBreakdown}
+                assetAllocation={assetAllocation}
+              />
+            </div>
+          )}
+
+          {fixedIncomeBreakdown && (
+            <div className={"bg-neutral-100 rounded-xl p-4 md:p-6"}>
+              <FixedIncomeBreakdownChart
+                fixedIncomeBreakdown={fixedIncomeBreakdown}
+                assetAllocation={assetAllocation}
+              />
+            </div>
+          )}
+        </div>
+      </section>
+
       <section id="summary">
         <h2
           className={`text-2xl ${white ? "text-pure-white" : "text-black"} font-bold mb-4 ${elza.className}`}
