@@ -2,40 +2,24 @@
 
 import React, { useMemo } from "react";
 import PieChart, { type PieSlice } from "@/components/ui/pie-chart";
+import { colorizeSinglePalette } from "@/components/ui/chart-colors";
 
 type Props = {
   fixedIncomeBreakdown: { label: string; value: number }[];
+  assetAllocation: { label: string; value: number }[];
 };
 
-// Fixed palettes depending on number of slices
-const PALETTES_BY_COUNT: Record<number, string[]> = {
-  2: ["#1A1549", "#99103B"],
-  3: ["#1A1549", "#2563EB", "#8B5CF6"],
-  4: ["#1A1549", "#2563EB", "#16A34A", "#F59E0B"],
-  5: ["#1A1549", "#2563EB", "#16A34A", "#F59E0B", "#EF4444"],
-  6: ["#1A1549", "#2563EB", "#16A34A", "#F59E0B", "#EF4444", "#8B5CF6"],
-};
-
-const pickPalette = (count: number): string[] =>
-  PALETTES_BY_COUNT[count] ?? PALETTES_BY_COUNT[6]!;
-
-const FixedIncomeBreakdownChart = ({ fixedIncomeBreakdown }: Props) => {
+export default function FixedIncomeBreakdownChart({
+  fixedIncomeBreakdown,
+  assetAllocation,
+}: Props) {
   const items = fixedIncomeBreakdown ?? [];
   if (!items.length) return null;
 
-  const palette = pickPalette(items.length);
-
   const slices: PieSlice[] = useMemo(
-    () =>
-      items.map((e, i) => ({
-        label: e.label,
-        value: e.value,
-        color: palette[i % palette.length],
-      })),
-    [items, palette],
+    () => colorizeSinglePalette(items, { overlapAgainst: assetAllocation }),
+    [items, assetAllocation],
   );
 
   return <PieChart title="Fixed Income Breakdown (% NAV)" data={slices} />;
-};
-
-export default FixedIncomeBreakdownChart;
+}

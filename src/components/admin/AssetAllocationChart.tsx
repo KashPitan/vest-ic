@@ -2,26 +2,9 @@
 
 import React, { useMemo } from "react";
 import PieChart, { type PieSlice } from "@/components/ui/pie-chart";
+import { BASE_PALETTE } from "@/components/ui/chart-colors";
 
-type Props = {
-  /**
-   * Asset allocation breakdown (% NAV)
-   */
-  allocation: { label: string; value: number }[];
-};
-
-const PALETTE = [
-  "#1A1549",
-  "#99103B",
-  "#2563EB",
-  "#16A34A",
-  "#F59E0B",
-  "#EF4444",
-  "#8B5CF6",
-  "#06B6D4",
-  "#84CC16",
-  "#F43F5E",
-];
+type Props = { allocation: { label: string; value: number }[] };
 
 const AssetAllocationChart = ({ allocation }: Props) => {
   const slices: PieSlice[] = useMemo(
@@ -29,7 +12,7 @@ const AssetAllocationChart = ({ allocation }: Props) => {
       (allocation ?? []).map((a, i) => ({
         label: a.label,
         value: a.value,
-        color: PALETTE[i % PALETTE.length],
+        color: BASE_PALETTE[i % BASE_PALETTE.length],
       })),
     [allocation],
   );

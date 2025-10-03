@@ -64,6 +64,7 @@ const FundData = ({ workbook, white }: PortfolioComponentsPreview) => {
             <div className={"bg-neutral-100 rounded-xl p-4 md:p-6"}>
               <FixedIncomeBreakdownChart
                 fixedIncomeBreakdown={fixedIncomeBreakdown}
+                assetAllocation={assetAllocation}
               />
             </div>
           )}
