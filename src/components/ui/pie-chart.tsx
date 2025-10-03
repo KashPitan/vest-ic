@@ -33,7 +33,7 @@ type Props = {
 };
 
 // Shared defaults for all pies in the app
-const DEFAULT_SIZE = 420;
+const DEFAULT_SIZE = 320
 const DEFAULT_INNER_RATIO = 0.55; // hole size
 const DEFAULT_GAP_DEGREES = 0.5;  // thin separators
 
@@ -93,28 +93,30 @@ const PieChart = ({
   return (
     <div className={["flex items-start gap-6", className].filter(Boolean).join(" ")}>
       <div className="shrink-0">
-        {title && <div className="mb-2 font-medium">{title}</div>}
-        <MuiPieChart
-          width={size}
-          height={size}
-          series={series}
-          colors={colors}
-          slotProps={{
-            legend: legendSlot,
-          }}
-          sx={{
-            // Make arc labels readable on any color
-            [`& .${pieArcLabelClasses.root}`]: {
-              fill: "#fff",
-              fontSize: 12,
-              fontWeight: 700,
-              paintOrder: "stroke fill",
-              stroke: "rgba(17,24,39,.7)",
-              strokeWidth: 2, // dark outline for contrast
-            },
-          }}
-          aria-label={title ?? "Pie chart"}
-        />
+        {title && <h2 className="mb-2 text-lg font-medium">{title}</h2>}
+        <div className="py-10">
+          <MuiPieChart
+            width={size}
+            height={size}
+            series={series}
+            colors={colors}
+            slotProps={{
+              legend: legendSlot,
+            }}
+            sx={{
+              // Make arc labels readable on any color
+              [`& .${pieArcLabelClasses.root}`]: {
+                fill: "#fff",
+                fontSize: 12,
+                fontWeight: 700,
+                paintOrder: "stroke fill",
+                stroke: "rgba(17,24,39,.7)",
+                strokeWidth: 2, // dark outline for contrast
+              },
+            }}
+            aria-label={title ?? "Pie chart"}
+          />
+        </div>
       </div>
     </div>
   );

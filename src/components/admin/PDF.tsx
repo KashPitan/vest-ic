@@ -62,6 +62,7 @@ export default function PDF({
           {fixedIncomeBreakdown?.length ? (
             <FixedIncomeBreakdownChart
               fixedIncomeBreakdown={fixedIncomeBreakdown}
+              assetAllocation={assetAllocation}
             />
           ) : null}
         </div>

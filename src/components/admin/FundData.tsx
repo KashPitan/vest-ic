@@ -38,7 +38,7 @@ const FundData = ({ workbook, white }: PortfolioComponentsPreview) => {
         >
           Portfolio Charts
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {topTenSplit && (
             <div className={"bg-neutral-100 rounded-xl p-4 md:p-6"}>
               <TopHoldingsChart holdings={topTenSplit} />
