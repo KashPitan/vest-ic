@@ -3,13 +3,17 @@
 import * as React from "react";
 import { PieChart as MuiPieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
 
-export type PieSlice = { label: string; value: number; color?: string };
+export interface PieSlice {
+  readonly label: string;
+  readonly value: number;
+  readonly color?: string;
+}
 
-type Props = {
+export interface PieChartProps {
   /**
    * Data slices, each with label, value, and optional color
    */
-  data: PieSlice[];
+  data: readonly PieSlice[];
   /**
    * Optional title above the chart
    */
@@ -17,25 +21,29 @@ type Props = {
   /**
    * Optional palette to apply if slices don't carry their own `color`
    */
-  colors?: string[];
+  colors?: readonly string[];
   /**
-   * Optional size override (px). Default 420
+   * Optional size override (px). Default 320
    */
   size?: number;
   /**
-   * Show legend
+   * Whether to show the legend. Default true
    */
   showLegend?: boolean;
   /**
    * Optional additional class names for the container
    */
   className?: string;
-};
+}
 
 // Shared defaults for all pies in the app
-const DEFAULT_SIZE = 320
-const DEFAULT_INNER_RATIO = 0.55; // hole size
-const DEFAULT_GAP_DEGREES = 0.5;  // thin separators
+const DEFAULT_SIZE = 320 as const;
+const DEFAULT_INNER_RATIO = 0.55 as const; // hole size
+const DEFAULT_GAP_DEGREES = 0.5 as const;  // thin separators
+const MIN_ARC_LABEL_ANGLE = 8 as const;    // hide arc label if slice too small
+const ARC_LABEL_FONT_SIZE = 12 as const;
+const LEGEND_FONT_SIZE = 12 as const;
+const ARC_LABEL_STROKE_WIDTH = 2 as const;
 
 const formatPct = (n: number) =>
   new Intl.NumberFormat("en-GB", {
@@ -52,9 +60,12 @@ const PieChart = ({
   size = DEFAULT_SIZE,
   showLegend = true,
   className,
-}: Props) => {
+}: PieChartProps) => {
   // Hide true zeros - keep tiny >0 values (will show as 0.0%)
-  const cleanedData = (data ?? []).filter((d) => !isTrueZero(d.value));
+  const cleanedData = React.useMemo(
+    () => (data ?? []).filter((slice) => !isTrueZero(slice.value)),
+    [data]
+  );
 
   // If everything was zero, show nothing
   if (cleanedData.length === 0) return null;
@@ -62,13 +73,13 @@ const PieChart = ({
   const innerRadius = Math.round(size * DEFAULT_INNER_RATIO * 0.45);
   const outerRadius = Math.round(size * 0.45);
 
-  const series = [
+  const series = React.useMemo(() => [
     {
-      data: cleanedData.map((d, i) => ({
-        id: i,
-        value: d.value,
-        label: d.label,
-        color: d.color,
+      data: cleanedData.map((slice, index) => ({
+        id: index,
+        value: slice.value,
+        label: slice.label,
+        color: slice.color,
       })),
       innerRadius,
       outerRadius,
@@ -76,17 +87,17 @@ const PieChart = ({
       cornerRadius: 0,
       arcLabel: (item: { value: number }) => formatPct(item.value),
       // hide arc label if the visual slice is too small
-      arcLabelMinAngle: 8,
+      arcLabelMinAngle: MIN_ARC_LABEL_ANGLE,
       valueFormatter: (item: { value: number }) => formatPct(item.value),
     },
-  ];
+  ], [cleanedData, innerRadius, outerRadius]);
 
   // Right-aligned, vertical legend on the right, vertically centred
   const legendSlot = showLegend
     ? {
         direction: "vertical" as const,
         position: { vertical: "middle" as const, horizontal: "end" as const },
-        labelStyle: { fontSize: 12, textAlign: "right" as const },
+        labelStyle: { fontSize: LEGEND_FONT_SIZE, textAlign: "right" as const },
       }
     : undefined;
 
@@ -99,7 +110,7 @@ const PieChart = ({
             width={size}
             height={size}
             series={series}
-            colors={colors}
+            colors={colors ? [...colors] : undefined}
             slotProps={{
               legend: legendSlot,
             }}
@@ -107,11 +118,11 @@ const PieChart = ({
               // Make arc labels readable on any color
               [`& .${pieArcLabelClasses.root}`]: {
                 fill: "#fff",
-                fontSize: 12,
+                fontSize: ARC_LABEL_FONT_SIZE,
                 fontWeight: 700,
                 paintOrder: "stroke fill",
                 stroke: "rgba(17,24,39,.7)",
-                strokeWidth: 2, // dark outline for contrast
+                strokeWidth: ARC_LABEL_STROKE_WIDTH, // dark outline for contrast
               },
             }}
             aria-label={title ?? "Pie chart"}
