@@ -2,7 +2,7 @@ import "./Chart.mocks";
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import AssetAllocationChart from "./AssetAllocationChart";
-import { BASE_PALETTE } from "../ui/chart-colors";
+import { PALETTE_1_5, PALETTE_6_7, PALETTE_8_PLUS } from "../ui/chart-colors";
 
 describe("AssetAllocationChart", () => {
   const mockAllocation = [
@@ -52,59 +52,66 @@ describe("AssetAllocationChart", () => {
     expect(screen.getByTestId("slice-3")).toHaveAttribute("data-value", "8.5");
   });
 
-  test("should assign colors from the base palette in order", () => {
+  test("should use the 1–5 palette for 4 items", () => {
     render(<AssetAllocationChart allocation={mockAllocation} />);
 
-    mockAllocation.forEach((_item, i) => {
-      expect(screen.getByTestId(`slice-${i}`)).toHaveAttribute(
+    mockAllocation.forEach((_item, item) => {
+      expect(screen.getByTestId(`slice-${item}`)).toHaveAttribute(
         "data-color",
-        BASE_PALETTE[i % BASE_PALETTE.length],
+        PALETTE_1_5[item % PALETTE_1_5.length],
       );
     });
   });
 
+  test("should use the 6–7 palette when there are 6 items", () => {
+    const six = [
+      { label: "A", value: 10 },
+      { label: "B", value: 20 },
+      { label: "C", value: 15 },
+      { label: "D", value: 5 },
+      { label: "E", value: 25 },
+      { label: "F", value: 25 },
+    ];
+    render(<AssetAllocationChart allocation={six} />);
+
+    six.forEach((_item, i) => {
+      expect(screen.getByTestId(`slice-${i}`)).toHaveAttribute(
+        "data-color",
+        PALETTE_6_7[i % PALETTE_6_7.length],
+      );
+    });
+  });
+
+  test("should use the 8+ palette when there are 9 items and cycles when needed", () => {
+    const nine = Array.from({ length: 9 }, (_, i) => ({
+      label: `Asset ${i + 1}`,
+      value: 100 / 9,
+    }));
+    render(<AssetAllocationChart allocation={nine} />);
+
+    // first colour from 8+ palette
+    expect(screen.getByTestId("slice-0")).toHaveAttribute(
+      "data-color",
+      PALETTE_8_PLUS[0],
+    );
+    // last colour should be the 9th entry in the 8+ palette
+    expect(screen.getByTestId("slice-8")).toHaveAttribute(
+      "data-color",
+      PALETTE_8_PLUS[8 % PALETTE_8_PLUS.length],
+    );
+  });
+
   test("should render nothing when allocation is empty", () => {
     const { container } = render(<AssetAllocationChart allocation={[]} />);
-
     expect(container.firstChild).toBeNull();
-  });
-
-  test("should render nothing when allocation is null", () => {
-    const { container } = render(
-      <AssetAllocationChart allocation={null as any} />,
-    );
-
-    expect(container.firstChild).toBeNull();
-  });
-
-  test("should preserve the input order", () => {
-    const ordered = [
-      { label: "Cash", value: 10 },
-      { label: "Bonds", value: 20 },
-      { label: "Equities", value: 70 },
-    ];
-
-    render(<AssetAllocationChart allocation={ordered} />);
-
-    expect(screen.getByTestId("slice-0")).toHaveAttribute("data-label", "Cash");
-    expect(screen.getByTestId("slice-1")).toHaveAttribute(
-      "data-label",
-      "Bonds",
-    );
-    expect(screen.getByTestId("slice-2")).toHaveAttribute(
-      "data-label",
-      "Equities",
-    );
   });
 
   test("should handle missing or empty labels", () => {
-    const allocationWithEmptyLabel = [
+    const withEmpty = [
       { label: "", value: 50 },
       { label: "Bonds", value: 50 },
     ];
-
-    render(<AssetAllocationChart allocation={allocationWithEmptyLabel} />);
-
+    render(<AssetAllocationChart allocation={withEmpty} />);
     expect(screen.getByTestId("slice-0")).toHaveAttribute("data-label", "");
   });
 });

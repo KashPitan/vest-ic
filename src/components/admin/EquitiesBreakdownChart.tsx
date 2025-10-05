@@ -2,7 +2,7 @@
 
 import React, { useMemo } from "react";
 import PieChart, { type PieSlice } from "@/components/ui/pie-chart";
-import { colorizeSinglePalette } from "@/components/ui/chart-colors";
+import { colorizeWithOverlaps } from "@/components/ui/chart-colors";
 
 type Props = {
   equitiesBreakdown: { label: string; value: number }[];
@@ -17,7 +17,7 @@ const EquitiesBreakdownChart = ({
   if (!items.length) return null;
 
   const slices: PieSlice[] = useMemo(
-    () => colorizeSinglePalette(items, { overlapAgainst: assetAllocation }),
+    () => colorizeWithOverlaps(items, { overlapAgainst: assetAllocation }),
     [items, assetAllocation],
   );
 

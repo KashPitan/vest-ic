@@ -78,7 +78,7 @@ const PieChart = ({
       data: cleanedData.map((slice, index) => ({
         id: index,
         value: slice.value,
-        label: slice.label,
+         label: `${slice.label} ${formatPct(slice.value)}`,
         color: slice.color,
       })),
       innerRadius,

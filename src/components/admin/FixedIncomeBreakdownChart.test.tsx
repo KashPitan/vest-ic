@@ -2,105 +2,229 @@ import "./Chart.mocks";
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import FixedIncomeBreakdownChart from "./FixedIncomeBreakdownChart";
-import { BASE_PALETTE, OVERRIDES } from "@/components/ui/chart-colors";
+import {
+  PALETTE_1_5,
+  PALETTE_6_7,
+  PALETTE_8_PLUS,
+  OVERLAP_PALETTE,
+} from "@/components/ui/chart-colors";
 
-describe("FixedIncomeBreakdownChart (single-palette push-down rules)", () => {
+describe("FixedIncomeBreakdownChart", () => {
   test("should render the PieChart component and title", () => {
-    const fib = [{ label: "Sovereign", value: 40 }];
-    const aa = [{ label: "Equities", value: 100 }];
+    const fixedIncomeBreakdownData = [{ label: "Sovereign", value: 40 }];
+    const assetAllocationData = [{ label: "Equities", value: 100 }];
 
     render(
       <FixedIncomeBreakdownChart
-        fixedIncomeBreakdown={fib}
-        assetAllocation={aa}
+        fixedIncomeBreakdown={fixedIncomeBreakdownData}
+        assetAllocation={assetAllocationData}
       />,
     );
+
     expect(screen.getByTestId("pie-chart")).toBeInTheDocument();
     expect(screen.getByTestId("chart-title")).toHaveTextContent(
       "Fixed Income Breakdown (% NAV)",
     );
   });
 
-  test("should handle same-index overlap -> grey, and push-down (next item uses palette[0])", () => {
-    // AA[0] = "Equities"
-    const aa = [
+  test("should color overlaps with the overlap palette and non-overlaps with the 1–5 base palette", () => {
+    const assetAllocationData = [
       { label: "Equities", value: 40 },
       { label: "Fixed Income", value: 60 },
     ];
-    // FIB[0] = "Equities" -> same-index overlap => grey (no palette consumed)
-    // FIB[1] gets BASE_PALETTE[0], FIB[2] gets BASE_PALETTE[1]
-    const fib = [
-      { label: "Equities", value: 10 },
-      { label: "Sovereign", value: 45 },
-      { label: "Investment Grade", value: 45 },
+    const fixedIncomeBreakdownData = [
+      { label: "Equities", value: 10 }, // overlap (AA contains Equities)
+      { label: "Sovereign", value: 45 }, // non-overlap
+      { label: "Investment Grade", value: 45 }, // non-overlap
     ];
 
     render(
       <FixedIncomeBreakdownChart
-        fixedIncomeBreakdown={fib}
-        assetAllocation={aa}
+        fixedIncomeBreakdown={fixedIncomeBreakdownData}
+        assetAllocation={assetAllocationData}
       />,
     );
 
-    const c0 = screen.getByTestId("slice-0").getAttribute("data-color");
-    expect(OVERRIDES.includes(c0!)).toBe(true);
+    // Overlap slice coloured from overlap palette
+    const overlapColor = screen
+      .getByTestId("slice-0")
+      .getAttribute("data-color")!;
+    expect(OVERLAP_PALETTE).toContain(overlapColor);
 
+    // Non-overlaps coloured from the 1–5 base palette in order
     expect(screen.getByTestId("slice-1")).toHaveAttribute(
       "data-color",
-      BASE_PALETTE[0],
+      PALETTE_1_5[0],
     );
     expect(screen.getByTestId("slice-2")).toHaveAttribute(
       "data-color",
-      BASE_PALETTE[1],
+      PALETTE_1_5[1],
     );
   });
 
-  test("should handle overlap at different index -> NOT grey (uses next palette colour)", () => {
-    // AA[1] = "Sovereign"
-    const aa = [
+  test("should not use the overlap palette when label does not exist in Asset Allocation", () => {
+    const assetAllocationData = [
       { label: "X", value: 10 },
-      { label: "Sovereign", value: 90 },
+      { label: "Y", value: 90 },
     ];
-    // FIB[0] = "Sovereign" => overlap but at index 0 vs AA index 1 => NOT grey
-    const fib = [{ label: "Sovereign", value: 100 }];
+    const fixedIncomeBreakdownData = [{ label: "Sovereign", value: 100 }];
 
     render(
       <FixedIncomeBreakdownChart
-        fixedIncomeBreakdown={fib}
-        assetAllocation={aa}
+        fixedIncomeBreakdown={fixedIncomeBreakdownData}
+        assetAllocation={assetAllocationData}
       />,
     );
 
-    const c0 = screen.getByTestId("slice-0").getAttribute("data-color");
-    expect(OVERRIDES.includes(c0!)).toBe(false);
-    expect(c0).toBe(BASE_PALETTE[0]); // first palette colour
+    const color = screen.getByTestId("slice-0").getAttribute("data-color")!;
+    expect(OVERLAP_PALETTE).not.toContain(color);
+    expect(color).toBe(PALETTE_1_5[0]);
   });
 
-  test("should handle case-insensitive label matching for same-index overlap", () => {
-    const aa = [{ label: "equities", value: 100 }];
-    const fib = [{ label: "EQUITIES", value: 100 }]; // same index, different case
+  test("should treat overlap matching as case-insensitive", () => {
+    const assetAllocationData = [{ label: "equities", value: 100 }];
+    const fixedIncomeBreakdownData = [{ label: "EQUITIES", value: 100 }];
 
     render(
       <FixedIncomeBreakdownChart
-        fixedIncomeBreakdown={fib}
-        assetAllocation={aa}
+        fixedIncomeBreakdown={fixedIncomeBreakdownData}
+        assetAllocation={assetAllocationData}
       />,
     );
 
-    const c0 = screen.getByTestId("slice-0").getAttribute("data-color");
-    expect(OVERRIDES.includes(c0!)).toBe(true);
+    const color = screen.getByTestId("slice-0").getAttribute("data-color")!;
+    expect(OVERLAP_PALETTE).toContain(color);
   });
 
-  test("should handle values pass through unchanged (decimals & zeros)", () => {
-    // PieChart itself filters true zeros, but this component passes values through.
-    const fib = [
+  test("should choose the 6–7 base palette when non-overlap count is 6", () => {
+    // 6 non-overlaps + 1 overlap (total 7 items)
+    const fixedIncomeBreakdownData = [
+      { label: "N1", value: 10 },
+      { label: "N2", value: 10 },
+      { label: "N3", value: 10 },
+      { label: "N4", value: 10 },
+      { label: "N5", value: 10 },
+      { label: "Overlap", value: 10 }, // overlap
+      { label: "N6", value: 40 },
+    ];
+    const assetAllocationData = [{ label: "Overlap", value: 1 }];
+
+    render(
+      <FixedIncomeBreakdownChart
+        fixedIncomeBreakdown={fixedIncomeBreakdownData}
+        assetAllocation={assetAllocationData}
+      />,
+    );
+
+    // Non-overlaps (first 5) consume PALETTE_6_7[0..4]
+    expect(screen.getByTestId("slice-0")).toHaveAttribute(
+      "data-color",
+      PALETTE_6_7[0],
+    );
+    expect(screen.getByTestId("slice-1")).toHaveAttribute(
+      "data-color",
+      PALETTE_6_7[1],
+    );
+    expect(screen.getByTestId("slice-2")).toHaveAttribute(
+      "data-color",
+      PALETTE_6_7[2],
+    );
+    expect(screen.getByTestId("slice-3")).toHaveAttribute(
+      "data-color",
+      PALETTE_6_7[3],
+    );
+    expect(screen.getByTestId("slice-4")).toHaveAttribute(
+      "data-color",
+      PALETTE_6_7[4],
+    );
+
+    // Overlap uses overlap palette
+    const overlapSliceColor = screen
+      .getByTestId("slice-5")
+      .getAttribute("data-color")!;
+    expect(OVERLAP_PALETTE).toContain(overlapSliceColor);
+
+    // Next non-overlap continues with PALETTE_6_7[5]
+    expect(screen.getByTestId("slice-6")).toHaveAttribute(
+      "data-color",
+      PALETTE_6_7[5],
+    );
+  });
+
+  test("should choose the 8+ base palette when non-overlap count is at least 8", () => {
+    // 8 non-overlaps + 1 overlap
+    const fixedIncomeBreakdownData = [
+      { label: "N1", value: 10 },
+      { label: "N2", value: 10 },
+      { label: "N3", value: 10 },
+      { label: "N4", value: 10 },
+      { label: "N5", value: 10 },
+      { label: "N6", value: 10 },
+      { label: "Overlap", value: 5 }, // overlap
+      { label: "N7", value: 10 },
+      { label: "N8", value: 25 },
+    ];
+    const assetAllocationData = [{ label: "Overlap", value: 100 }];
+
+    render(
+      <FixedIncomeBreakdownChart
+        fixedIncomeBreakdown={fixedIncomeBreakdownData}
+        assetAllocation={assetAllocationData}
+      />,
+    );
+
+    // First six non-overlaps consume PALETTE_8_PLUS[0..5]
+    expect(screen.getByTestId("slice-0")).toHaveAttribute(
+      "data-color",
+      PALETTE_8_PLUS[0],
+    );
+    expect(screen.getByTestId("slice-1")).toHaveAttribute(
+      "data-color",
+      PALETTE_8_PLUS[1],
+    );
+    expect(screen.getByTestId("slice-2")).toHaveAttribute(
+      "data-color",
+      PALETTE_8_PLUS[2],
+    );
+    expect(screen.getByTestId("slice-3")).toHaveAttribute(
+      "data-color",
+      PALETTE_8_PLUS[3],
+    );
+    expect(screen.getByTestId("slice-4")).toHaveAttribute(
+      "data-color",
+      PALETTE_8_PLUS[4],
+    );
+    expect(screen.getByTestId("slice-5")).toHaveAttribute(
+      "data-color",
+      PALETTE_8_PLUS[5],
+    );
+
+    // Overlap slice uses overlap palette
+    const overlapSliceColor = screen
+      .getByTestId("slice-6")
+      .getAttribute("data-color")!;
+    expect(OVERLAP_PALETTE).toContain(overlapSliceColor);
+
+    // Next two non-overlaps continue with PALETTE_8_PLUS[6] and [7]
+    expect(screen.getByTestId("slice-7")).toHaveAttribute(
+      "data-color",
+      PALETTE_8_PLUS[6],
+    );
+    expect(screen.getByTestId("slice-8")).toHaveAttribute(
+      "data-color",
+      PALETTE_8_PLUS[7],
+    );
+  });
+
+  test("should pass values through unchanged (decimals & zeros)", () => {
+    const fixedIncomeBreakdownData = [
       { label: "Short-term", value: 0 },
       { label: "Long-term", value: 100.0 },
     ];
 
     render(
       <FixedIncomeBreakdownChart
-        fixedIncomeBreakdown={fib}
+        fixedIncomeBreakdown={fixedIncomeBreakdownData}
         assetAllocation={[]}
       />,
     );

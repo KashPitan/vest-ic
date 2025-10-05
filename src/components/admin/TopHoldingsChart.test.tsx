@@ -2,12 +2,9 @@ import "./Chart.mocks";
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import TopHoldingsChart from "./TopHoldingsChart";
-
+import { PALETTE_1_5 } from "@/components/ui/chart-colors";
 
 describe("TopHoldingsChart", () => {
-  const NAVY = "#1A1549";
-  const BURGUNDY = "#99103B";
-
   const mockHoldings = [
     { label: "Top 10 holdings", value: 53.0 },
     { label: "Rest of portfolio", value: 47.0 },
@@ -42,13 +39,15 @@ describe("TopHoldingsChart", () => {
     expect(screen.getByTestId("slice-1")).toHaveAttribute("data-value", "47");
   });
 
-  test('should color "rest" slice as burgundy and others as navy', () => {
+  test("should use 1–5 palette for 2 items", () => {
     render(<TopHoldingsChart holdings={mockHoldings} />);
-
-    expect(screen.getByTestId("slice-0")).toHaveAttribute("data-color", NAVY);
+    expect(screen.getByTestId("slice-0")).toHaveAttribute(
+      "data-color",
+      PALETTE_1_5[0],
+    );
     expect(screen.getByTestId("slice-1")).toHaveAttribute(
       "data-color",
-      BURGUNDY,
+      PALETTE_1_5[1],
     );
   });
 

@@ -2,22 +2,15 @@
 
 import React, { useMemo } from "react";
 import PieChart, { type PieSlice } from "@/components/ui/pie-chart";
+import { colorizeBaseOnly } from "@/components/ui/chart-colors";
 
 type Props = {
   holdings: { label: string; value: number }[];
 };
 
-const NAVY = "#1A1549";
-const BURGUNDY = "#99103B";
-
 const TopHoldingsChart = ({ holdings }: Props) => {
   const slices: PieSlice[] = useMemo(
-    () =>
-      (holdings ?? []).map((h) => ({
-        label: h.label,
-        value: h.value,
-        color: h.label.toLowerCase().includes("rest") ? BURGUNDY : NAVY,
-      })),
+    () => colorizeBaseOnly(holdings ?? []),
     [holdings],
   );
 
