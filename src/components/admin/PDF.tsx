@@ -47,24 +47,22 @@ export default function PDF({
       {/* Charts page */}
       <Page headerDate={headerDate} footerDate={footerDate}>
         <div className="grid grid-cols-2 gap-6 p-4">
-          {topTenSplit?.length ? (
-            <TopHoldingsChart holdings={topTenSplit} />
-          ) : null}
-          {assetAllocation?.length ? (
+          {topTenSplit && <TopHoldingsChart holdings={topTenSplit} />}
+          {assetAllocation && (
             <AssetAllocationChart allocation={assetAllocation} />
-          ) : null}
-          {equitiesBreakdown?.length ? (
+          )}
+          {equitiesBreakdown && (
             <EquitiesBreakdownChart
               equitiesBreakdown={equitiesBreakdown}
               assetAllocation={assetAllocation}
             />
-          ) : null}
-          {fixedIncomeBreakdown?.length ? (
+          )}
+          {fixedIncomeBreakdown && (
             <FixedIncomeBreakdownChart
               fixedIncomeBreakdown={fixedIncomeBreakdown}
               assetAllocation={assetAllocation}
             />
-          ) : null}
+          )}
         </div>
       </Page>
 
