@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React from "react";
 import PieChart, { type PieSlice } from "@/components/ui/pie-chart";
 import { colorizeWithOverlaps } from "@/components/ui/chart-colors";
 
@@ -16,10 +16,9 @@ const EquitiesBreakdownChart = ({
   const items = equitiesBreakdown ?? [];
   if (!items.length) return null;
 
-  const slices: PieSlice[] = useMemo(
-    () => colorizeWithOverlaps(items, { overlapAgainst: assetAllocation }),
-    [items, assetAllocation],
-  );
+  const slices: PieSlice[] = colorizeWithOverlaps(items, {
+    overlapAgainst: assetAllocation,
+  });
 
   return <PieChart title="Equities Breakdown (% NAV)" data={slices} />;
 };

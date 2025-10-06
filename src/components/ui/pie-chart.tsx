@@ -88,7 +88,7 @@ const PieChart = ({
   const innerRadius = Math.round(size * DEFAULT_INNER_RATIO * 0.45);
   const outerRadius = Math.round(size * 0.45);
 
-  const series = React.useMemo(() => [
+  const series = [
     {
       data: cleanedData.map((slice, index) => ({
         id: index,
@@ -105,7 +105,7 @@ const PieChart = ({
       arcLabelMinAngle: MIN_ARC_LABEL_ANGLE,
       valueFormatter: (item: { value: number }) => formatPct(item.value),
     },
-  ], [cleanedData, innerRadius, outerRadius]);
+  ];
 
   // Right-aligned, vertical legend on the right, vertically centred
   const legendSlot = showLegend

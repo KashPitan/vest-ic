@@ -1,14 +1,39 @@
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import PieChart from "./pie-chart";
+import React from "react";
 
 jest.mock("@mui/x-charts/PieChart", () => {
-  const React = require("react");
+  type Formatter = (item: { value: number }) => string;
+
+  type Series = {
+    data?: Array<{ id?: number; value?: number; label?: string; color?: string }>;
+    valueFormatter?: Formatter;
+    arcLabel?: Formatter;
+    startAngle?: number;
+    endAngle?: number;
+  };
+
+  type LegendProps = {
+    direction?: "vertical" | "horizontal";
+    position?: {
+      horizontal?: "start" | "center" | "end";
+      vertical?: "top" | "middle" | "bottom";
+    };
+    labelStyle?: { textAlign?: "left" | "right" | "center" };
+  };
+
+  type MockProps = {
+    series?: Series[];
+    slotProps?: { legend?: LegendProps };
+  };
+
   return {
-    PieChart: ({ series, slotProps }: any) => {
+    PieChart: ({ series, slotProps }: MockProps) => {
       const data = series?.[0]?.data ?? [];
       const vf = series?.[0]?.valueFormatter;
       const al = series?.[0]?.arcLabel;
+
       return (
         <div
           data-testid="mui-pie"
