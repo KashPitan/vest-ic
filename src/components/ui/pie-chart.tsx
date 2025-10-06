@@ -31,6 +31,10 @@ export interface PieChartProps {
    */
   showLegend?: boolean;
   /**
+   * Sort slices by value. Default: undefined (no sort)
+   */
+  sortByValue?: 'asc' | 'desc';
+  /**
    * Optional additional class names for the container
    */
   className?: string;
@@ -59,13 +63,24 @@ const PieChart = ({
   colors,
   size = DEFAULT_SIZE,
   showLegend = true,
+  sortByValue,
   className,
 }: PieChartProps) => {
   // Hide true zeros - keep tiny >0 values (will show as 0.0%)
-  const cleanedData = React.useMemo(
-    () => (data ?? []).filter((slice) => !isTrueZero(slice.value)),
-    [data]
-  );
+  const cleanedData = React.useMemo(() => {
+    const base = (data ?? []).filter((s) => !isTrueZero(s.value));
+    if (!sortByValue) return base;
+
+    // stable sort (keep original order for ties)
+    return base
+      .map((d, i) => ({ d, i }))
+      .sort((a, b) => {
+        const diff = a.d.value - b.d.value;
+        if (diff === 0) return a.i - b.i;
+        return sortByValue === 'asc' ? diff : -diff;
+      })
+      .map(({ d }) => d);
+  }, [data, sortByValue]);
 
   // If everything was zero, show nothing
   if (cleanedData.length === 0) return null;
