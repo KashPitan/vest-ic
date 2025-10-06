@@ -117,35 +117,32 @@ const PieChart = ({
     : undefined;
 
   return (
-    <div className={["flex items-start gap-6", className].filter(Boolean).join(" ")}>
-      <div className="shrink-0">
-        {title && <h2 className="mb-2 text-lg font-medium">{title}</h2>}
-        <div className="py-10">
-          <MuiPieChart
-            width={size}
-            height={size}
-            series={series}
-            colors={colors ? [...colors] : undefined}
-            slotProps={{
-              legend: legendSlot,
-            }}
-            sx={{
-              // Make arc labels readable on any color
-              [`& .${pieArcLabelClasses.root}`]: {
-                fill: "#fff",
-                fontSize: ARC_LABEL_FONT_SIZE,
-                fontWeight: 700,
-                paintOrder: "stroke fill",
-                stroke: "rgba(17,24,39,.7)",
-                strokeWidth: ARC_LABEL_STROKE_WIDTH, // dark outline for contrast
-              },
-            }}
-            aria-label={title ?? "Pie chart"}
-          />
-        </div>
-      </div>
+  <div className={["flex flex-col h-full", className].filter(Boolean).join(" ")}>
+    {title && <h2 className="mb-2 text-lg font-medium">{title}</h2>}
+
+    <div className="flex-1 flex items-center justify-center py-5">
+      <MuiPieChart
+        width={size}
+        height={size}
+        series={series}
+        colors={colors ? [...colors] : undefined}
+        slotProps={{ legend: legendSlot }}
+        sx={{
+          // Make arc labels readable on any color
+          [`& .${pieArcLabelClasses.root}`]: {
+            fill: "#fff",
+            fontSize: ARC_LABEL_FONT_SIZE,
+            fontWeight: 700,
+            paintOrder: "stroke fill",
+            stroke: "rgba(17,24,39,.7)",
+            strokeWidth: ARC_LABEL_STROKE_WIDTH, // dark outline for contrast
+          },
+        }}
+        aria-label={title ?? "Pie chart"}
+      />
     </div>
-  );
+  </div>
+);
 };
 
 export default PieChart;

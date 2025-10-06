@@ -7,11 +7,13 @@ import { colorizeWithOverlaps } from "@/components/ui/chart-colors";
 type Props = {
   fixedIncomeBreakdown: { label: string; value: number }[];
   assetAllocation: { label: string; value: number }[];
+  size?: number;
 };
 
 const FixedIncomeBreakdownChart = ({
   fixedIncomeBreakdown,
   assetAllocation,
+  size,
 }: Props) => {
   const items = fixedIncomeBreakdown ?? [];
   if (!items.length) return null;
@@ -20,7 +22,7 @@ const FixedIncomeBreakdownChart = ({
     overlapAgainst: assetAllocation,
   });
 
-  return <PieChart title="Fixed Income Breakdown (% NAV)" data={slices} />;
+  return <PieChart title="Fixed Income Breakdown (% NAV)" data={slices} size={size} />;
 };
 
 export default FixedIncomeBreakdownChart;

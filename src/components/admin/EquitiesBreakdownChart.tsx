@@ -7,11 +7,13 @@ import { colorizeWithOverlaps } from "@/components/ui/chart-colors";
 type Props = {
   equitiesBreakdown: { label: string; value: number }[];
   assetAllocation: { label: string; value: number }[];
+  size?: number;
 };
 
 const EquitiesBreakdownChart = ({
   equitiesBreakdown,
   assetAllocation,
+  size,
 }: Props) => {
   const items = equitiesBreakdown ?? [];
   if (!items.length) return null;
@@ -20,7 +22,9 @@ const EquitiesBreakdownChart = ({
     overlapAgainst: assetAllocation,
   });
 
-  return <PieChart title="Equities Breakdown (% NAV)" data={slices} />;
+  return (
+    <PieChart title="Equities Breakdown (% NAV)" data={slices} size={size} />
+  );
 };
 
 export default EquitiesBreakdownChart;

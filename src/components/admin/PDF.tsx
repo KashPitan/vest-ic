@@ -44,28 +44,6 @@ export default function PDF({
 
   return (
     <>
-      {/* Charts page */}
-      <Page headerDate={headerDate} footerDate={footerDate}>
-        <div className="grid grid-cols-2 gap-6 p-4">
-          {topTenSplit && <TopHoldingsChart holdings={topTenSplit} />}
-          {assetAllocation && (
-            <AssetAllocationChart allocation={assetAllocation} />
-          )}
-          {equitiesBreakdown && (
-            <EquitiesBreakdownChart
-              equitiesBreakdown={equitiesBreakdown}
-              assetAllocation={assetAllocation}
-            />
-          )}
-          {fixedIncomeBreakdown && (
-            <FixedIncomeBreakdownChart
-              fixedIncomeBreakdown={fixedIncomeBreakdown}
-              assetAllocation={assetAllocation}
-            />
-          )}
-        </div>
-      </Page>
-
       {/* Fund commentary and performance page */}
       <Page headerDate={headerDate} footerDate={footerDate}>
         <div className="grid grid-cols-7">
@@ -93,6 +71,26 @@ export default function PDF({
 
       <Page headerDate={headerDate} footerDate={footerDate}>
         <div className="grid grid-cols-2 gap-6 p-4">
+          {topTenSplit && (
+            <TopHoldingsChart holdings={topTenSplit} size={150} />
+          )}
+          {assetAllocation && (
+            <AssetAllocationChart allocation={assetAllocation} size={150} />
+          )}
+          {equitiesBreakdown && (
+            <EquitiesBreakdownChart
+              equitiesBreakdown={equitiesBreakdown}
+              assetAllocation={assetAllocation}
+              size={150}
+            />
+          )}
+          {fixedIncomeBreakdown && (
+            <FixedIncomeBreakdownChart
+              fixedIncomeBreakdown={fixedIncomeBreakdown}
+              assetAllocation={assetAllocation}
+              size={150}
+            />
+          )}
           <div className="col-span-1">
             <TwoColumnTable data={topThreeContributors} textSize="xs" />
           </div>
