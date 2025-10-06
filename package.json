@@ -18,8 +18,7 @@
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "db:seed-tags": "tsx src/scripts/seed-tags.ts",
-    "db:seed:fund": "tsx src/scripts/seed-fund-audit.ts"
+    "db:seed-tags": "tsx src/scripts/seed-tags.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
