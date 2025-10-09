@@ -1,4 +1,8 @@
 import TwoColumnTable from "./TwoColumnTable";
+import TopHoldingsChart from "./TopHoldingsChart";
+import AssetAllocationChart from "./AssetAllocationChart";
+import EquitiesBreakdownChart from "./EquitiesBreakdownChart";
+import FixedIncomeBreakdownChart from "./FixedIncomeBreakdownChart";
 import * as XLSX from "xlsx";
 import { getAllChartData } from "@/app/(admin)/admin/excel/utils";
 import HorizontalTable from "./HorizontalTable";
@@ -18,6 +22,10 @@ export default function PDF({
   fileName: string;
 }) {
   const {
+    topTenSplit,
+    assetAllocation,
+    equitiesBreakdown,
+    fixedIncomeBreakdown,
     topThreeContributors,
     bottomThreeContributors,
     cumulativePerformance,
@@ -36,7 +44,7 @@ export default function PDF({
 
   return (
     <>
-      {/* page 1? */}
+      {/* Fund commentary and performance page */}
       <Page headerDate={headerDate} footerDate={footerDate}>
         <div className="grid grid-cols-7">
           <SidePanel />
@@ -63,6 +71,26 @@ export default function PDF({
 
       <Page headerDate={headerDate} footerDate={footerDate}>
         <div className="grid grid-cols-2 gap-6 p-4">
+          {topTenSplit && (
+            <TopHoldingsChart holdings={topTenSplit} size={150} />
+          )}
+          {assetAllocation && (
+            <AssetAllocationChart allocation={assetAllocation} size={150} />
+          )}
+          {equitiesBreakdown && (
+            <EquitiesBreakdownChart
+              equitiesBreakdown={equitiesBreakdown}
+              assetAllocation={assetAllocation}
+              size={150}
+            />
+          )}
+          {fixedIncomeBreakdown && (
+            <FixedIncomeBreakdownChart
+              fixedIncomeBreakdown={fixedIncomeBreakdown}
+              assetAllocation={assetAllocation}
+              size={150}
+            />
+          )}
           <div className="col-span-1">
             <TwoColumnTable data={topThreeContributors} textSize="xs" />
           </div>
