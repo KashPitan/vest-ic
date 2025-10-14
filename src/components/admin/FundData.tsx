@@ -31,46 +31,6 @@ const FundData = ({ workbook, white }: PortfolioComponentsPreview) => {
   } = getAllChartData(workbook);
   return (
     <div>
-      {/* Pie charts section */}
-      <section id="charts" className="mb-8">
-        <h2
-          className={`text-2xl ${white ? "text-pure-white" : "text-black"} font-bold mb-4 ${elza.className}`}
-        >
-          Portfolio Charts
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {topTenSplit && (
-            <div className={"bg-neutral-100 rounded-xl p-4 md:p-6"}>
-              <TopHoldingsChart holdings={topTenSplit} />
-            </div>
-          )}
-
-          {assetAllocation && (
-            <div className={"bg-neutral-100 rounded-xl p-4 md:p-6"}>
-              <AssetAllocationChart allocation={assetAllocation} />
-            </div>
-          )}
-
-          {equitiesBreakdown && (
-            <div className={"bg-neutral-100 rounded-xl p-4 md:p-6"}>
-              <EquitiesBreakdownChart
-                equitiesBreakdown={equitiesBreakdown}
-                assetAllocation={assetAllocation}
-              />
-            </div>
-          )}
-
-          {fixedIncomeBreakdown && (
-            <div className={"bg-neutral-100 rounded-xl p-4 md:p-6"}>
-              <FixedIncomeBreakdownChart
-                fixedIncomeBreakdown={fixedIncomeBreakdown}
-                assetAllocation={assetAllocation}
-              />
-            </div>
-          )}
-        </div>
-      </section>
-
       <section id="summary">
         <h2
           className={`text-2xl ${white ? "text-pure-white" : "text-black"} font-bold mb-4 ${elza.className}`}
@@ -118,12 +78,43 @@ const FundData = ({ workbook, white }: PortfolioComponentsPreview) => {
         </p>
       </section>
 
-      <section id="portfolio" className="mt-8">
+      <section id="portfolio" className="mb-8">
         <h2
           className={`text-2xl ${white ? "text-pure-white" : "text-black"} font-bold mb-4 ${elza.className}`}
         >
-          Portfolio (TBA)
+          Portfolio
         </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {topTenSplit && (
+            <div className={"bg-neutral-100 rounded-xl p-4 md:p-6"}>
+              <TopHoldingsChart holdings={topTenSplit} />
+            </div>
+          )}
+
+          {assetAllocation && (
+            <div className={"bg-neutral-100 rounded-xl p-4 md:p-6"}>
+              <AssetAllocationChart allocation={assetAllocation} />
+            </div>
+          )}
+
+          {equitiesBreakdown && (
+            <div className={"bg-neutral-100 rounded-xl p-4 md:p-6"}>
+              <EquitiesBreakdownChart
+                equitiesBreakdown={equitiesBreakdown}
+                assetAllocation={assetAllocation}
+              />
+            </div>
+          )}
+
+          {fixedIncomeBreakdown && (
+            <div className={"bg-neutral-100 rounded-xl p-4 md:p-6"}>
+              <FixedIncomeBreakdownChart
+                fixedIncomeBreakdown={fixedIncomeBreakdown}
+                assetAllocation={assetAllocation}
+              />
+            </div>
+          )}
+        </div>
       </section>
 
       <section id="performance">

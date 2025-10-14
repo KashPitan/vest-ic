@@ -100,7 +100,7 @@ const PieChart = ({
       outerRadius,
       paddingAngle: DEFAULT_GAP_DEGREES,
       cornerRadius: 0,
-      arcLabel: (item: { value: number }) => formatPct(item.value),
+      arcLabel: (item: { value: number }) => item.value >= 5 ? formatPct(item.value) : "",
       // hide arc label if the visual slice is too small
       arcLabelMinAngle: MIN_ARC_LABEL_ANGLE,
       valueFormatter: (item: { value: number }) => formatPct(item.value),
