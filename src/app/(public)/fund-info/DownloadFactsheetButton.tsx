@@ -65,7 +65,9 @@ export default function DownloadFactsheetButton({
         // Download the PDF file
         const link = document.createElement("a");
         link.href = pdfUrl;
-        link.download = `${fileName || "factsheet"}.pdf`;
+
+        // TODO: this file name should be dynamic
+        link.download = "factsheet.pdf";
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
