@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { verifyRequestOrigin } from "lucia";
-import { headers } from "next/headers";
+// import { headers } from "next/headers";
 import { isAdminFromSession } from "./lib/validateRequest";
 
-const admin_ips: string[] =
-  process.env.ADMIN_IPS?.split(",").map((id) => id.trim()) || [];
+// const admin_ips: string[] =
+//   process.env.ADMIN_IPS?.split(",").map((id) => id.trim()) || [];
 
 const handleCSRF = (request: NextRequest) => {
   if (request.method === "GET") {
@@ -41,15 +41,17 @@ export async function middleware(request: NextRequest) {
     return;
   }
 
-  const headersList = headers();
-  const forwardedFor = (await headersList).get("x-forwarded-for");
+  // const headersList = headers();
+  // const forwardedFor = (await headersList).get("x-forwarded-for");
 
-  const ipAddress = forwardedFor?.split(",").at(0) ?? undefined;
+  // const ipAddress = forwardedFor?.split(",").at(0) ?? undefined;
 
-  if (ipAddress && admin_ips.includes(ipAddress)) {
+  // if (ipAddress && admin_ips.includes(ipAddress)) {
+  // TEMP, UNDO LATER
+  if (true) {
     return;
   }
-  return NextResponse.redirect(new URL("/", request.url));
+  // return NextResponse.redirect(new URL("/", request.url));
 }
 
 export const config = {
